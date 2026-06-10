@@ -1,0 +1,93 @@
+# Scope Contract — GOAL / DO / DON'T (binding)
+
+**Status: binding (non-negotiable).** Charter for what NeNe Field **is**, what it
+**does**, and what it **must never do**. Every Issue, ADR, and PR is measured against it.
+Changing this contract requires an ADR.
+
+Read first: [ADR 0002](../adr/0002-separate-from-sibling-products.md),
+[`scope-boundary.md`](./scope-boundary.md).
+
+---
+
+## Governing principle
+
+1. **Field first.** Every feature is measured against one question: does this help
+   a field worker submit faster or a manager review faster?
+2. **No scope creep into billing or labor law.** NeNe Field is a communication and
+   record-keeping tool, not payroll or accounting software.
+3. **Privacy by default.** AI features are opt-in. PII in reports is never
+   unnecessarily exposed.
+
+---
+
+## GOAL
+
+> **NeNe Field lets Japan SMB field workers submit daily reports from their
+> smartphones and lets managers approve, track, and export work records —
+> without payroll complexity or heavy enterprise workflows.**
+
+Concretely, the goal is reached when:
+
+1. A field worker can submit a daily report (with photo) from a smartphone in under 3 minutes.
+2. A manager can approve or reject the report with a comment from their smartphone.
+3. The manager can search and filter reports by staff, date, tag, and status.
+4. Work data can be exported as CSV for payroll or billing systems.
+5. An audit trail exists for every submission, approval, and edit.
+
+---
+
+## DO — NeNe Field owns these
+
+| # | NeNe Field does | Notes |
+| --- | --- | --- |
+| D1 | Accept daily report submission (template + free text + photo) | Mobile-first |
+| D2 | Manage report templates per organization | Admin-managed |
+| D3 | Enforce report lifecycle: draft → submitted → approved / rejected | See `docs/terms.md §2` |
+| D4 | Notify approvers on submission (email + optional webhook) | Webhook = Slack-compatible |
+| D5 | Provide manager list view with filters | staff / date / tag / status |
+| D6 | Support approval and rejection with comment | One-level only (Phase 1) |
+| D7 | Store and serve file attachments (photos, PDFs) | Size-limited; compressed |
+| D8 | Export report data as CSV | Date range + user + project filters |
+| D9 | Record audit events for every mutation | Immutable log |
+| D10 | Generate AI summary + keyword tags (opt-in per org) | See ADR 0007 |
+| D11 | Manage organization users and roles | submitter / approver / admin |
+| D12 | Link reports to `nene-invoice` work orders via HTTP reference (optional) | No shared DB |
+| D13 | Multi-tenant isolation + JWT RBAC | See ADR 0004 |
+| D14 | Tier A installer + release ZIP (shared hosting) | Same codebase as Tier B Docker |
+
+---
+
+## DON'T — NeNe Field must never do these
+
+| # | NeNe Field must NOT | Why | Belongs to |
+| --- | --- | --- | --- |
+| X1 | Calculate overtime pay, statutory overtime, or labor law compliant records | Legal complexity; payroll domain | Dedicated payroll software |
+| X2 | Issue quotes, invoices, or billing documents | Billing domain | **NeNe Invoice** |
+| X3 | Reconcile bank deposits or send dunning notices | Reconciliation domain | **NeNe Clear** |
+| X4 | Archive received vendor documents as SSOT | Document archive domain | **NeNe Vault** |
+| X5 | Normalize bank CSV columns | Bank data domain | **NeNe Profile** |
+| X6 | Post journal entries or maintain a general ledger | Accounting software | Out of scope |
+| X7 | Process e-sign or legally binding contracts | E-sign domain | Separate product |
+| X8 | Send report body text to AI without operator opt-in | Privacy | ADR 0007 |
+| X9 | Share a database with any sibling product | Schema coupling | ADR 0002 |
+| X10 | Store attachment files without size/type limits | Storage cost | See requirements |
+
+---
+
+## Boundaries that are easy to get wrong
+
+- **Reports vs timesheets.** NeNe Field records daily activities and observations.
+  It does NOT compute statutory hours, overtime rates, or paid-leave balances.
+- **Approval vs multi-level workflows.** Phase 1 is one-level approval only.
+  Multi-level approval (e.g., team lead → department head) is Phase 2.
+- **CSV export vs accounting import.** NeNe Field exports raw work records as CSV.
+  It is the operator's responsibility to import that data into accounting or payroll software.
+
+---
+
+## Related
+
+- ADR 0002: Domain separation
+- ADR 0004: Multi-tenancy and roles
+- ADR 0007: AI summary policy
+- `docs/explanation/scope-boundary.md`

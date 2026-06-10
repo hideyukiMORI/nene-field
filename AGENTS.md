@@ -1,0 +1,50 @@
+# Agent / AI Guide
+
+Entry point for AI agents working on **NeNe Field** (public repo `nene-field`).
+
+## Domain (read first)
+
+| Product | Repository | Domain |
+| --- | --- | --- |
+| **NeNe Invoice** | `nene-invoice` | Quote, invoice, payment management |
+| **NeNe Clear** | `nene-clear` | Payment reconciliation & dunning |
+| **NeNe Profile** | `nene-profile` | Bank CSV normalization |
+| **NeNe Vault** | `nene-vault` | Received-document archive |
+| **NeNe Records** | `nene-records` | Flexible entity platform |
+| **NeNe Field** | `nene-field` (this) | Daily report platform |
+
+See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
+
+## Read First
+
+- **Canonical terms — single source of truth (binding):** `docs/terms.md` ← **START HERE for any identifier**
+- **Scope contract (binding):** `docs/explanation/scope-contract.md`
+- **Product vision:** `docs/explanation/product-vision.md`
+- **Requirements:** `docs/explanation/requirements.md`
+- **Feature list:** `docs/explanation/features.md`
+- **Page list:** `docs/explanation/pages.md`
+- **Domain model:** `docs/explanation/domain-model.md`
+- **Glossary:** `docs/explanation/glossary.md`
+- **Scope boundary:** `docs/explanation/scope-boundary.md`
+- **Naming rules:** `docs/development/naming-conventions.md`
+- **Coding standards:** `docs/development/coding-standards.md`
+- **NENE2 compliance (binding):** `docs/development/nene2-compliance.md`
+- **Sibling integration:** `docs/integrations/sibling-products.md`
+- **NENE2 inheritance map:** `docs/inheritance-from-nene2.md`
+- **Current work:** `docs/todo/current.md`
+- **Roadmap:** `docs/roadmap.md`
+
+## Operating Rules
+
+- Issue-driven; no direct commits to `main`
+- Do **not** add payroll calculation or statutory labor management — out of scope
+- Do **not** add invoice issuance — **`nene-invoice`**
+- Do **not** add bank reconciliation — **`nene-clear`**
+- Do **not** add document archiving as SSOT — **`nene-vault`**
+- **Follow NENE2 conventions** — `docs/development/nene2-compliance.md`
+- Namespace: `NeneField\`; money: integer cents
+- **Repository docs: English only** (ADR 0006)
+
+## Framework
+
+[NENE2](https://github.com/hideyukiMORI/NENE2) via Composer (`vendor/hideyukimori/nene2/`).

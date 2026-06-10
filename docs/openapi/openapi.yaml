@@ -1,0 +1,1414 @@
+openapi: "3.1.0"
+info:
+  title: NeNe Field API
+  version: "0.1.0"
+  description: |
+    Daily report platform for Japan SMB.
+    Built on NENE2. All errors use RFC 9457 Problem Details (`application/problem+json`).
+  contact:
+    name: hideyukiMORI
+    url: https://github.com/hideyukiMORI/nene-field
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8700
+    description: Local development
+
+tags:
+  - name: health
+    description: Health check
+  - name: auth
+    description: Authentication
+  - name: organizations
+    description: Organization settings (admin)
+  - name: users
+    description: User management (admin)
+  - name: templates
+    description: Report template management (admin)
+  - name: reports
+    description: Daily report CRUD and lifecycle
+  - name: attachments
+    description: File attachments on reports
+  - name: export
+    description: CSV data export
+  - name: audit
+    description: Audit event log
+
+# ─────────────────────────────────────────────
+# Security
+# ─────────────────────────────────────────────
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  # ─────────────────────────────────────────
+  # Shared schemas
+  # ─────────────────────────────────────────
+  schemas:
+
+    # ── Error ──────────────────────────────
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          example: "https://nene-field.app/problems/report-not-found"
+        title:
+          type: string
+          example: "Report Not Found"
+        status:
+          type: integer
+          example: 404
+        detail:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+
+    ValidationError:
+      type: object
+      required: [field, message, code]
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+
+    # ── Pagination ─────────────────────────
+    PaginationMeta:
+      type: object
+      required: [total, page, per_page, last_page]
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        per_page:
+          type: integer
+        last_page:
+          type: integer
+
+    # ── Auth ───────────────────────────────
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+          description: JWT bearer token
+        user:
+          $ref: '#/components/schemas/UserResponse'
+
+    # ── Organization ───────────────────────
+    OrganizationResponse:
+      type: object
+      required: [organization_id, name, created_at, updated_at]
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ai_summary_enabled:
+          type: boolean
+        notification_email:
+          type: string
+          format: email
+          nullable: true
+        webhook_url:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    OrganizationUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        ai_summary_enabled:
+          type: boolean
+        ai_api_url:
+          type: string
+          nullable: true
+        ai_api_key:
+          type: string
+          nullable: true
+        notification_email:
+          type: string
+          format: email
+          nullable: true
+        webhook_url:
+          type: string
+          nullable: true
+
+    # ── User ───────────────────────────────
+    UserResponse:
+      type: object
+      required: [user_id, organization_id, name, email, role, is_active, created_at, updated_at]
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [submitter, approver, admin, superadmin]
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserCreateRequest:
+      type: object
+      required: [name, email, role, password]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [submitter, approver, admin]
+        password:
+          type: string
+          format: password
+          minLength: 8
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        role:
+          type: string
+          enum: [submitter, approver, admin]
+        is_active:
+          type: boolean
+
+    # ── Template ───────────────────────────
+    TemplateFieldDefinition:
+      type: object
+      required: [name, label, type, required]
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+          enum: [text, textarea, number, checkbox, date, select]
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+          description: Options for select type
+
+    TemplateResponse:
+      type: object
+      required: [template_id, organization_id, name, fields, is_default, created_at, updated_at]
+      properties:
+        template_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateFieldDefinition'
+        is_default:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TemplateCreateRequest:
+      type: object
+      required: [name, fields]
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateFieldDefinition'
+        is_default:
+          type: boolean
+
+    TemplateUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateFieldDefinition'
+        is_default:
+          type: boolean
+
+    # ── Report ─────────────────────────────
+    ReportStatus:
+      type: string
+      enum: [draft, submitted, approved, rejected]
+
+    AttachmentSummary:
+      type: object
+      required: [attachment_id, filename, mime_type, file_size, created_at]
+      properties:
+        attachment_id:
+          type: string
+          format: uuid
+        filename:
+          type: string
+        mime_type:
+          type: string
+        file_size:
+          type: integer
+          description: Bytes
+        created_at:
+          type: string
+          format: date-time
+
+    ReportResponse:
+      type: object
+      required: [report_id, organization_id, user_id, title, body, work_date, status, created_at, updated_at]
+      properties:
+        report_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        user_name:
+          type: string
+        template_id:
+          type: string
+          format: uuid
+          nullable: true
+        title:
+          type: string
+        body:
+          type: string
+        work_date:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/ReportStatus'
+        tags:
+          type: array
+          items:
+            type: string
+        project_code:
+          type: string
+          nullable: true
+        invoice_work_order_id:
+          type: string
+          nullable: true
+        records_entity_id:
+          type: string
+          nullable: true
+        ai_summary:
+          type: string
+          nullable: true
+        ai_tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        rejected_at:
+          type: string
+          format: date-time
+          nullable: true
+        approver_id:
+          type: string
+          format: uuid
+          nullable: true
+        approver_comment:
+          type: string
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentSummary'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ReportSummary:
+      description: Condensed report for list views
+      type: object
+      required: [report_id, user_id, user_name, title, work_date, status, created_at]
+      properties:
+        report_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        user_name:
+          type: string
+        title:
+          type: string
+        work_date:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/ReportStatus'
+        tags:
+          type: array
+          items:
+            type: string
+        project_code:
+          type: string
+          nullable: true
+        ai_summary:
+          type: string
+          nullable: true
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    ReportCreateRequest:
+      type: object
+      required: [title, body, work_date]
+      properties:
+        template_id:
+          type: string
+          format: uuid
+          nullable: true
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 10000
+        work_date:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+        project_code:
+          type: string
+          maxLength: 100
+          nullable: true
+        invoice_work_order_id:
+          type: string
+          nullable: true
+        records_entity_id:
+          type: string
+          nullable: true
+
+    ReportUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+          maxLength: 10000
+        work_date:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+        project_code:
+          type: string
+          maxLength: 100
+          nullable: true
+        invoice_work_order_id:
+          type: string
+          nullable: true
+        records_entity_id:
+          type: string
+          nullable: true
+
+    ApproveRequest:
+      type: object
+      properties:
+        comment:
+          type: string
+          maxLength: 1000
+          nullable: true
+
+    RejectRequest:
+      type: object
+      required: [comment]
+      properties:
+        comment:
+          type: string
+          maxLength: 1000
+
+    # ── Audit ──────────────────────────────
+    AuditEventResponse:
+      type: object
+      required: [event_id, organization_id, entity_type, entity_id, event_name, actor_id, occurred_at]
+      properties:
+        event_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        event_name:
+          type: string
+        actor_id:
+          type: string
+          format: uuid
+        actor_name:
+          type: string
+        before:
+          type: object
+          nullable: true
+        after:
+          type: object
+          nullable: true
+        occurred_at:
+          type: string
+          format: date-time
+
+  # ─────────────────────────────────────────
+  # Shared responses
+  # ─────────────────────────────────────────
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    ValidationFailed:
+      description: Validation Failed
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Conflict:
+      description: Conflict — invalid state transition
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+security:
+  - bearerAuth: []
+
+# ─────────────────────────────────────────────
+# Paths
+# ─────────────────────────────────────────────
+paths:
+
+  # ── Health ─────────────────────────────────
+  /health:
+    get:
+      operationId: getHealth
+      tags: [health]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+
+  # ── Auth ───────────────────────────────────
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Log in and obtain JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Invalidate current JWT
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  # ── Organizations ──────────────────────────
+  /organizations/{organization_id}:
+    parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getOrganization
+      tags: [organizations]
+      summary: Get organization settings
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateOrganization
+      tags: [organizations]
+      summary: Update organization settings (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdateRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  # ── Users ──────────────────────────────────
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List users in organization (admin only)
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserResponse'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+    post:
+      operationId: createUser
+      tags: [users]
+      summary: Create a new user (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  /users/{user_id}:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user by ID (admin only)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+    delete:
+      operationId: deleteUser
+      tags: [users]
+      summary: Delete user (admin only)
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  # ── Templates ──────────────────────────────
+  /templates:
+    get:
+      operationId: listTemplates
+      tags: [templates]
+      summary: List templates in organization
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TemplateResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createTemplate
+      tags: [templates]
+      summary: Create a new template (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateCreateRequest'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  /templates/{template_id}:
+    parameters:
+      - name: template_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getTemplate
+      tags: [templates]
+      summary: Get template by ID
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateTemplate
+      tags: [templates]
+      summary: Update template (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateUpdateRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+    delete:
+      operationId: deleteTemplate
+      tags: [templates]
+      summary: Delete template (admin only)
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  # ── Reports ────────────────────────────────
+  /reports:
+    get:
+      operationId: listReports
+      tags: [reports]
+      summary: List reports (submitter sees own; approver/admin sees all in org)
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: work_date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: work_date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ReportStatus'
+        - name: tags
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: project_code
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [work_date_desc, work_date_asc, submitted_at_desc]
+            default: work_date_desc
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportSummary'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: createReport
+      tags: [reports]
+      summary: Create a draft report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreateRequest'
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  /reports/{report_id}:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Get report by ID (with attachments)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateReport
+      tags: [reports]
+      summary: Update a draft or rejected report (submitter only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportUpdateRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+    delete:
+      operationId: deleteReport
+      tags: [reports]
+      summary: Delete a draft report (submitter only)
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+
+  /reports/{report_id}/submit:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: submitReport
+      tags: [reports]
+      summary: Submit a draft report for approval
+      responses:
+        "200":
+          description: OK — report is now in submitted state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+
+  /reports/{report_id}/approve:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: approveReport
+      tags: [reports]
+      summary: Approve a submitted report (approver / admin only)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveRequest'
+      responses:
+        "200":
+          description: OK — report is now approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+
+  /reports/{report_id}/reject:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: rejectReport
+      tags: [reports]
+      summary: Reject a submitted report (approver / admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectRequest'
+      responses:
+        "200":
+          description: OK — report returns to draft state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  # ── Attachments ────────────────────────────
+  /reports/{report_id}/attachments:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      operationId: uploadAttachment
+      tags: [attachments]
+      summary: Upload a file attachment to a report (draft or rejected state only)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentSummary'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  /reports/{report_id}/attachments/{attachment_id}:
+    parameters:
+      - name: report_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attachment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: downloadAttachment
+      tags: [attachments]
+      summary: Download attachment file (authenticated)
+      responses:
+        "200":
+          description: File content
+          content:
+            image/jpeg: {}
+            image/png: {}
+            application/pdf: {}
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteAttachment
+      tags: [attachments]
+      summary: Delete attachment (submitter; draft or rejected state only)
+      responses:
+        "204":
+          description: No Content
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          $ref: '#/components/responses/Conflict'
+
+  # ── Export ─────────────────────────────────
+  /export/csv:
+    get:
+      operationId: exportCsv
+      tags: [export]
+      summary: Export reports as CSV (admin only)
+      parameters:
+        - name: work_date_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: work_date_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: project_code
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ReportStatus'
+            default: [approved]
+      responses:
+        "200":
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+        "422":
+          $ref: '#/components/responses/ValidationFailed'
+
+  # ── Audit ──────────────────────────────────
+  /audit-events:
+    get:
+      operationId: listAuditEvents
+      tags: [audit]
+      summary: List audit events (admin only)
+      parameters:
+        - name: entity_type
+          in: query
+          schema:
+            type: string
+        - name: entity_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: actor_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: event_name
+          in: query
+          schema:
+            type: string
+        - name: occurred_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: occurred_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditEventResponse'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        "403":
+          $ref: '#/components/responses/Forbidden'

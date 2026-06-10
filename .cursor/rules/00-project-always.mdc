@@ -1,0 +1,11 @@
+# Project Rules
+
+- Canonical docs: `README.md`, `AGENTS.md`, `docs/explanation/scope-contract.md`, `docs/workflow.md`.
+- **NeNe Field = daily report platform only** (ADR 0002). No payroll, no invoice issuance, no document archiving.
+- **Terms registry is binding:** `docs/terms.md` — look up every identifier before writing it. Typos block merge.
+- Issue-driven workflow; English repository docs (ADR 0006); no secrets in git.
+- Naming violations block merge. Check `docs/terms.md §9` banned-spellings list.
+- Follow NENE2 conventions: `docs/development/nene2-compliance.md`.
+- Namespace: `NeneField\`; money: integer cents; mobile-first UI.
+- **Fixed local ports ("87 lane"): API 8700 · Frontend 5187 · MySQL 3387 · phpMyAdmin 8701.**
+  Never reuse sibling ports. See README "Local port allocation".
