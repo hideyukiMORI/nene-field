@@ -14,6 +14,14 @@ conflicts with UX, marketing appeal, performance, or implementation convenience,
 > positioned relative to Japanese law. It is not legal advice, and the product is
 > not a substitute for advice from a licensed professional.**
 
+> **Jurisdiction scope — this is the "Japan pack" (ADR 0012).** Every rule here is
+> scoped to **Japanese law** and to the **Japan edition** of NeNe Field. The core
+> product is jurisdiction-neutral; this legal positioning is a separable Japan
+> layer. It does **not** transfer to other jurisdictions: an international edition
+> needs its **own** per-jurisdiction positioning (e.g. GDPR/CCPA, local labor law)
+> in a separate document. Do not weaken or generalize these Japan rules to "cover"
+> another country — scope a new pack instead.
+
 See also: [`scope-contract.md`](./scope-contract.md),
 [ADR 0008](../adr/0008-non-statutory-record-positioning.md),
 [ADR 0009](../adr/0009-personal-data-and-cross-border-ai.md),
