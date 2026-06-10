@@ -108,9 +108,10 @@ Immutable record of every significant mutation.
 | `entity_id` | UUID | Affected entity |
 | `event_name` | string | See `docs/terms.md §8` |
 | `actor_id` | UUID | User who performed the action |
-| `before` | JSON / null | Entity state before mutation |
-| `after` | JSON / null | Entity state after mutation |
-| `occurred_at` | datetime | Event timestamp |
+| `before` | JSON / null | Sanitized entity state before mutation (null for create); secrets never included |
+| `after` | JSON / null | Sanitized entity state after mutation (null for delete); secrets never included |
+| `request_id` | string / null | Correlation id tying the event to application logs |
+| `occurred_at` | datetime | Event timestamp (UTC) |
 
 ---
 

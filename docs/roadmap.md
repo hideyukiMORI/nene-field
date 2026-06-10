@@ -10,7 +10,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 ## Phase 0: Governance and Foundation
 
-- [ ] Governance docs, ADR 0001–0013
+- [ ] Governance docs, ADR 0001–0014
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] International-readiness stance (jurisdiction-neutral core, `en` first-class) — ADR 0012
@@ -22,7 +22,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 ## Phase 1: Core Report API
 
 - [ ] Multi-tenant resolution + isolation (ADR 0013 / `multi-tenancy.md`) + JWT + RBAC (submitter / approver / admin)
-- [ ] Audit logging — before/after on all mutations
+- [ ] Audit logging — sanitized before/after on all mutations, same transaction (ADR 0014 / `audit-logging.md`)
 - [ ] Organization + User management endpoints
 - [ ] Report template management endpoints
 - [ ] Report CRUD (submit, edit draft, delete draft)

@@ -15,6 +15,7 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 | Coding (index) | `docs/development/coding-standards.md` |
 | Backend standards (binding) | `docs/development/backend-standards.md` |
 | Multi-tenancy (binding) | `docs/development/multi-tenancy.md` |
+| Audit logging (binding) | `docs/development/audit-logging.md` |
 | Frontend standards (binding) | `docs/development/frontend-standards.md` |
 | NENE2 compliance (binding) | `docs/development/nene2-compliance.md` |
 | Current tasks | `docs/todo/current.md` |
