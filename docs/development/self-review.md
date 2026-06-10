@@ -32,6 +32,14 @@ Run the relevant checklist before creating a PR.
 - [ ] No fetch calls outside `src/shared/api/client.ts`
 - [ ] `npm run check` is green
 
+## Terminology (binding — `docs/terms.md` is the single source of truth)
+
+- [ ] Every identifier matches `docs/terms.md` **exactly** — no typo, casing, abbreviation, or en-GB/en-US variant (`terms.md §11`)
+- [ ] No banned spelling used (`terms.md §9`)
+- [ ] Any new or renamed identifier was added to `docs/terms.md` in **this** PR
+- [ ] No shipped `operationId` / identifier silently renamed
+- [ ] No term redefined outside `docs/terms.md` (other docs only reference it)
+
 ## Documentation
 
 - [ ] New identifiers added to `docs/terms.md`

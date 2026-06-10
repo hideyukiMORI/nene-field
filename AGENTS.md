@@ -17,7 +17,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 
 ## Read First
 
-- **Canonical terms — single source of truth (binding):** `docs/terms.md` ← **START HERE for any identifier**
+- **Canonical terms & 用語一覧 — the single source of truth (binding):** `docs/terms.md` ← **START HERE for any identifier or term.** Exact match only; typos block merge (`terms.md §11`).
 - **Scope contract (binding):** `docs/explanation/scope-contract.md`
 - **Legal & compliance positioning (binding):** `docs/explanation/legal-compliance.md` ← what the product is **NOT**
 - **Product vision:** `docs/explanation/product-vision.md`
@@ -25,7 +25,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - **Feature list:** `docs/explanation/features.md`
 - **Page list:** `docs/explanation/pages.md`
 - **Domain model:** `docs/explanation/domain-model.md`
-- **Glossary:** `docs/explanation/glossary.md`
+- **Glossary / 用語一覧:** consolidated into `docs/terms.md §10` (glossary.md is now a pointer)
 - **Scope boundary:** `docs/explanation/scope-boundary.md`
 - **Naming rules (binding):** `docs/development/naming-conventions.md`
 - **Backend standards (binding):** `docs/development/backend-standards.md`

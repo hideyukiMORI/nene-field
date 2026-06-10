@@ -13,7 +13,7 @@
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] NENE2-compliant coding standards (binding) — `docs/development/backend-standards.md`, `frontend-standards.md`
-- [ ] `docs/terms.md` canonical identifier registry
+- [ ] `docs/terms.md` — single-source terminology (identifier registry + 用語一覧 §10)
 - [ ] Feature list (`docs/explanation/features.md`)
 - [ ] Page list (`docs/explanation/pages.md`)
 - [ ] OpenAPI skeleton (`docs/openapi/openapi.yaml`)

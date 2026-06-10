@@ -14,7 +14,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] NENE2-compliant coding standards (binding) — backend + frontend + naming + review checklists
-- [ ] `docs/terms.md` canonical identifier registry
+- [ ] `docs/terms.md` — single-source terminology (identifier registry + 用語一覧 §10)
 - [ ] Feature list, page list, OpenAPI skeleton
 - [ ] NENE2 scaffold + `GET /health`
 
