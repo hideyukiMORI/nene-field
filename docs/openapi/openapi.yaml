@@ -13,7 +13,7 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: http://localhost:8700
+  - url: http://localhost:9000
     description: Local development
 
 tags:

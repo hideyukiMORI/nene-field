@@ -55,27 +55,39 @@ docker compose up
 ## Local port allocation (binding)
 
 NeNe Field runs alongside sibling products on the same developer machine.
-Its host-published ports are **fixed in the "87 lane"** to avoid collisions:
+Its host-published ports are **fixed in the "90 lane"** to avoid collisions:
 
 | Service | Host port | Env var |
 | --- | --- | --- |
-| PHP backend (Apache) | **8700** | `NENE_FIELD_PORT` |
-| Vite dev server | **5187** | `NENE_FIELD_FRONTEND_PORT` |
-| MySQL | **3387** | `NENE_FIELD_MYSQL_PORT` |
-| phpMyAdmin | **8701** | `NENE_FIELD_PHPMYADMIN_PORT` |
+| PHP backend (Apache) | **9000** | `NENE_FIELD_PORT` |
+| Vite dev server | **5190** | `NENE_FIELD_FRONTEND_PORT` |
+| MySQL | **3309** | `NENE_FIELD_MYSQL_PORT` |
+| phpMyAdmin | **9001** | `NENE_FIELD_PHPMYADMIN_PORT` |
+
+> The previous `87xx` HTTP lane and frontend port `5187` were vacated — they belong
+> to **NeNe Concierge** (`87xx`) and **NeNe Deal** (`5187`) respectively. MySQL moved
+> from `3387` to `3309` to keep the whole allocation on the unique `90xx` lane and off
+> any sibling's reserved `33xx` port.
 
 ### Portfolio-wide port registry
 
-| App | HTTP | Frontend | DB |
-| --- | --- | --- | --- |
-| NENE2 | 8200 | — | 3316 |
-| NeNe Clear | 8384 | 5383 | 3383 |
-| NeNe Profile | 8490 | 5185 (planned) | 3409 |
-| NeNe Invoice | 8510 | 5185 | 3585 |
-| NeNe Vault | 8600 | 5186 | 3386 |
-| **NeNe Field** | **8700** | **5187** | **3387** |
-| NeNe Suite | 8800 | 5188 | 3389 |
-| NeNe Records | 18082 | 18084 | 13308 |
+Authoritative reservation map for the NeNe portfolio. **Never reuse another app's
+lane or reserved ports.** `xx` denotes the whole HTTP lane (e.g. `90xx` = 9000–9099).
+
+| App | HTTP lane | Frontend (Vite) | MySQL | Other reserved |
+| --- | --- | --- | --- | --- |
+| NeNe Serve | 80xx | 5180 | 3380 | 1080, 3308, 6107 |
+| NeNe Deal | 81xx | 5187 | 3310 | 6106 |
+| NENE2 | 82xx | — | 3316 | — |
+| NeNe Clear | 83xx | 5173 | — | — |
+| NeNe Profile | 84xx | — | 3409 | — |
+| NeNe Invoice | 85xx | 5185 | — | — |
+| NeNe Vault | 86xx | 5186 | — | — |
+| NeNe Concierge | 87xx | — | 3790 | — |
+| NeNe Suite | 88xx | 5188 | 3390 | — |
+| NeNe Coropus | 89xx | 5271 | 3389 | — |
+| **NeNe Field** (this) | **90xx** | **5190** | **3309** | — |
+| NeNe Records | 180xx | — | — | — |
 
 ## NeNe ecosystem
 
