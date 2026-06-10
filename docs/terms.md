@@ -98,10 +98,14 @@ Forbidden: `orgId`, `reportId`, `userId`, camelCase in JSON
 | `templates` | `/templates` | ReportTemplate collection |
 | `attachments` | `/reports/{report_id}/attachments` | Nested under report |
 | `users` | `/users` | User collection |
-| `audit-events` | `/audit-events` | Audit log |
-| `export` | `/export/csv` | Data export |
+| `organizations` | `/organizations`, `/organizations/{organization_id}` | Organization (superadmin provisioning + admin settings) |
+| `audit-events` | `/audit-events`, `/audit-events/export` | Audit log + CSV export |
+| `export` | `/export/csv` | Report data export |
 | `health` | `/health` | Health check |
-| `auth` | `/auth/login`, `/auth/logout`, `/auth/me` | Authentication |
+| `auth` | `/auth/login`, `/auth/logout`, `/auth/me`, `/auth/change-password` | Authentication |
+
+Report lifecycle / AI sub-actions are `POST`/`DELETE` on the report:
+`/reports/{report_id}/submit`, `/approve`, `/reject`, `/summary`.
 
 ---
 
@@ -117,6 +121,7 @@ Forbidden: `orgId`, `reportId`, `userId`, camelCase in JSON
 | `forbidden` | 403 | Authenticated but not authorized for this action |
 | `report-not-in-submitted-state` | 409 | Approve / reject on wrong lifecycle state |
 | `report-not-editable` | 409 | Edit attempted on non-draft report |
+| `payload-too-large` | 413 | Attachment exceeds size (5 MB) or per-report file count (5) |
 | `org-not-resolved` | 404 | Tenant could not be resolved from the request (ADR 0013) |
 | `org-not-found` | 404 | No organization for the resolved slug / custom domain |
 | `org-inactive` | 403 | Resolved organization is inactive |
