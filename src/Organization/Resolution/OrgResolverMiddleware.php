@@ -24,11 +24,16 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final readonly class OrgResolverMiddleware implements MiddlewareInterface
 {
-    /** @var list<string> */
+    /**
+     * Paths that skip org resolution. `/auth/login` is intentionally NOT here:
+     * login is tenant-scoped, so the org is resolved from the request first.
+     * Superadmin org provisioning (`/organizations`, `/superadmin/`) is cross-tenant.
+     *
+     * @var list<string>
+     */
     private const BYPASS_PREFIXES = [
         '/health',
         '/machine/health',
-        '/auth/',
         '/organizations',
         '/superadmin/',
     ];
