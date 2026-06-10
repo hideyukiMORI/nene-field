@@ -12,7 +12,10 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 | Agent entry | `AGENTS.md` |
 | Workflow | `docs/workflow.md` |
 | Commits | `docs/development/commit-conventions.md` |
-| Coding | `docs/development/coding-standards.md` |
+| Coding (index) | `docs/development/coding-standards.md` |
+| Backend standards (binding) | `docs/development/backend-standards.md` |
+| Frontend standards (binding) | `docs/development/frontend-standards.md` |
+| NENE2 compliance (binding) | `docs/development/nene2-compliance.md` |
 | Current tasks | `docs/todo/current.md` |
 | Roadmap | `docs/roadmap.md` |
 | Canonical terms | `docs/terms.md` |
@@ -24,7 +27,8 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 - **Commits**: Conventional Commits; type/scope English, description/body Japanese, include `(#issue)`.
 - **PR**: purpose, changes, verification, checklist name, `Closes #n`.
 - **Secrets**: never commit `.env`, tokens, or credentials.
-- **Framework**: NENE2 via Composer — read `vendor/hideyukimori/nene2/docs/` for runtime patterns.
+- **Framework**: NENE2 via Composer — read `vendor/hideyukimori/nene2/docs/` for runtime patterns. NENE2 is the authoritative coding baseline; deviate only via a local ADR.
+- **Coding rules (binding)**: backend layering/placement/shared-objects in `docs/development/backend-standards.md`; frontend FSD in `docs/development/frontend-standards.md`. Run `docs/review/backend.md` / `docs/review/frontend.md`. Placement/dependency/naming violations block merge.
 - **Terms**: every identifier must match `docs/terms.md` exactly. Check before writing any name.
 - **Legal positioning (binding)**: NeNe Field is **not** a statutory record (出勤簿/賃金台帳/法定帳簿/電帳法/施工体制台帳). No overclaim. Run `docs/review/legal-compliance.md` for any change to report fields, audit, AI, retention, export, or user-facing copy.
 

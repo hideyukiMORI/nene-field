@@ -13,6 +13,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 - [ ] Governance docs, ADR 0001–0011
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
+- [ ] NENE2-compliant coding standards (binding) — backend + frontend + naming + review checklists
 - [ ] `docs/terms.md` canonical identifier registry
 - [ ] Feature list, page list, OpenAPI skeleton
 - [ ] NENE2 scaffold + `GET /health`

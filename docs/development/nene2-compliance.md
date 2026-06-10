@@ -21,16 +21,27 @@ PdoXxxRepository (infrastructure)
 
 ## Reuse framework objects (do not reinvent)
 
+Exact symbols (verify against `vendor/hideyukimori/nene2/`):
+
 | Need | Use from NENE2 |
 | --- | --- |
-| JSON response | `JsonResponseFactory` |
-| HTTP routing | `Router` |
-| Pagination | `PaginationQuery` |
-| Auth middleware | `BearerTokenMiddleware` |
-| DB queries | `DatabaseQueryExecutorInterface` |
-| Validation errors | `ValidationError` / `ValidationException` |
-| Problem Details | `ProblemDetailsResponseFactory` |
-| Audit | Pattern from NENE2 audit guide |
+| JSON response | `Nene2\Http\JsonResponseFactory` |
+| Parse JSON body | `Nene2\Http\JsonRequestBodyParser` |
+| HTTP routing / path params | `Nene2\Routing\Router` (params via `Router::PARAMETERS_ATTRIBUTE`) |
+| Pagination | `Nene2\Http\PaginationQueryParser` + `Nene2\Http\PaginationResponse` |
+| Auth middleware | `Nene2\Auth\BearerTokenMiddleware` (+ `TokenIssuerInterface`) |
+| DB queries | `Nene2\Database\DatabaseQueryExecutorInterface` |
+| Transactions | `Nene2\Database\DatabaseTransactionManagerInterface` |
+| DB constraint errors | `Nene2\Database\DatabaseConstraintException` |
+| Validation errors | `Nene2\Validation\ValidationError` / `ValidationException` |
+| Problem Details | `Nene2\Error\ProblemDetailsResponseFactory` |
+| Domain exception mapping | `Nene2\Error\DomainExceptionHandlerInterface` |
+| Time ("now") | `Nene2\Http\ClockInterface` (`UtcClock`) |
+| Per-request context | `Nene2\Http\RequestScopedHolder` |
+| Typed config | `Nene2\Config\AppConfig` |
+| DI registration | `Nene2\DependencyInjection\ContainerBuilder` + `ServiceProviderInterface` |
+
+Detailed rules: [`backend-standards.md`](./backend-standards.md).
 
 ## Multi-tenancy rule
 

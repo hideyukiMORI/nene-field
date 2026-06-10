@@ -39,6 +39,8 @@ shared hosting or Docker.
 | **API list** | [`docs/openapi/openapi.yaml`](./docs/openapi/openapi.yaml) |
 | **Domain model** | [`docs/explanation/domain-model.md`](./docs/explanation/domain-model.md) |
 | **Requirements** | [`docs/explanation/requirements.md`](./docs/explanation/requirements.md) |
+| **Backend standards (binding)** | [`docs/development/backend-standards.md`](./docs/development/backend-standards.md) |
+| **Frontend standards (binding)** | [`docs/development/frontend-standards.md`](./docs/development/frontend-standards.md) |
 | **Sibling integration** | [`docs/integrations/sibling-products.md`](./docs/integrations/sibling-products.md) |
 | **Agents** | [`AGENTS.md`](./AGENTS.md) |
 | **Roadmap** | [`docs/roadmap.md`](./docs/roadmap.md) |
