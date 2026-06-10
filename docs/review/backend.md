@@ -21,7 +21,7 @@ Do not delete items to pass; mark `N/A` only when genuinely not applicable.
 - [ ] **Tenant isolation tested:** a row created under org A is invisible/unmodifiable (404/403) when the resolved org is B; repository fakes are org-scoped; resolution failures map to `org-not-resolved`/`org-not-found`/`org-inactive`.
 - [ ] New tenanted table has `organization_id NOT NULL` + index; per-tenant (not global) uniqueness for fields like `users.email`.
 - [ ] RBAC enforced in use case / capability middleware; passwords bcrypt cost ≥ 12.
-- [ ] **Audit:** every mutation writes an `AuditEvent` (before/after) in the **same transaction**; event name from `terms.md §8`; approved report immutable; audit not hard-deleted.
+- [ ] **Audit (ADR 0014 / `audit-logging.md`):** every mutation writes an `AuditEvent` in the **same transaction**, recorded in the UseCase via `AuditRecorder` with `actor_id`; before/after are **sanitized snapshots** (no secrets/tokens/raw bytes); meaningful state verb used (`report.submitted` not generic `*.updated`); `event_name` registered in `terms.md §8`; audit append-only (no update/hard-delete); viewer admin/superadmin-only.
 - [ ] Instants stored UTC via `ClockInterface`, displayed JST; no ad-hoc `new DateTimeImmutable()`.
 - [ ] Schema: Phinx migration + `database/schema/{table}.sql` snapshot; snake_case plural tables; both SQLite and MySQL supported (no engine-specific SQL without ADR).
 - [ ] SQL only in `Pdo*Repository`; rows cast to typed PHP; multi-statement writes use `DatabaseTransactionManagerInterface`.

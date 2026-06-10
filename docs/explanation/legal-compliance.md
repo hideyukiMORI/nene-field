@@ -180,9 +180,15 @@ free-text that may describe third parties. The product **MUST** comply with APPI
 - **Approved reports are immutable** (requirements NF12). A `submitted` report
   cannot be edited; it must be rejected back to `draft` first (domain-model
   lifecycle).
-- **Every significant mutation writes an `AuditEvent`** with before/after state, in
-  the **same DB transaction** as the mutation (NF10). Audit events are an immutable
-  log; the product MUST NOT hard-delete or silently rewrite them.
+- **Every significant mutation writes an `AuditEvent`** with sanitized before/after
+  state, in the **same DB transaction** as the mutation (NF10), recorded in the
+  UseCase (ADR 0014 / `development/audit-logging.md`). Audit events are an immutable
+  log; the product MUST NOT hard-delete or silently rewrite them. **Audit store ≠
+  debug logs:** the audit store legitimately holds before/after business state
+  (which may include PII such as report `body`) because it is access-controlled
+  (admin/superadmin), tenant-scoped, immutable, and retained; the §4 rule against
+  logging report bodies/tokens applies to *application/debug logs*. Secrets, tokens,
+  and raw bytes are excluded from the audit store too.
 - **Attachments are SHA-256 verified** (NF11), giving file-integrity evidence.
 - **Tamper-evident, NOT certified timestamp.** The audit trail lets an operator
   detect alteration. It is **not** a 認定タイムスタンプ / 時刻認証業務 and the

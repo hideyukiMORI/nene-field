@@ -82,6 +82,7 @@ Forbidden: `Controller`, `Service`, `Manager`, `Repo`
 | `rejected_at` | ISO 8601 | Rejection timestamp |
 | `created_at` | ISO 8601 | Row creation timestamp |
 | `updated_at` | ISO 8601 | Row last-update timestamp |
+| `request_id` | string | Correlation id (audit ↔ application logs) |
 | `ai_summary` | string / null | One-line AI-generated summary |
 | `ai_tags` | string[] / null | AI-extracted keyword tags |
 
@@ -137,6 +138,16 @@ Forbidden: `orgId`, `reportId`, `userId`, camelCase in JSON
 | `user.created` | User | User account created |
 | `user.updated` | User | User account updated |
 | `user.deleted` | User | User account deleted |
+| `template.created` | ReportTemplate | Template created |
+| `template.updated` | ReportTemplate | Template updated |
+| `template.deleted` | ReportTemplate | Template deleted |
+| `organization.updated` | Organization | Org settings changed (incl. AI / notification) |
+| `report.exported` | Report | CSV export performed (records filters, not rows) |
+| `auth.login_succeeded` | User | Successful login |
+| `auth.login_failed` | User | Failed login attempt |
+
+Recording mechanism, before/after sanitization, and same-transaction rule:
+[`development/audit-logging.md`](./development/audit-logging.md) (ADR 0014).
 
 ---
 

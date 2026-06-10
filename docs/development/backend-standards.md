@@ -206,9 +206,13 @@ Full architecture: [`multi-tenancy.md`](./multi-tenancy.md) (ADR 0013). In short
 
 ## 8. Audit, integrity & time (binding)
 
-- **Every significant mutation writes an `AuditEvent`** (before/after) **in the
-  same DB transaction** as the mutation (NF10). Audit events are immutable — no
-  hard delete, no silent rewrite. Event names come from `docs/terms.md §8`.
+Full architecture: [`audit-logging.md`](./audit-logging.md) (ADR 0014).
+
+- **Every significant mutation writes an `AuditEvent`** (sanitized before/after) **in
+  the same DB transaction** as the mutation (NF10), recorded in the **UseCase via an
+  `AuditRecorder`** (handler passes `actor_id`). Audit events are immutable — no hard
+  delete, no silent rewrite. Event names come from `docs/terms.md §8`; secrets/tokens/
+  raw bytes are never written to before/after.
 - An **approved report is immutable** (NF12); a `submitted` report cannot be
   edited (reject back to `draft` first).
 - Attachments are **SHA-256 verified** on download (NF11).
