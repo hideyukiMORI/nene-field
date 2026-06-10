@@ -10,9 +10,10 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 ## Phase 0: Governance and Foundation
 
-- [ ] Governance docs, ADR 0001–0011
+- [ ] Governance docs, ADR 0001–0012
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
+- [ ] International-readiness stance (jurisdiction-neutral core, `en` first-class) — ADR 0012
 - [ ] NENE2-compliant coding standards (binding) — backend + frontend + naming + review checklists
 - [ ] `docs/terms.md` — single-source terminology (identifier registry + 用語一覧 §10)
 - [ ] Feature list, page list, OpenAPI skeleton
@@ -61,6 +62,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 - Invoice issuance or PDF generation
 - Received-document archiving (that is `nene-vault`)
 - E-sign or legal contract management
+- Full multilingual / multi-jurisdiction support (GDPR, local labor law, multi-currency, RTL) — **deferred until overseas demand is validated**; the door is kept open cheaply via ADR 0012 (jurisdiction-neutral core + `en` first-class), not invested in here.
 
 See [`docs/explanation/scope-boundary.md`](./explanation/scope-boundary.md).
 

@@ -47,5 +47,6 @@ adopted the same convention for its statutory issue date.
 - PR: `#000`
 - Binding doc: `docs/explanation/legal-compliance.md` §5
 - Related: ADR 0003 (dual-tier deployment), ADR 0008 (non-statutory positioning); mirrors `nene-invoice` ADR 0010
+- Refined by: ADR 0012 (display generalized to locale-aware; JST is the Japan-edition default)
 - Supersedes: none
 - Superseded by: none

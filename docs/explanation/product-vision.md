@@ -55,6 +55,16 @@ Wants structured records without paying for a large SaaS platform.
 building a custom field operations stack and needing a lightweight, self-hosted
 report + approval backend.
 
+## International readiness (door open, not invested) — ADR 0012
+
+The current target market is **Japan SMB**. But unlike the sibling products
+(whose domains encode Japanese statutes), NeNe Field's **core workflow —
+submit → approve → export — is jurisdiction-neutral**. We therefore keep the door
+open *cheaply*: `en` is a first-class locale, display is locale-aware, and
+Japan-specific concerns (`legal-compliance.md`, Japanese integrations) are a
+separable "Japan pack". We do **not** invest in full multilingual / multi-jurisdiction
+support until overseas demand is validated. See [ADR 0012](../adr/0012-international-readiness.md).
+
 ## Primary personas
 
 **Persona A — Field worker**

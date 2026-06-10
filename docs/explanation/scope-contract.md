@@ -106,5 +106,6 @@ copy MUST run the [legal self-review](../review/legal-compliance.md).
 - ADR 0009: Personal data & cross-border AI transmission
 - ADR 0010: Record retention — no auto-purge
 - ADR 0011: UTC storage / JST display
-- `docs/explanation/legal-compliance.md` (binding)
+- ADR 0012: International readiness (jurisdiction-neutral core, `en` first-class)
+- `docs/explanation/legal-compliance.md` (binding; the Japan pack — ADR 0012)
 - `docs/explanation/scope-boundary.md`
