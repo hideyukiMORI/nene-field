@@ -184,12 +184,18 @@ use cases (rules must hold for CLI/tests/MCP too).
 
 ## 7. Multi-tenancy & security (binding)
 
-- Tenant isolation is non-negotiable. Every tenanted handler:
-  1. extracts `organization_id` from the JWT,
-  2. passes it to the use case,
-  3. the use case passes it to the repository,
-  4. **every** tenanted SQL statement includes `organization_id` in the `WHERE`
-     clause (NF6). Only `superadmin` may operate cross-tenant.
+Full architecture: [`multi-tenancy.md`](./multi-tenancy.md) (ADR 0013). In short:
+
+- Tenant isolation is non-negotiable. The current org is **resolved from the
+  request** (`OrgResolverMiddleware` + a resolution strategy) and stored in
+  `Nene2\Http\RequestScopedHolder<int>` — **never taken from client input**.
+- **Every** tenanted `Pdo*Repository` includes `organization_id = ?` (from
+  `$orgId->get()`) in **every** statement — SELECT/INSERT/UPDATE/DELETE/exists (NF6).
+- **Org ↔ JWT consistency:** the authenticated user's `organization_id` MUST equal
+  the resolved org id, else `403 forbidden`. Only `superadmin` crosses tenants, on
+  bypass routes (`/health`, `/auth/`, `/organizations`, `/superadmin/`).
+- Per-tenant (not global) uniqueness for fields like `users.email`
+  (`uniq_users_email_org`). Tenant-isolation tests are mandatory.
 - Role/RBAC (`submitter` / `approver` / `admin` / `superadmin`) is enforced in the
   use case / capability middleware — never in the browser only.
 - Passwords: bcrypt cost ≥ 12 (NF9). Attachment storage paths never in API

@@ -51,5 +51,6 @@ Team-scoped approval (approver sees only their team's reports) is deferred to Ph
 ## Related
 
 - Issue: `#1`
+- Refined by: ADR 0013 (tenant resolution & isolation) + `docs/development/multi-tenancy.md`
 - See also: `docs/terms.md §2–3`
 - See also: NENE2 `docs/adr/0008-jwt-authentication.md`

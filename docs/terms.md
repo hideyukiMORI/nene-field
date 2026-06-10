@@ -70,7 +70,10 @@ Forbidden: `Controller`, `Service`, `Manager`, `Repo`
 
 | Canonical name | Type | Notes |
 | --- | --- | --- |
-| `organization_id` | UUID / string | Tenant scope key — every tenanted table |
+| `organization_id` | UUID / string | Tenant scope key — every tenanted table (NOT NULL + index) |
+| `slug` | string | Organization tenant-resolution key (unique) |
+| `custom_domain` | string / null | Organization vanity domain (unique) |
+| `is_active` | boolean | Organization active flag |
 | `report_id` | UUID | Primary key of Report |
 | `user_id` | UUID | Primary key of User |
 | `template_id` | UUID | Primary key of ReportTemplate |
@@ -113,6 +116,9 @@ Forbidden: `orgId`, `reportId`, `userId`, camelCase in JSON
 | `forbidden` | 403 | Authenticated but not authorized for this action |
 | `report-not-in-submitted-state` | 409 | Approve / reject on wrong lifecycle state |
 | `report-not-editable` | 409 | Edit attempted on non-draft report |
+| `org-not-resolved` | 404 | Tenant could not be resolved from the request (ADR 0013) |
+| `org-not-found` | 404 | No organization for the resolved slug / custom domain |
+| `org-inactive` | 403 | Resolved organization is inactive |
 
 ---
 

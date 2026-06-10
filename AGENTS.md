@@ -29,6 +29,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - **Scope boundary:** `docs/explanation/scope-boundary.md`
 - **Naming rules (binding):** `docs/development/naming-conventions.md`
 - **Backend standards (binding):** `docs/development/backend-standards.md`
+- **Multi-tenancy (binding):** `docs/development/multi-tenancy.md` ← tenant isolation is a security premise
 - **Frontend standards (binding):** `docs/development/frontend-standards.md`
 - **Coding standards (index):** `docs/development/coding-standards.md`
 - **NENE2 compliance (binding):** `docs/development/nene2-compliance.md`
