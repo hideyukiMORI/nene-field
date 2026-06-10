@@ -35,6 +35,20 @@ final readonly class ReportServiceProvider implements ServiceProviderInterface
                 static fn (ContainerInterface $c): GetReportUseCaseInterface => new GetReportUseCase(self::reports($c)),
             )
             ->set(
+                ListReportsUseCaseInterface::class,
+                static fn (ContainerInterface $c): ListReportsUseCaseInterface => new ListReportsUseCase(self::reports($c)),
+            )
+            ->set(
+                ApproveReportUseCaseInterface::class,
+                static fn (ContainerInterface $c): ApproveReportUseCaseInterface
+                    => new ApproveReportUseCase(self::reports($c), self::tx($c), self::auditFactory($c), self::clock($c)),
+            )
+            ->set(
+                RejectReportUseCaseInterface::class,
+                static fn (ContainerInterface $c): RejectReportUseCaseInterface
+                    => new RejectReportUseCase(self::reports($c), self::tx($c), self::auditFactory($c), self::clock($c)),
+            )
+            ->set(
                 UpdateReportUseCaseInterface::class,
                 static fn (ContainerInterface $c): UpdateReportUseCaseInterface
                     => new UpdateReportUseCase(self::reports($c), self::tx($c), self::auditFactory($c), self::clock($c)),
@@ -110,25 +124,67 @@ final readonly class ReportServiceProvider implements ServiceProviderInterface
                 },
             )
             ->set(
+                ListReportsHandler::class,
+                static function (ContainerInterface $c): ListReportsHandler {
+                    $useCase = $c->get(ListReportsUseCaseInterface::class);
+
+                    if (!$useCase instanceof ListReportsUseCaseInterface) {
+                        throw new LogicException('List reports use case service is invalid.');
+                    }
+
+                    return new ListReportsHandler($useCase, self::json($c), self::problemDetails($c));
+                },
+            )
+            ->set(
+                ApproveReportHandler::class,
+                static function (ContainerInterface $c): ApproveReportHandler {
+                    $useCase = $c->get(ApproveReportUseCaseInterface::class);
+
+                    if (!$useCase instanceof ApproveReportUseCaseInterface) {
+                        throw new LogicException('Approve report use case service is invalid.');
+                    }
+
+                    return new ApproveReportHandler($useCase, self::json($c), self::problemDetails($c));
+                },
+            )
+            ->set(
+                RejectReportHandler::class,
+                static function (ContainerInterface $c): RejectReportHandler {
+                    $useCase = $c->get(RejectReportUseCaseInterface::class);
+
+                    if (!$useCase instanceof RejectReportUseCaseInterface) {
+                        throw new LogicException('Reject report use case service is invalid.');
+                    }
+
+                    return new RejectReportHandler($useCase, self::json($c), self::problemDetails($c));
+                },
+            )
+            ->set(
                 ReportRouteRegistrar::class,
                 static function (ContainerInterface $c): ReportRouteRegistrar {
+                    $list = $c->get(ListReportsHandler::class);
                     $create = $c->get(CreateReportHandler::class);
                     $get = $c->get(GetReportHandler::class);
                     $update = $c->get(UpdateReportHandler::class);
                     $delete = $c->get(DeleteReportHandler::class);
                     $submit = $c->get(SubmitReportHandler::class);
+                    $approve = $c->get(ApproveReportHandler::class);
+                    $reject = $c->get(RejectReportHandler::class);
 
                     if (
-                        !$create instanceof CreateReportHandler
+                        !$list instanceof ListReportsHandler
+                        || !$create instanceof CreateReportHandler
                         || !$get instanceof GetReportHandler
                         || !$update instanceof UpdateReportHandler
                         || !$delete instanceof DeleteReportHandler
                         || !$submit instanceof SubmitReportHandler
+                        || !$approve instanceof ApproveReportHandler
+                        || !$reject instanceof RejectReportHandler
                     ) {
                         throw new LogicException('Report handler services are invalid.');
                     }
 
-                    return new ReportRouteRegistrar($create, $get, $update, $delete, $submit);
+                    return new ReportRouteRegistrar($list, $create, $get, $update, $delete, $submit, $approve, $reject);
                 },
             );
     }

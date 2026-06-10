@@ -27,6 +27,34 @@ final readonly class PdoReportRepository implements ReportRepositoryInterface
         return $row !== null ? self::hydrate($row) : null;
     }
 
+    public function search(string $organizationId, ReportFilter $filter): array
+    {
+        [$where, $params] = self::conditions($organizationId, $filter);
+        $params[] = $filter->limit;
+        $params[] = $filter->offset;
+
+        $rows = $this->query->fetchAll(
+            'SELECT r.report_id, r.user_id, u.name AS user_name, r.title, r.work_date, r.status, r.tags,
+                    r.project_code, r.ai_summary, r.submitted_at, r.created_at
+             FROM reports r
+             LEFT JOIN users u ON u.organization_id = r.organization_id AND u.user_id = r.user_id
+             WHERE ' . $where . '
+             ORDER BY ' . self::orderBy($filter->sort) . '
+             LIMIT ? OFFSET ?',
+            $params,
+        );
+
+        return array_map(static fn (array $row): ReportSummary => self::hydrateSummary($row), $rows);
+    }
+
+    public function count(string $organizationId, ReportFilter $filter): int
+    {
+        [$where, $params] = self::conditions($organizationId, $filter);
+        $row = $this->query->fetchOne('SELECT COUNT(*) AS c FROM reports r WHERE ' . $where, $params);
+
+        return $row !== null ? (int) $row['c'] : 0;
+    }
+
     public function insert(DatabaseQueryExecutorInterface $executor, Report $report): void
     {
         $executor->execute(
@@ -144,6 +172,69 @@ final readonly class PdoReportRepository implements ReportRepositoryInterface
             approverComment: self::nullableString($row['approver_comment']),
             createdAt: self::nullableString($row['created_at']),
             updatedAt: self::nullableString($row['updated_at']),
+        );
+    }
+
+    /**
+     * @return array{0: string, 1: list<mixed>}
+     */
+    private static function conditions(string $organizationId, ReportFilter $filter): array
+    {
+        $where = ['r.organization_id = ?'];
+        $params = [$organizationId];
+
+        if ($filter->userId !== null) {
+            $where[] = 'r.user_id = ?';
+            $params[] = $filter->userId;
+        }
+        if ($filter->workDateFrom !== null) {
+            $where[] = 'r.work_date >= ?';
+            $params[] = $filter->workDateFrom;
+        }
+        if ($filter->workDateTo !== null) {
+            $where[] = 'r.work_date <= ?';
+            $params[] = $filter->workDateTo;
+        }
+        if ($filter->statuses !== []) {
+            $where[] = 'r.status IN (' . implode(', ', array_fill(0, count($filter->statuses), '?')) . ')';
+            foreach ($filter->statuses as $status) {
+                $params[] = $status->value;
+            }
+        }
+        if ($filter->projectCode !== null) {
+            $where[] = 'r.project_code = ?';
+            $params[] = $filter->projectCode;
+        }
+
+        return [implode(' AND ', $where), $params];
+    }
+
+    private static function orderBy(string $sort): string
+    {
+        return match ($sort) {
+            'work_date_asc' => 'r.work_date ASC, r.created_at ASC',
+            'submitted_at_desc' => 'r.submitted_at DESC, r.created_at DESC',
+            default => 'r.work_date DESC, r.created_at DESC',
+        };
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private static function hydrateSummary(array $row): ReportSummary
+    {
+        return new ReportSummary(
+            reportId: (string) $row['report_id'],
+            userId: (string) $row['user_id'],
+            userName: self::nullableString($row['user_name']) ?? '',
+            title: (string) $row['title'],
+            workDate: (string) $row['work_date'],
+            status: ReportStatus::from((string) $row['status']),
+            tags: self::decode($row['tags']),
+            projectCode: self::nullableString($row['project_code']),
+            aiSummary: self::nullableString($row['ai_summary']),
+            submittedAt: self::nullableString($row['submitted_at']),
+            createdAt: self::nullableString($row['created_at']),
         );
     }
 
