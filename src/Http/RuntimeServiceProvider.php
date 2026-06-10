@@ -35,6 +35,8 @@ use NeneField\Organization\Resolution\OrgResolutionStrategyInterface;
 use NeneField\Organization\Resolution\OrgResolverMiddleware;
 use NeneField\Organization\Resolution\PathPrefixResolutionStrategy;
 use NeneField\Organization\Resolution\SubdomainResolutionStrategy;
+use NeneField\Report\ReportRouteRegistrar;
+use NeneField\Report\ReportServiceProvider;
 use NeneField\User\UserServiceProvider;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Container\ContainerInterface;
@@ -65,6 +67,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
         $builder->addProvider(new UserServiceProvider());
         $builder->addProvider(new AuthServiceProvider());
         $builder->addProvider(new AuditServiceProvider());
+        $builder->addProvider(new ReportServiceProvider());
 
         $builder
             ->set(
@@ -183,6 +186,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $bearer = $container->get(BearerTokenMiddleware::class);
                     $orgGuard = $container->get(OrgGuardMiddleware::class);
                     $authRoutes = $container->get(AuthRouteRegistrar::class);
+                    $reportRoutes = $container->get(ReportRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
@@ -190,6 +194,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         || !$bearer instanceof BearerTokenMiddleware
                         || !$orgGuard instanceof OrgGuardMiddleware
                         || !$authRoutes instanceof AuthRouteRegistrar
+                        || !$reportRoutes instanceof ReportRouteRegistrar
                         || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
@@ -199,7 +204,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         responseFactory: $psr17,
                         streamFactory: $psr17,
                         requestIdHolder: $requestIdHolder,
-                        routeRegistrars: [$authRoutes],
+                        routeRegistrars: [$authRoutes, $reportRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
                         debug: $config->debug,
