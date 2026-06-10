@@ -27,8 +27,10 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - **Domain model:** `docs/explanation/domain-model.md`
 - **Glossary:** `docs/explanation/glossary.md`
 - **Scope boundary:** `docs/explanation/scope-boundary.md`
-- **Naming rules:** `docs/development/naming-conventions.md`
-- **Coding standards:** `docs/development/coding-standards.md`
+- **Naming rules (binding):** `docs/development/naming-conventions.md`
+- **Backend standards (binding):** `docs/development/backend-standards.md`
+- **Frontend standards (binding):** `docs/development/frontend-standards.md`
+- **Coding standards (index):** `docs/development/coding-standards.md`
 - **NENE2 compliance (binding):** `docs/development/nene2-compliance.md`
 - **Sibling integration:** `docs/integrations/sibling-products.md`
 - **NENE2 inheritance map:** `docs/inheritance-from-nene2.md`

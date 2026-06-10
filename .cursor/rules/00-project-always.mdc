@@ -6,7 +6,8 @@
 - **Terms registry is binding:** `docs/terms.md` — look up every identifier before writing it. Typos block merge.
 - Issue-driven workflow; English repository docs (ADR 0006); no secrets in git.
 - Naming violations block merge. Check `docs/terms.md §9` banned-spellings list.
-- Follow NENE2 conventions: `docs/development/nene2-compliance.md`.
+- Follow NENE2 conventions: `docs/development/nene2-compliance.md`. NENE2 (`vendor/hideyukimori/nene2/docs/`) is the authoritative coding baseline; deviate only via a local ADR.
+- **Coding rules are binding**: backend `docs/development/backend-standards.md`, frontend `docs/development/frontend-standards.md`. Domain-grouped folders only (no `Handlers/`/`UseCases/`/`Repositories/`); Handler→UseCase→RepositoryInterface→`Pdo*Repository`; SQL only in repositories; reuse `Nene2\…` shared objects; frontend FSD `app→pages→features→entities→shared`. Run `docs/review/backend.md` / `docs/review/frontend.md`. Placement/dependency/naming violations block merge.
 - Namespace: `NeneField\`; money: integer cents; mobile-first UI.
 - **Fixed local ports ("90 lane"): API 9000 · Frontend 5190 · MySQL 3309 · phpMyAdmin 9001.**
   Never reuse sibling ports. See README "Local port allocation" for the full portfolio registry.
