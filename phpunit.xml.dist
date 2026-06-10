@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+  bootstrap="vendor/autoload.php"
+  colors="true"
+  cacheDirectory=".phpunit.cache"
+  failOnRisky="true"
+  failOnWarning="true"
+>
+  <php>
+    <env name="APP_ENV" value="test" force="true"/>
+    <env name="APP_DEBUG" value="false" force="true"/>
+  </php>
+  <testsuites>
+    <testsuite name="NeneField">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
+</phpunit>

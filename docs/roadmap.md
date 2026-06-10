@@ -17,7 +17,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 - [ ] NENE2-compliant coding standards (binding) — backend + frontend + naming + review checklists
 - [ ] `docs/terms.md` — single-source terminology (identifier registry + 用語一覧 §10)
 - [ ] Feature list, page list, OpenAPI contract (v0.2.0, Phase-1-ready)
-- [ ] NENE2 scaffold + `GET /health`
+- [x] NENE2 scaffold + `GET /health` (#19)
 
 ## Phase 1: Core Report API
 

@@ -16,8 +16,8 @@
 - [ ] `docs/terms.md` — single-source terminology (identifier registry + 用語一覧 §10)
 - [ ] Feature list (`docs/explanation/features.md`)
 - [ ] Page list (`docs/explanation/pages.md`)
-- [ ] OpenAPI skeleton (`docs/openapi/openapi.yaml`)
-- [ ] NENE2 scaffold + `GET /health`
+- [x] OpenAPI contract v0.2.0 (`docs/openapi/openapi.yaml`)
+- [x] NENE2 scaffold + `GET /health` (#19)
 
 ## Upcoming
 
