@@ -23,6 +23,8 @@ use Nene2\Http\RequestScopedHolder;
 use Nene2\Http\ResponseEmitter;
 use Nene2\Http\RuntimeApplicationFactory;
 use Nene2\Http\UtcClock;
+use Nene2\Log\RequestIdHolder;
+use NeneField\AuditEvent\AuditServiceProvider;
 use NeneField\Auth\AuthRouteRegistrar;
 use NeneField\Auth\AuthServiceProvider;
 use NeneField\Auth\OrgGuardMiddleware;
@@ -62,6 +64,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
         $builder->addProvider(new OrganizationServiceProvider());
         $builder->addProvider(new UserServiceProvider());
         $builder->addProvider(new AuthServiceProvider());
+        $builder->addProvider(new AuditServiceProvider());
 
         $builder
             ->set(
@@ -127,6 +130,10 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                 static fn (ContainerInterface $container): RequestScopedHolder => new RequestScopedHolder(),
             )
             ->set(
+                RequestIdHolder::class,
+                static fn (ContainerInterface $container): RequestIdHolder => new RequestIdHolder(),
+            )
+            ->set(
                 DatabaseHealthCheck::class,
                 static fn (ContainerInterface $container): DatabaseHealthCheck
                     => new DatabaseHealthCheck(self::connectionFactory($container)),
@@ -176,12 +183,14 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $bearer = $container->get(BearerTokenMiddleware::class);
                     $orgGuard = $container->get(OrgGuardMiddleware::class);
                     $authRoutes = $container->get(AuthRouteRegistrar::class);
+                    $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
                         !$orgResolver instanceof OrgResolverMiddleware
                         || !$bearer instanceof BearerTokenMiddleware
                         || !$orgGuard instanceof OrgGuardMiddleware
                         || !$authRoutes instanceof AuthRouteRegistrar
+                        || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
                     }
@@ -189,6 +198,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     return new RuntimeApplicationFactory(
                         responseFactory: $psr17,
                         streamFactory: $psr17,
+                        requestIdHolder: $requestIdHolder,
                         routeRegistrars: [$authRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
