@@ -11,5 +11,6 @@
 - Namespace: `NeneField\`; money: integer cents; mobile-first UI.
 - **Multi-tenancy is a binding premise** (`docs/development/multi-tenancy.md`, ADR 0013): org resolved from the request into `RequestScopedHolder` (never client input); every tenanted query carries `organization_id = ?`; JWT org == resolved org (else 403); per-tenant uniqueness. Isolation violations are security defects that block merge.
 - **Audit logging is a binding premise** (`docs/development/audit-logging.md`, ADR 0014): every mutation records an `AuditEvent` (who/what + sanitized before/after) in the **same transaction**, via an `AuditRecorder` in the UseCase; append-only; secrets never logged; `event_name` from `terms.md §8`. A mutation without an in-transaction audit row blocks merge.
+- **i18n is a binding premise** (`docs/development/i18n.md`, ADR 0015): language switching is core. All UI copy via `t('key')` from per-locale catalogs (`messages/ja.ts` master + `en.ts` parity); type-safe keys; runtime switch (no reload) persisted; API errors localized by mapping Problem Details slug → `error.*` catalog (never show raw API text). Hardcoded user-facing strings / key-parity gaps block merge.
 - **Fixed local ports ("90 lane"): API 9000 · Frontend 5190 · MySQL 3309 · phpMyAdmin 9001.**
   Never reuse sibling ports. See README "Local port allocation" for the full portfolio registry.

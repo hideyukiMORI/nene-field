@@ -10,7 +10,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 ## Phase 0: Governance and Foundation
 
-- [ ] Governance docs, ADR 0001–0014
+- [ ] Governance docs, ADR 0001–0015
 - [ ] Product vision, scope contract, domain model
 - [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] International-readiness stance (jurisdiction-neutral core, `en` first-class) — ADR 0012
@@ -33,7 +33,7 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 ## Phase 2: Manager UI + Export
 
-- [ ] Admin UI scaffold — React + Vite + ja locale
+- [ ] Admin UI scaffold — React + Vite + i18n message catalog (ja master + en parity, runtime switch; ADR 0015 / `i18n.md`)
 - [ ] Report list with filters (staff / date / tag / approval status)
 - [ ] Report detail with approval actions
 - [ ] Report submission form (mobile-optimized)

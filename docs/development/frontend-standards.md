@@ -23,7 +23,7 @@ NeNe Field**. Self-review: [`../review/frontend.md`](../review/frontend.md).
 | Topic | Rule |
 | --- | --- |
 | **Mobile-first** | Design at a **375px** baseline first; the submission form must be fully usable on iOS 15+ Safari and Android 10+ Chrome (NF1) and completable in < 3 min (NF4). Desktop is progressive enhancement. |
-| **Locale** | **`ja` + `en` are both first-class, maintained locales** (ADR 0012); `ja` is the Japan-edition default. No third locale without an ADR. No hardcoded user-facing strings — everything goes through the i18n catalog. |
+| **Locale** | **`ja` + `en` are both first-class, maintained locales** (ADR 0012); `ja` is the Japan-edition default. No third locale without an ADR. **No hardcoded user-facing strings — everything goes through the message catalog** (`t('key')`); runtime switch with no reload. Full rules: [`i18n.md`](./i18n.md) (binding, ADR 0015). |
 | **Locale-aware display** | Instants are stored UTC (ADR 0011); **display timezone / date / number formats derive from the active locale** (JST is the Japan-edition default, not hard-coded). Never assume JST in component code. |
 | **JSON shape** | API JSON is **snake_case**; the client maps it to typed models in `entities/{r}/mapper.ts` **without renaming fields in transport**. |
 | **Auth token** | Bearer JWT from the login response. **In-memory session by default** (fail-closed; re-login on reload). `localStorage`/`sessionStorage` or cookie session requires an **ADR** (XSS risk). |
@@ -107,7 +107,7 @@ frontend/src/
   shared/
     api/      client.ts (only place fetch() lives) · errors.ts (Problem Details → AppError) · schema.gen.ts (generated)
     config/   env.ts (Zod-validated once)
-    i18n/     ja + en (both first-class; ja default — ADR 0012)
+    i18n/     locales.ts · translate.ts · messages/ja.ts (master) · messages/en.ts (parity) · i18n-context.tsx · use-translation.ts  (binding: i18n.md)
     lib/      pure utils
     ui/       theme/ (tokens; no React) → primitives/ → components/ → index.ts (barrel)
   tests/      setup/ · msw/ (mirror OpenAPI) · factories/ (build models) · render/ (renderWithProviders)

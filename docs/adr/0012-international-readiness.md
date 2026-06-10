@@ -73,6 +73,7 @@ not on this ADR.
 - Issue: `#9`
 - PR: `#000`
 - Refines: ADR 0011 (UTC storage / JST display → locale-aware display, JST default)
+- Refined by: ADR 0015 (message catalog & runtime locale switching) + `docs/development/i18n.md`
 - Related: ADR 0003 (dual-tier), ADR 0006 (English-only repo docs), ADR 0007/0009
   (AI / APPI), ADR 0008 (non-statutory positioning)
 - Binding docs scoped as Japan pack: `docs/explanation/legal-compliance.md`
