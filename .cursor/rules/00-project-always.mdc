@@ -7,5 +7,5 @@
 - Naming violations block merge. Check `docs/terms.md §9` banned-spellings list.
 - Follow NENE2 conventions: `docs/development/nene2-compliance.md`.
 - Namespace: `NeneField\`; money: integer cents; mobile-first UI.
-- **Fixed local ports ("87 lane"): API 8700 · Frontend 5187 · MySQL 3387 · phpMyAdmin 8701.**
-  Never reuse sibling ports. See README "Local port allocation".
+- **Fixed local ports ("90 lane"): API 9000 · Frontend 5190 · MySQL 3309 · phpMyAdmin 9001.**
+  Never reuse sibling ports. See README "Local port allocation" for the full portfolio registry.
