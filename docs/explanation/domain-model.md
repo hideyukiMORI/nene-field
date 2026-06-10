@@ -70,6 +70,9 @@ Tenant entity. One installation may host multiple organizations.
 | --- | --- | --- |
 | `organization_id` | UUID | Primary key |
 | `name` | string | Organization display name |
+| `slug` | string | **Unique** tenant resolution key (subdomain / path / env) — ADR 0013 |
+| `custom_domain` | string / null | **Unique** optional vanity domain (Tier B) |
+| `is_active` | boolean | Inactive organizations are rejected at resolution (`org-inactive`, 403) |
 | `ai_summary_enabled` | boolean | AI summary feature toggle |
 | `ai_api_url` | string / null | External AI API endpoint |
 | `notification_email` | string / null | Default notification recipient |

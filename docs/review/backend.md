@@ -17,7 +17,9 @@ Do not delete items to pass; mark `N/A` only when genuinely not applicable.
 - [ ] Every public route is in `docs/openapi/openapi.yaml` with stable `operationId`, success example, and Problem Details responses; auth required except `/health` and `/auth/login`.
 - [ ] Errors are RFC 9457 Problem Details (`application/problem+json`); slugs registered in `terms.md §7`; validation → `validation-failed` (422) with structured `errors[]`.
 - [ ] No leak of SQL, stack traces, file/storage paths, secrets, or private ids in any response.
-- [ ] **Multi-tenancy:** `organization_id` from JWT flows Handler→UseCase→Repository and appears in **every** tenanted `WHERE`; only `superadmin` is cross-tenant.
+- [ ] **Multi-tenancy (ADR 0013 / `multi-tenancy.md`):** org is resolved from the request into `RequestScopedHolder` (never from client input); **every** tenanted statement includes `organization_id = ?`; JWT org == resolved org (else 403); only `superadmin` is cross-tenant on bypass routes.
+- [ ] **Tenant isolation tested:** a row created under org A is invisible/unmodifiable (404/403) when the resolved org is B; repository fakes are org-scoped; resolution failures map to `org-not-resolved`/`org-not-found`/`org-inactive`.
+- [ ] New tenanted table has `organization_id NOT NULL` + index; per-tenant (not global) uniqueness for fields like `users.email`.
 - [ ] RBAC enforced in use case / capability middleware; passwords bcrypt cost ≥ 12.
 - [ ] **Audit:** every mutation writes an `AuditEvent` (before/after) in the **same transaction**; event name from `terms.md §8`; approved report immutable; audit not hard-deleted.
 - [ ] Instants stored UTC via `ClockInterface`, displayed JST; no ad-hoc `new DateTimeImmutable()`.
