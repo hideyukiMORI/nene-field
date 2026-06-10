@@ -37,6 +37,7 @@
         "migrations:status": "phinx status -c phinx.php",
         "migrations:migrate": "phinx migrate -c phinx.php",
         "migrations:rollback": "phinx rollback -c phinx.php",
+        "migrations:seed": "phinx seed:run -c phinx.php",
         "check": [
             "@test",
             "@analyse",

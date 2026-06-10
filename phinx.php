@@ -9,6 +9,12 @@ declare(strict_types=1);
  * external database.
  */
 
+// Load .env so `composer migrations:*` targets the same database the app reads
+// (the app loads it via Nene2\Config\ConfigLoader). No-op when .env is absent.
+if (is_file(__DIR__ . '/.env')) {
+    Dotenv\Dotenv::createImmutable(__DIR__)->safeLoad();
+}
+
 $env = static function (string $key, string $default): string {
     $value = $_SERVER[$key] ?? $_ENV[$key] ?? getenv($key);
 
