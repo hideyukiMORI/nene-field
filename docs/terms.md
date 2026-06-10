@@ -121,6 +121,11 @@ Forbidden: `orgId`, `reportId`, `userId`, camelCase in JSON
 | `org-not-found` | 404 | No organization for the resolved slug / custom domain |
 | `org-inactive` | 403 | Resolved organization is inactive |
 
+Each slug above is the stable, English machine identifier in the API response. The
+frontend localizes it via an `error.{slug}` message-catalog key (ADR 0015 /
+[`development/i18n.md`](./development/i18n.md)); **every slug here MUST have a
+catalog message** and raw API `title`/`detail` is never shown to users.
+
 ---
 
 ## 8. Audit event names

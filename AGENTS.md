@@ -32,6 +32,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - **Multi-tenancy (binding):** `docs/development/multi-tenancy.md` ← tenant isolation is a security premise
 - **Audit logging (binding):** `docs/development/audit-logging.md` ← every mutation records who/what + before/after, same transaction
 - **Frontend standards (binding):** `docs/development/frontend-standards.md`
+- **i18n / message catalog (binding):** `docs/development/i18n.md` ← all UI copy via `t('key')`; runtime locale switch
 - **Coding standards (index):** `docs/development/coding-standards.md`
 - **NENE2 compliance (binding):** `docs/development/nene2-compliance.md`
 - **Sibling integration:** `docs/integrations/sibling-products.md`

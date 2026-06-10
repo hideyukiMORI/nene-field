@@ -14,7 +14,7 @@ Do not delete items to pass; mark `N/A` only when genuinely not applicable.
 - [ ] **Four UI states** present on every data screen: loading, empty, error (safe message + retry), success.
 - [ ] **TypeScript:** strict; no `any` (use `unknown`); branded IDs for resource ids; named exports only (no default export); exhaustive `switch` on unions.
 - [ ] **Styling:** no raw color/spacing/type literals or Tailwind arbitrary values in components; visual values only in `shared/ui/theme/`; features import the `shared/ui` barrel.
-- [ ] **i18n:** no hardcoded user-facing strings; `ja` primary (+ optional `en`); no third locale without ADR.
+- [ ] **i18n (ADR 0015 / `i18n.md`):** no hardcoded user-facing strings — all copy via `t('key')`; new keys added to **both** `ja.ts` and `en.ts` (key parity test passes); `t()` keys are type-checked (no dynamic/concatenated keys); API errors localized by mapping Problem Details slug/code → `error.*` catalog (raw API `title`/`detail` never shown); every `terms.md §7` slug has a catalog message; locale switch persists with no reload; no third locale without ADR; `t()` never run over user data.
 - [ ] **Security:** auth token in-memory (persistence needs ADR); fail-closed (401→login, 403→forbidden); RBAC gating is UX only; no `dangerouslySetInnerHTML` without DOMPurify+Issue; `rel="noopener noreferrer"` on `target="_blank"`; no secrets (only `VITE_*`).
 - [ ] **PII:** report bodies, tokens, and full Problem Details never logged in production; AI content labelled.
 - [ ] **API:** client maps snake_case JSON without renaming fields; `AppError` from Problem Details; no domain logic in the client.
