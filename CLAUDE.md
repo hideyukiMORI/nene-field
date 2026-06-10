@@ -6,6 +6,8 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 
 | Purpose | Document |
 | --- | --- |
+| Legal & compliance (binding) | `docs/explanation/legal-compliance.md` |
+| Scope contract (binding) | `docs/explanation/scope-contract.md` |
 | NENE2 inheritance | `docs/inheritance-from-nene2.md` |
 | Agent entry | `AGENTS.md` |
 | Workflow | `docs/workflow.md` |
@@ -24,6 +26,7 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 - **Secrets**: never commit `.env`, tokens, or credentials.
 - **Framework**: NENE2 via Composer — read `vendor/hideyukimori/nene2/docs/` for runtime patterns.
 - **Terms**: every identifier must match `docs/terms.md` exactly. Check before writing any name.
+- **Legal positioning (binding)**: NeNe Field is **not** a statutory record (出勤簿/賃金台帳/法定帳簿/電帳法/施工体制台帳). No overclaim. Run `docs/review/legal-compliance.md` for any change to report fields, audit, AI, retention, export, or user-facing copy.
 
 ## Product Direction
 

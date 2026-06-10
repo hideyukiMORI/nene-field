@@ -9,8 +9,9 @@
 
 ## Phase 0 — Governance and Foundation
 
-- [ ] Governance docs, ADR 0001–0007
+- [ ] Governance docs, ADR 0001–0011
 - [ ] Product vision, scope contract, domain model
+- [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] `docs/terms.md` canonical identifier registry
 - [ ] Feature list (`docs/explanation/features.md`)
 - [ ] Page list (`docs/explanation/pages.md`)
@@ -26,4 +27,4 @@
 
 See [`docs/roadmap.md`](../roadmap.md) for full phase breakdown.
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
