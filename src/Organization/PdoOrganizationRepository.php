@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+namespace NeneField\Organization;
+
+use Nene2\Database\DatabaseQueryExecutorInterface;
+
+final readonly class PdoOrganizationRepository implements OrganizationRepositoryInterface
+{
+    private const COLUMNS = 'organization_id, name, slug, custom_domain, is_active, '
+        . 'ai_summary_enabled, notification_email, webhook_url, created_at, updated_at';
+
+    public function __construct(
+        private DatabaseQueryExecutorInterface $query,
+    ) {
+    }
+
+    public function findById(string $organizationId): ?Organization
+    {
+        $row = $this->query->fetchOne(
+            'SELECT ' . self::COLUMNS . ' FROM organizations WHERE organization_id = ?',
+            [$organizationId],
+        );
+
+        return $row !== null ? self::hydrate($row) : null;
+    }
+
+    public function findBySlug(string $slug): ?Organization
+    {
+        $row = $this->query->fetchOne(
+            'SELECT ' . self::COLUMNS . ' FROM organizations WHERE slug = ?',
+            [$slug],
+        );
+
+        return $row !== null ? self::hydrate($row) : null;
+    }
+
+    public function findByCustomDomain(string $customDomain): ?Organization
+    {
+        $row = $this->query->fetchOne(
+            'SELECT ' . self::COLUMNS . ' FROM organizations WHERE custom_domain = ?',
+            [$customDomain],
+        );
+
+        return $row !== null ? self::hydrate($row) : null;
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private static function hydrate(array $row): Organization
+    {
+        return new Organization(
+            organizationId: (string) $row['organization_id'],
+            name: (string) $row['name'],
+            slug: (string) $row['slug'],
+            isActive: (bool) $row['is_active'],
+            customDomain: $row['custom_domain'] !== null ? (string) $row['custom_domain'] : null,
+            aiSummaryEnabled: (bool) $row['ai_summary_enabled'],
+            notificationEmail: $row['notification_email'] !== null ? (string) $row['notification_email'] : null,
+            webhookUrl: $row['webhook_url'] !== null ? (string) $row['webhook_url'] : null,
+            createdAt: $row['created_at'] !== null ? (string) $row['created_at'] : null,
+            updatedAt: $row['updated_at'] !== null ? (string) $row['updated_at'] : null,
+        );
+    }
+}

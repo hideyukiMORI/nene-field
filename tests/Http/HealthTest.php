@@ -33,5 +33,10 @@ final class HealthTest extends TestCase
         $body = (array) json_decode((string) $response->getBody(), true);
         self::assertArrayHasKey('status', $body);
         self::assertSame('ok', $body['status']);
+
+        // The database connectivity check runs against the test SQLite (:memory:).
+        self::assertArrayHasKey('checks', $body);
+        self::assertIsArray($body['checks']);
+        self::assertSame('ok', $body['checks']['database'] ?? null);
     }
 }
