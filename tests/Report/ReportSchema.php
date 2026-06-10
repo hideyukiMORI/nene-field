@@ -34,6 +34,18 @@ final class ReportSchema
         updated_at DATETIME NOT NULL
     )';
 
+    public const CREATE_USERS_TABLE = 'CREATE TABLE users (
+        user_id CHAR(36) NOT NULL PRIMARY KEY,
+        organization_id CHAR(36) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(20) NOT NULL,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at DATETIME NOT NULL,
+        updated_at DATETIME NOT NULL
+    )';
+
     public const CREATE_AUDIT_TABLE = 'CREATE TABLE audit_events (
         event_id CHAR(36) NOT NULL PRIMARY KEY,
         organization_id CHAR(36) NOT NULL,

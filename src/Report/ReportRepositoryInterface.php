@@ -15,6 +15,13 @@ interface ReportRepositoryInterface
 {
     public function findById(string $organizationId, string $reportId): ?Report;
 
+    /**
+     * @return list<ReportSummary>
+     */
+    public function search(string $organizationId, ReportFilter $filter): array;
+
+    public function count(string $organizationId, ReportFilter $filter): int;
+
     public function insert(DatabaseQueryExecutorInterface $executor, Report $report): void;
 
     public function update(DatabaseQueryExecutorInterface $executor, Report $report): void;

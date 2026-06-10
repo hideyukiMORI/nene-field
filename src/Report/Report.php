@@ -81,6 +81,62 @@ final readonly class Report
         );
     }
 
+    /** Returns a copy transitioned to `approved` (immutable thereafter). */
+    public function withApproved(string $approverId, ?string $comment, string $approvedAt): self
+    {
+        return new self(
+            reportId: $this->reportId,
+            organizationId: $this->organizationId,
+            userId: $this->userId,
+            title: $this->title,
+            body: $this->body,
+            workDate: $this->workDate,
+            status: ReportStatus::Approved,
+            tags: $this->tags,
+            templateId: $this->templateId,
+            projectCode: $this->projectCode,
+            invoiceWorkOrderId: $this->invoiceWorkOrderId,
+            recordsEntityId: $this->recordsEntityId,
+            aiSummary: $this->aiSummary,
+            aiTags: $this->aiTags,
+            submittedAt: $this->submittedAt,
+            approvedAt: $approvedAt,
+            rejectedAt: $this->rejectedAt,
+            approverId: $approverId,
+            approverComment: $comment,
+            createdAt: $this->createdAt,
+            updatedAt: $approvedAt,
+        );
+    }
+
+    /** Returns a copy transitioned to `rejected` with the approver's comment. */
+    public function withRejected(string $approverId, string $comment, string $rejectedAt): self
+    {
+        return new self(
+            reportId: $this->reportId,
+            organizationId: $this->organizationId,
+            userId: $this->userId,
+            title: $this->title,
+            body: $this->body,
+            workDate: $this->workDate,
+            status: ReportStatus::Rejected,
+            tags: $this->tags,
+            templateId: $this->templateId,
+            projectCode: $this->projectCode,
+            invoiceWorkOrderId: $this->invoiceWorkOrderId,
+            recordsEntityId: $this->recordsEntityId,
+            aiSummary: $this->aiSummary,
+            aiTags: $this->aiTags,
+            submittedAt: $this->submittedAt,
+            approvedAt: $this->approvedAt,
+            rejectedAt: $rejectedAt,
+            approverId: $approverId,
+            approverComment: $comment,
+            createdAt: $this->createdAt,
+            updatedAt: $rejectedAt,
+        );
+    }
+
     /** Returns a copy transitioned to `submitted`. */
     public function withSubmitted(string $submittedAt): self
     {
