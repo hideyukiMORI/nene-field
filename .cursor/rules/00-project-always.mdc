@@ -2,6 +2,7 @@
 
 - Canonical docs: `README.md`, `AGENTS.md`, `docs/explanation/scope-contract.md`, `docs/workflow.md`.
 - **NeNe Field = daily report platform only** (ADR 0002). No payroll, no invoice issuance, no document archiving.
+- **Legal positioning is binding** (`docs/explanation/legal-compliance.md`, ADR 0008): NeNe Field is **not** a statutory record (出勤簿/賃金台帳/法定帳簿/電帳法/施工体制台帳). **No overclaim** — see prohibited claims (§10). Run `docs/review/legal-compliance.md` for changes to report fields, audit, AI, retention, export, or user-facing copy.
 - **Terms registry is binding:** `docs/terms.md` — look up every identifier before writing it. Typos block merge.
 - Issue-driven workflow; English repository docs (ADR 0006); no secrets in git.
 - Naming violations block merge. Check `docs/terms.md §9` banned-spellings list.

@@ -19,6 +19,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 
 - **Canonical terms — single source of truth (binding):** `docs/terms.md` ← **START HERE for any identifier**
 - **Scope contract (binding):** `docs/explanation/scope-contract.md`
+- **Legal & compliance positioning (binding):** `docs/explanation/legal-compliance.md` ← what the product is **NOT**
 - **Product vision:** `docs/explanation/product-vision.md`
 - **Requirements:** `docs/explanation/requirements.md`
 - **Feature list:** `docs/explanation/features.md`
@@ -41,6 +42,8 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - Do **not** add invoice issuance — **`nene-invoice`**
 - Do **not** add bank reconciliation — **`nene-clear`**
 - Do **not** add document archiving as SSOT — **`nene-vault`**
+- Do **not** position the product as a statutory record (出勤簿/賃金台帳/法定帳簿/電帳法) — `docs/explanation/legal-compliance.md`
+- **No overclaim** in code, UI, or docs — prohibited claims are listed in `legal-compliance.md` §10
 - **Follow NENE2 conventions** — `docs/development/nene2-compliance.md`
 - Namespace: `NeneField\`; money: integer cents
 - **Repository docs: English only** (ADR 0006)

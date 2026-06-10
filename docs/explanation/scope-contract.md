@@ -71,6 +71,9 @@ Concretely, the goal is reached when:
 | X8 | Send report body text to AI without operator opt-in | Privacy | ADR 0007 |
 | X9 | Share a database with any sibling product | Schema coupling | ADR 0002 |
 | X10 | Store attachment files without size/type limits | Storage cost | See requirements |
+| X11 | Present reports as an objective working-time record, 出勤簿, or 賃金台帳 | Not a statutory labor record | ADR 0008, `legal-compliance.md` §3 |
+| X12 | Claim certified-timestamp / non-repudiation or 電帳法 compliance | Tamper-evident ≠ certified timestamp | `legal-compliance.md` §5, §7 |
+| X13 | Make any prohibited overclaim in UI / README / marketing | Overclaim is the top legal risk | `legal-compliance.md` §10 |
 
 ---
 
@@ -85,9 +88,23 @@ Concretely, the goal is reached when:
 
 ---
 
+## Legal positioning (binding)
+
+The legal interpretation of GOAL / DO / DON'T — what NeNe Field **is and is not**
+relative to Japanese law (labor, personal data, electronic books, industry law,
+tax/accounting) — is governed by the binding document
+[`legal-compliance.md`](./legal-compliance.md). Every Issue and PR that touches
+report fields, audit logging, AI transmission, retention, export, or any user-facing
+copy MUST run the [legal self-review](../review/legal-compliance.md).
+
 ## Related
 
 - ADR 0002: Domain separation
 - ADR 0004: Multi-tenancy and roles
 - ADR 0007: AI summary policy
+- ADR 0008: Non-statutory record positioning
+- ADR 0009: Personal data & cross-border AI transmission
+- ADR 0010: Record retention — no auto-purge
+- ADR 0011: UTC storage / JST display
+- `docs/explanation/legal-compliance.md` (binding)
 - `docs/explanation/scope-boundary.md`

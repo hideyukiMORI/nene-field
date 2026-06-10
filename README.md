@@ -32,6 +32,7 @@ shared hosting or Docker.
 | Topic | Document |
 | --- | --- |
 | **Scope contract (GOAL / DO / DON'T)** | [`docs/explanation/scope-contract.md`](./docs/explanation/scope-contract.md) |
+| **Legal & compliance (binding)** | [`docs/explanation/legal-compliance.md`](./docs/explanation/legal-compliance.md) |
 | **Product vision** | [`docs/explanation/product-vision.md`](./docs/explanation/product-vision.md) |
 | **Feature list** | [`docs/explanation/features.md`](./docs/explanation/features.md) |
 | **Page list** | [`docs/explanation/pages.md`](./docs/explanation/pages.md) |

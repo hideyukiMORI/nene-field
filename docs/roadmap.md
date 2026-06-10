@@ -10,8 +10,9 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 ## Phase 0: Governance and Foundation
 
-- [ ] Governance docs, ADR 0001–0007
+- [ ] Governance docs, ADR 0001–0011
 - [ ] Product vision, scope contract, domain model
+- [ ] Legal & compliance positioning (binding) — `docs/explanation/legal-compliance.md`
 - [ ] `docs/terms.md` canonical identifier registry
 - [ ] Feature list, page list, OpenAPI skeleton
 - [ ] NENE2 scaffold + `GET /health`
@@ -62,4 +63,4 @@ managers approve and export work data — without payroll complexity or heavy wo
 
 See [`docs/explanation/scope-boundary.md`](./explanation/scope-boundary.md).
 
-Last updated: 2026-06-10
+Last updated: 2026-06-11
