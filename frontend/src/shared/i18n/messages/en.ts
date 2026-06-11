@@ -13,6 +13,9 @@ export const enMessages: MessageCatalog = {
   'common.actions.signIn': 'Sign in',
   'common.actions.signOut': 'Sign out',
   'common.actions.retry': 'Retry',
+  'common.actions.back': 'Back',
+  'common.actions.download': 'Download',
+  'common.actions.cancel': 'Cancel',
   'common.state.loading': 'Loading…',
   'common.nav.reports': 'Reports',
 
@@ -39,6 +42,32 @@ export const enMessages: MessageCatalog = {
   'report.status.submitted': 'Submitted',
   'report.status.approved': 'Approved',
   'report.status.rejected': 'Rejected',
+
+  // ── report detail ────────────────────────────────────────────────
+  'report.detail.error': 'Failed to load the report.',
+  'report.detail.notFound': 'The report was not found.',
+  'report.field.body': 'Work details',
+  'report.field.user': 'Author',
+  'report.field.workDate': 'Work date',
+  'report.field.projectCode': 'Project code',
+  'report.field.tags': 'Tags',
+  'report.field.submittedAt': 'Submitted at',
+  'report.field.approvedAt': 'Approved at',
+  'report.field.rejectedAt': 'Rejected at',
+  'report.field.approverComment': 'Reviewer comment',
+  'report.field.aiSummary': 'AI summary',
+  'report.attachment.title': 'Attachments',
+  'report.attachment.none': 'No attachments.',
+  'report.attachment.downloadError': 'Failed to download the attachment.',
+
+  // ── report review (approve / reject) ─────────────────────────────
+  'report.review.title': 'Review',
+  'report.review.commentLabel': 'Comment',
+  'report.review.commentPlaceholder': 'Enter a reason for sending back',
+  'report.review.approve': 'Approve',
+  'report.review.reject': 'Send back',
+  'report.review.commentRequired': 'A comment is required to send back.',
+  'report.review.error': 'The action failed.',
 
   // ── server error slugs ───────────────────────────────────────────
   'error.generic': 'Something went wrong.',

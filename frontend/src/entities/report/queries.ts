@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { apiClient } from '@/shared/api/client'
 import type { AppError } from '@/shared/api/errors'
-import type { ReportListResponseDto } from './api-types'
-import { toReportList } from './mapper'
-import type { ReportList } from './model'
+import type { ReportListResponseDto, ReportResponseDto } from './api-types'
+import { toReportDetail, toReportList } from './mapper'
+import type { ReportDetail, ReportList } from './model'
 import { reportKeys, type ReportListParams } from './query-keys'
 
 function buildQuery(params: ReportListParams): string {
@@ -21,6 +21,16 @@ export function useReportListQuery(params: ReportListParams): UseQueryResult<Rep
     queryFn: async () => {
       const dto = await apiClient.get<ReportListResponseDto>(`/reports?${buildQuery(params)}`)
       return toReportList(dto)
+    },
+  })
+}
+
+export function useReportQuery(id: string): UseQueryResult<ReportDetail, AppError> {
+  return useQuery<ReportDetail, AppError>({
+    queryKey: reportKeys.detail(id),
+    queryFn: async () => {
+      const dto = await apiClient.get<ReportResponseDto>(`/reports/${encodeURIComponent(id)}`)
+      return toReportDetail(dto)
     },
   })
 }

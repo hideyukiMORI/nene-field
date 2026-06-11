@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { ReportStatus } from '@/entities/report'
 import { formatCalendarDate } from '@/shared/lib/format-date'
 import { useTranslation } from '@/shared/i18n'
@@ -64,7 +65,14 @@ export function ListReports() {
           {reports.map((report) => (
             <tr key={report.id} className="border-b border-border">
               <td className="px-3 py-2 text-fg-muted">{formatCalendarDate(report.workDate)}</td>
-              <td className="px-3 py-2 text-fg">{report.title}</td>
+              <td className="px-3 py-2">
+                <Link
+                  to={`/reports/${report.id}`}
+                  className="font-medium text-accent hover:underline"
+                >
+                  {report.title}
+                </Link>
+              </td>
               <td className="px-3 py-2 text-fg-muted">{report.userName}</td>
               <td className="px-3 py-2">
                 <Badge tone={statusTone[report.status]}>{t(statusKey[report.status])}</Badge>

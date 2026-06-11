@@ -15,6 +15,33 @@ function user(email: string, role = 'admin') {
   }
 }
 
+export function reportDetail(status = 'submitted') {
+  return {
+    report_id: 'r-1',
+    organization_id: 'org-1',
+    user_id: 'u-1',
+    user_name: '田中太郎',
+    title: '現場A 報告',
+    body: '本文です',
+    work_date: '2026-06-11',
+    status,
+    tags: [],
+    submitted_at: '2026-06-11 09:00:00',
+    attachments: [
+      {
+        attachment_id: 'a-1',
+        filename: 'photo.png',
+        mime_type: 'image/png',
+        file_size: 2048,
+        sha256: 'abc',
+        created_at: '2026-06-11 08:30:00',
+      },
+    ],
+    created_at: '2026-06-11 08:00:00',
+    updated_at: '2026-06-11 08:00:00',
+  }
+}
+
 /** Default handlers mirroring the OpenAPI contract for the auth + reports slice. */
 export const handlers = [
   http.post('/auth/login', async ({ request }) => {
@@ -44,6 +71,18 @@ export const handlers = [
       limit: 20,
       offset: 0,
       total: 1,
+    }),
+  ),
+
+  http.get('/reports/:id', () => HttpResponse.json(reportDetail())),
+
+  http.post('/reports/:id/approve', () => HttpResponse.json(reportDetail('approved'))),
+
+  http.post('/reports/:id/reject', () => HttpResponse.json(reportDetail('rejected'))),
+
+  http.get('/reports/:id/attachments/:attachmentId', () =>
+    HttpResponse.arrayBuffer(new TextEncoder().encode('binary').buffer, {
+      headers: { 'Content-Type': 'image/png' },
     }),
   ),
 ]
