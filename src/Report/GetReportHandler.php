@@ -7,18 +7,24 @@ namespace NeneField\Report;
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\JsonResponseFactory;
 use Nene2\Routing\Router;
+use NeneField\Attachment\AttachmentRepositoryInterface;
+use NeneField\Attachment\AttachmentSummaryResponse;
+use NeneField\Attachment\ReportAttachment;
 use NeneField\Auth\AuthContext;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * GET /reports/{report_id} — owner, or approver/admin in the org.
+ * GET /reports/{report_id} — owner, or approver/admin in the org. The detail
+ * response includes the report's attachment summaries (storage paths excluded,
+ * NF7).
  */
 final readonly class GetReportHandler implements RequestHandlerInterface
 {
     public function __construct(
         private GetReportUseCaseInterface $useCase,
+        private AttachmentRepositoryInterface $attachments,
         private JsonResponseFactory $json,
         private ProblemDetailsResponseFactory $problemDetails,
     ) {
@@ -43,6 +49,12 @@ final readonly class GetReportHandler implements RequestHandlerInterface
             return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
         }
 
-        return $this->json->create(ReportResponse::toArray($report));
+        $data = ReportResponse::toArray($report);
+        $data['attachments'] = array_map(
+            static fn (ReportAttachment $a): array => AttachmentSummaryResponse::toArray($a),
+            $this->attachments->listByReport($organizationId, $report->reportId),
+        );
+
+        return $this->json->create($data);
     }
 }

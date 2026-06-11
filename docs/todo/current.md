@@ -9,7 +9,9 @@
 - [x] Report CRUD + submission lifecycle (draft → submitted → approved/rejected) (#27, #29)
 - [x] Organization + User management endpoints (#31)
 - [x] Report template management endpoints (#33)
-- [ ] File attachment upload + storage
+- [x] File attachment upload + storage (#35)
+
+**Phase 1 のエンドポイント実装は完了。次は Phase 2（Manager UI + Export）。**
 
 ## Upcoming
 

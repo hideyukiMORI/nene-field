@@ -24,6 +24,8 @@ use Nene2\Http\ResponseEmitter;
 use Nene2\Http\RuntimeApplicationFactory;
 use Nene2\Http\UtcClock;
 use Nene2\Log\RequestIdHolder;
+use NeneField\Attachment\AttachmentRouteRegistrar;
+use NeneField\Attachment\AttachmentServiceProvider;
 use NeneField\AuditEvent\AuditServiceProvider;
 use NeneField\Auth\AuthRouteRegistrar;
 use NeneField\Auth\AuthServiceProvider;
@@ -73,6 +75,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
         $builder->addProvider(new AuditServiceProvider());
         $builder->addProvider(new ReportServiceProvider());
         $builder->addProvider(new TemplateServiceProvider());
+        $builder->addProvider(new AttachmentServiceProvider());
 
         $builder
             ->set(
@@ -195,6 +198,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $userRoutes = $container->get(UserRouteRegistrar::class);
                     $orgRoutes = $container->get(OrganizationRouteRegistrar::class);
                     $templateRoutes = $container->get(TemplateRouteRegistrar::class);
+                    $attachmentRoutes = $container->get(AttachmentRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
@@ -206,6 +210,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         || !$userRoutes instanceof UserRouteRegistrar
                         || !$orgRoutes instanceof OrganizationRouteRegistrar
                         || !$templateRoutes instanceof TemplateRouteRegistrar
+                        || !$attachmentRoutes instanceof AttachmentRouteRegistrar
                         || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
@@ -215,7 +220,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         responseFactory: $psr17,
                         streamFactory: $psr17,
                         requestIdHolder: $requestIdHolder,
-                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes],
+                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes, $attachmentRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
                         debug: $config->debug,
