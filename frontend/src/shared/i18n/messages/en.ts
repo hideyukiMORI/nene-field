@@ -21,11 +21,16 @@ export const enMessages: MessageCatalog = {
   'common.actions.edit': 'Edit',
   'common.actions.delete': 'Delete',
   'common.actions.add': 'Add',
+  'common.actions.apply': 'Apply',
+  'common.actions.clear': 'Clear',
+  'common.actions.previous': 'Previous',
+  'common.actions.next': 'Next',
   'common.state.loading': 'Loading…',
   'common.forbidden': 'You are not allowed to view this screen.',
   'common.nav.reports': 'Reports',
   'common.nav.templates': 'Templates',
   'common.nav.users': 'Users',
+  'common.nav.audit': 'Audit log',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
@@ -117,6 +122,26 @@ export const enMessages: MessageCatalog = {
   'template.fieldType.select': 'Select list',
   'template.delete.confirm': 'Delete this template?',
   'template.delete.error': 'Failed to delete.',
+
+  // ── audit log viewer ─────────────────────────────────────────────
+  'audit.list.title': 'Audit log',
+  'audit.list.subtitle': 'Review the activity history of your organization.',
+  'audit.list.empty': 'No matching audit events.',
+  'audit.list.error': 'Failed to load the audit log.',
+  'audit.col.occurredAt': 'When',
+  'audit.col.event': 'Event',
+  'audit.col.entityType': 'Entity',
+  'audit.col.entityId': 'Entity ID',
+  'audit.col.actor': 'Actor',
+  'audit.filter.entityType': 'Entity',
+  'audit.filter.allTypes': 'All',
+  'audit.filter.eventName': 'Event name',
+  'audit.filter.occurredFrom': 'From',
+  'audit.filter.occurredTo': 'To',
+  'audit.pagination.range': '{{from}}–{{to}} of {{total}}',
+  'audit.export.action': 'Download CSV',
+  'audit.export.hint': 'Set a From and To date to export.',
+  'audit.export.error': 'Export failed.',
 
   // ── user management ──────────────────────────────────────────────
   'user.list.title': 'Users',

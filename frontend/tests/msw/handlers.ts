@@ -56,6 +56,23 @@ export function userDto(overrides: Partial<Record<string, unknown>> = {}) {
   }
 }
 
+export function auditEventDto(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    event_id: 'e-1',
+    organization_id: 'org-1',
+    entity_type: 'Report',
+    entity_id: 'r-1',
+    event_name: 'report.approved',
+    actor_id: 'u-1',
+    actor_name: '管理者',
+    before: { status: 'submitted' },
+    after: { status: 'approved' },
+    request_id: 'req-1',
+    occurred_at: '2026-06-11 10:00:00',
+    ...overrides,
+  }
+}
+
 export function templateDto() {
   return {
     template_id: 't-1',
@@ -140,6 +157,24 @@ export const handlers = [
   http.put('/users/:id', () => HttpResponse.json(userDto())),
 
   http.delete('/users/:id', () => new HttpResponse(null, { status: 204 })),
+
+  http.get('/audit-events', () =>
+    HttpResponse.json({
+      items: [
+        auditEventDto({ event_id: 'e-1', event_name: 'report.approved', entity_type: 'Report' }),
+        auditEventDto({ event_id: 'e-2', event_name: 'user.created', entity_type: 'User' }),
+      ],
+      limit: 20,
+      offset: 0,
+      total: 2,
+    }),
+  ),
+
+  http.get('/audit-events/export', () =>
+    HttpResponse.arrayBuffer(new TextEncoder().encode('﻿event_id\r\n').buffer, {
+      headers: { 'Content-Type': 'text/csv; charset=utf-8' },
+    }),
+  ),
 
   http.get('/reports/:id', () => HttpResponse.json(reportDetail())),
 
