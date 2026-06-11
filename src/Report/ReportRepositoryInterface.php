@@ -22,6 +22,14 @@ interface ReportRepositoryInterface
 
     public function count(string $organizationId, ReportFilter $filter): int;
 
+    /**
+     * Returns every report matching the export criteria (work-date bounded), up
+     * to a repository safety cap. No pagination.
+     *
+     * @return list<ReportExportRow>
+     */
+    public function exportRows(string $organizationId, ReportExportFilter $filter): array;
+
     public function insert(DatabaseQueryExecutorInterface $executor, Report $report): void;
 
     public function update(DatabaseQueryExecutorInterface $executor, Report $report): void;
