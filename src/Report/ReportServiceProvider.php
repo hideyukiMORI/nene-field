@@ -13,6 +13,7 @@ use Nene2\DependencyInjection\ServiceProviderInterface;
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\ClockInterface;
 use Nene2\Http\JsonResponseFactory;
+use NeneField\Attachment\AttachmentRepositoryInterface;
 use NeneField\AuditEvent\AuditServiceProvider;
 use Psr\Container\ContainerInterface;
 
@@ -79,12 +80,17 @@ final readonly class ReportServiceProvider implements ServiceProviderInterface
                 GetReportHandler::class,
                 static function (ContainerInterface $c): GetReportHandler {
                     $useCase = $c->get(GetReportUseCaseInterface::class);
+                    $attachments = $c->get(AttachmentRepositoryInterface::class);
 
                     if (!$useCase instanceof GetReportUseCaseInterface) {
                         throw new LogicException('Get report use case service is invalid.');
                     }
 
-                    return new GetReportHandler($useCase, self::json($c), self::problemDetails($c));
+                    if (!$attachments instanceof AttachmentRepositoryInterface) {
+                        throw new LogicException('Attachment repository service is invalid.');
+                    }
+
+                    return new GetReportHandler($useCase, $attachments, self::json($c), self::problemDetails($c));
                 },
             )
             ->set(
