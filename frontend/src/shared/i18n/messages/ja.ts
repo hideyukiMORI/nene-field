@@ -12,6 +12,9 @@ export const jaMessages = {
   'common.actions.signIn': 'ログイン',
   'common.actions.signOut': 'ログアウト',
   'common.actions.retry': '再試行',
+  'common.actions.back': '戻る',
+  'common.actions.download': 'ダウンロード',
+  'common.actions.cancel': 'キャンセル',
   'common.state.loading': '読み込み中…',
   'common.nav.reports': '日報',
 
@@ -38,6 +41,32 @@ export const jaMessages = {
   'report.status.submitted': '提出済み',
   'report.status.approved': '承認済み',
   'report.status.rejected': '差し戻し',
+
+  // ── report detail ────────────────────────────────────────────────
+  'report.detail.error': '日報の読み込みに失敗しました。',
+  'report.detail.notFound': '日報が見つかりませんでした。',
+  'report.field.body': '作業内容',
+  'report.field.user': '担当者',
+  'report.field.workDate': '作業日',
+  'report.field.projectCode': '案件コード',
+  'report.field.tags': 'タグ',
+  'report.field.submittedAt': '提出日時',
+  'report.field.approvedAt': '承認日時',
+  'report.field.rejectedAt': '差し戻し日時',
+  'report.field.approverComment': '承認者コメント',
+  'report.field.aiSummary': 'AI要約',
+  'report.attachment.title': '添付ファイル',
+  'report.attachment.none': '添付ファイルはありません。',
+  'report.attachment.downloadError': '添付ファイルのダウンロードに失敗しました。',
+
+  // ── report review (approve / reject) ─────────────────────────────
+  'report.review.title': '承認',
+  'report.review.commentLabel': 'コメント',
+  'report.review.commentPlaceholder': '差し戻し理由を入力してください',
+  'report.review.approve': '承認する',
+  'report.review.reject': '差し戻す',
+  'report.review.commentRequired': '差し戻しにはコメントが必要です。',
+  'report.review.error': '操作に失敗しました。',
 
   // ── server error slugs (error.{problem-slug}) ────────────────────
   'error.generic': '問題が発生しました。',

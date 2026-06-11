@@ -10,4 +10,5 @@ export interface ReportListParams {
 export const reportKeys = {
   all: ['reports'] as const,
   list: (params: ReportListParams) => ['reports', 'list', params] as const,
+  detail: (id: string) => ['reports', 'detail', id] as const,
 }
