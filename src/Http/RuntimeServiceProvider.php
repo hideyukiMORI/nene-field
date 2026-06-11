@@ -30,6 +30,8 @@ use NeneField\AuditEvent\AuditServiceProvider;
 use NeneField\Auth\AuthRouteRegistrar;
 use NeneField\Auth\AuthServiceProvider;
 use NeneField\Auth\OrgGuardMiddleware;
+use NeneField\Export\ExportRouteRegistrar;
+use NeneField\Export\ExportServiceProvider;
 use NeneField\Organization\OrganizationRepositoryInterface;
 use NeneField\Organization\OrganizationRouteRegistrar;
 use NeneField\Organization\OrganizationServiceProvider;
@@ -76,6 +78,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
         $builder->addProvider(new ReportServiceProvider());
         $builder->addProvider(new TemplateServiceProvider());
         $builder->addProvider(new AttachmentServiceProvider());
+        $builder->addProvider(new ExportServiceProvider());
 
         $builder
             ->set(
@@ -199,6 +202,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $orgRoutes = $container->get(OrganizationRouteRegistrar::class);
                     $templateRoutes = $container->get(TemplateRouteRegistrar::class);
                     $attachmentRoutes = $container->get(AttachmentRouteRegistrar::class);
+                    $exportRoutes = $container->get(ExportRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
@@ -211,6 +215,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         || !$orgRoutes instanceof OrganizationRouteRegistrar
                         || !$templateRoutes instanceof TemplateRouteRegistrar
                         || !$attachmentRoutes instanceof AttachmentRouteRegistrar
+                        || !$exportRoutes instanceof ExportRouteRegistrar
                         || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
@@ -220,7 +225,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         responseFactory: $psr17,
                         streamFactory: $psr17,
                         requestIdHolder: $requestIdHolder,
-                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes, $attachmentRoutes],
+                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes, $attachmentRoutes, $exportRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
                         debug: $config->debug,

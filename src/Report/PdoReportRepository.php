@@ -12,6 +12,9 @@ final readonly class PdoReportRepository implements ReportRepositoryInterface
         . 'status, tags, project_code, invoice_work_order_id, records_entity_id, ai_summary, ai_tags, '
         . 'submitted_at, approved_at, rejected_at, approver_id, approver_comment, created_at, updated_at';
 
+    /** Safety cap on exported rows to bound memory/response size. */
+    private const EXPORT_CAP = 100000;
+
     public function __construct(
         private DatabaseQueryExecutorInterface $query,
     ) {
@@ -104,6 +107,63 @@ final readonly class PdoReportRepository implements ReportRepositoryInterface
         $executor->execute(
             'DELETE FROM reports WHERE organization_id = ? AND report_id = ?',
             [$organizationId, $reportId],
+        );
+    }
+
+    public function exportRows(string $organizationId, ReportExportFilter $filter): array
+    {
+        $where = ['r.organization_id = ?', 'r.work_date >= ?', 'r.work_date <= ?'];
+        $params = [$organizationId, $filter->workDateFrom, $filter->workDateTo];
+
+        if ($filter->statuses !== []) {
+            $where[] = 'r.status IN (' . implode(', ', array_fill(0, count($filter->statuses), '?')) . ')';
+            foreach ($filter->statuses as $status) {
+                $params[] = $status->value;
+            }
+        }
+        if ($filter->userId !== null) {
+            $where[] = 'r.user_id = ?';
+            $params[] = $filter->userId;
+        }
+        if ($filter->projectCode !== null) {
+            $where[] = 'r.project_code = ?';
+            $params[] = $filter->projectCode;
+        }
+
+        $params[] = self::EXPORT_CAP;
+
+        $rows = $this->query->fetchAll(
+            'SELECT r.report_id, r.work_date, r.user_id, u.name AS user_name, r.title, r.status, r.project_code,
+                    r.tags, r.submitted_at, r.approved_at, r.approver_id, r.created_at
+             FROM reports r
+             LEFT JOIN users u ON u.organization_id = r.organization_id AND u.user_id = r.user_id
+             WHERE ' . implode(' AND ', $where) . '
+             ORDER BY r.work_date ASC, r.created_at ASC
+             LIMIT ?',
+            $params,
+        );
+
+        return array_map(static fn (array $row): ReportExportRow => self::hydrateExportRow($row), $rows);
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private static function hydrateExportRow(array $row): ReportExportRow
+    {
+        return new ReportExportRow(
+            reportId: (string) $row['report_id'],
+            workDate: (string) $row['work_date'],
+            userId: (string) $row['user_id'],
+            userName: self::nullableString($row['user_name']) ?? '',
+            title: (string) $row['title'],
+            status: ReportStatus::from((string) $row['status']),
+            projectCode: self::nullableString($row['project_code']),
+            tags: self::decode($row['tags']),
+            submittedAt: self::nullableString($row['submitted_at']),
+            approvedAt: self::nullableString($row['approved_at']),
+            approverId: self::nullableString($row['approver_id']),
+            createdAt: self::nullableString($row['created_at']),
         );
     }
 
