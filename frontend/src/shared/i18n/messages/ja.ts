@@ -20,11 +20,16 @@ export const jaMessages = {
   'common.actions.edit': '編集',
   'common.actions.delete': '削除',
   'common.actions.add': '追加',
+  'common.actions.apply': '適用',
+  'common.actions.clear': 'クリア',
+  'common.actions.previous': '前へ',
+  'common.actions.next': '次へ',
   'common.state.loading': '読み込み中…',
   'common.forbidden': 'この画面を表示する権限がありません。',
   'common.nav.reports': '日報',
   'common.nav.templates': 'テンプレート管理',
   'common.nav.users': 'ユーザー管理',
+  'common.nav.audit': '監査ログ',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',
@@ -116,6 +121,26 @@ export const jaMessages = {
   'template.fieldType.select': '選択リスト',
   'template.delete.confirm': 'このテンプレートを削除しますか？',
   'template.delete.error': '削除に失敗しました。',
+
+  // ── audit log viewer ─────────────────────────────────────────────
+  'audit.list.title': '監査ログ',
+  'audit.list.subtitle': '組織の操作履歴を確認します。',
+  'audit.list.empty': '該当する監査ログはありません。',
+  'audit.list.error': '監査ログの読み込みに失敗しました。',
+  'audit.col.occurredAt': '日時',
+  'audit.col.event': 'イベント',
+  'audit.col.entityType': '対象種別',
+  'audit.col.entityId': '対象ID',
+  'audit.col.actor': '操作者',
+  'audit.filter.entityType': '対象種別',
+  'audit.filter.allTypes': 'すべて',
+  'audit.filter.eventName': 'イベント名',
+  'audit.filter.occurredFrom': '開始日',
+  'audit.filter.occurredTo': '終了日',
+  'audit.pagination.range': '{{from}}–{{to}} / {{total}} 件',
+  'audit.export.action': 'CSVダウンロード',
+  'audit.export.hint': 'エクスポートには開始日・終了日を指定してください。',
+  'audit.export.error': 'エクスポートに失敗しました。',
 
   // ── user management ──────────────────────────────────────────────
   'user.list.title': 'ユーザー管理',
