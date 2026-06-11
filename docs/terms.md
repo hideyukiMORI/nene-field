@@ -154,6 +154,7 @@ catalog message** and raw API `title`/`detail` is never shown to users.
 | `organization.created` | Organization | Tenant provisioned (superadmin) |
 | `organization.updated` | Organization | Org settings changed (incl. AI / notification) |
 | `report.exported` | Report | CSV export performed (records filters, not rows) |
+| `audit.exported` | AuditEvent | Audit-trail CSV export performed (records filters, not rows) |
 | `auth.login_succeeded` | User | Successful login |
 | `auth.login_failed` | User | Failed login attempt |
 
