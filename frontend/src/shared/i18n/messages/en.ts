@@ -25,6 +25,7 @@ export const enMessages: MessageCatalog = {
   'common.forbidden': 'You are not allowed to view this screen.',
   'common.nav.reports': 'Reports',
   'common.nav.templates': 'Templates',
+  'common.nav.users': 'Users',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
@@ -116,6 +117,33 @@ export const enMessages: MessageCatalog = {
   'template.fieldType.select': 'Select list',
   'template.delete.confirm': 'Delete this template?',
   'template.delete.error': 'Failed to delete.',
+
+  // ── user management ──────────────────────────────────────────────
+  'user.list.title': 'Users',
+  'user.list.subtitle': 'Manage the users in your organization.',
+  'user.list.empty': 'No users.',
+  'user.list.error': 'Failed to load users.',
+  'user.list.newAction': 'New user',
+  'user.list.colName': 'Name',
+  'user.list.colEmail': 'Email',
+  'user.list.colRole': 'Role',
+  'user.list.colStatus': 'Status',
+  'user.status.active': 'Active',
+  'user.status.inactive': 'Inactive',
+  'user.form.createTitle': 'New user',
+  'user.form.editTitle': 'Edit user',
+  'user.form.name': 'Name',
+  'user.form.email': 'Email',
+  'user.form.role': 'Role',
+  'user.form.password': 'Password',
+  'user.form.isActive': 'Active',
+  'user.form.error': 'Failed to save.',
+  'user.role.submitter': 'Submitter',
+  'user.role.approver': 'Approver',
+  'user.role.admin': 'Admin',
+  'user.role.superadmin': 'Superadmin',
+  'user.delete.confirm': 'Delete this user?',
+  'user.delete.error': 'Failed to delete.',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': 'Review',

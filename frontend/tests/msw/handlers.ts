@@ -42,6 +42,20 @@ export function reportDetail(status = 'submitted') {
   }
 }
 
+export function userDto(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    user_id: 'u-1',
+    organization_id: 'org-1',
+    name: '田中太郎',
+    email: 'tanaka@example.com',
+    role: 'approver',
+    is_active: true,
+    created_at: '2026-06-01 00:00:00',
+    updated_at: '2026-06-01 00:00:00',
+    ...overrides,
+  }
+}
+
 export function templateDto() {
   return {
     template_id: 't-1',
@@ -101,6 +115,31 @@ export const handlers = [
   http.put('/templates/:id', () => HttpResponse.json(templateDto())),
 
   http.delete('/templates/:id', () => new HttpResponse(null, { status: 204 })),
+
+  http.get('/users', () =>
+    HttpResponse.json({
+      items: [
+        userDto({
+          user_id: 'u-1',
+          name: '田中太郎',
+          email: 'tanaka@example.com',
+          role: 'approver',
+        }),
+        userDto({ user_id: 'u-2', name: '佐藤花子', email: 'sato@example.com', role: 'admin' }),
+      ],
+      limit: 100,
+      offset: 0,
+      total: 2,
+    }),
+  ),
+
+  http.post('/users', () => HttpResponse.json(userDto({ user_id: 'u-new' }), { status: 201 })),
+
+  http.get('/users/:id', () => HttpResponse.json(userDto())),
+
+  http.put('/users/:id', () => HttpResponse.json(userDto())),
+
+  http.delete('/users/:id', () => new HttpResponse(null, { status: 204 })),
 
   http.get('/reports/:id', () => HttpResponse.json(reportDetail())),
 

@@ -24,6 +24,7 @@ export const jaMessages = {
   'common.forbidden': 'この画面を表示する権限がありません。',
   'common.nav.reports': '日報',
   'common.nav.templates': 'テンプレート管理',
+  'common.nav.users': 'ユーザー管理',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',
@@ -115,6 +116,33 @@ export const jaMessages = {
   'template.fieldType.select': '選択リスト',
   'template.delete.confirm': 'このテンプレートを削除しますか？',
   'template.delete.error': '削除に失敗しました。',
+
+  // ── user management ──────────────────────────────────────────────
+  'user.list.title': 'ユーザー管理',
+  'user.list.subtitle': '組織のユーザーを管理します。',
+  'user.list.empty': 'ユーザーがいません。',
+  'user.list.error': 'ユーザーの読み込みに失敗しました。',
+  'user.list.newAction': '新規ユーザー',
+  'user.list.colName': '名前',
+  'user.list.colEmail': 'メールアドレス',
+  'user.list.colRole': 'ロール',
+  'user.list.colStatus': '状態',
+  'user.status.active': '有効',
+  'user.status.inactive': '無効',
+  'user.form.createTitle': 'ユーザーの作成',
+  'user.form.editTitle': 'ユーザーの編集',
+  'user.form.name': '名前',
+  'user.form.email': 'メールアドレス',
+  'user.form.role': 'ロール',
+  'user.form.password': 'パスワード',
+  'user.form.isActive': '有効にする',
+  'user.form.error': '保存に失敗しました。',
+  'user.role.submitter': '提出者',
+  'user.role.approver': '承認者',
+  'user.role.admin': '管理者',
+  'user.role.superadmin': 'スーパー管理者',
+  'user.delete.confirm': 'このユーザーを削除しますか？',
+  'user.delete.error': '削除に失敗しました。',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': '承認',
