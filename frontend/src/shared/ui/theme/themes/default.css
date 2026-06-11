@@ -1,0 +1,45 @@
+/*
+ * Default theme — the complete semantic token set. Every visual value in the app
+ * lives here; components consume Tailwind semantic utilities (bg-surface, text-fg,
+ * border-border, bg-accent, …) and never hard-code color/font literals.
+ *
+ * Utility names derive from the part after --color-, e.g. --color-surface →
+ * bg-surface / text-surface; --color-fg → text-fg.
+ */
+@theme {
+  /* surfaces */
+  --color-surface: oklch(98% 0.0025 175);
+  --color-surface-raised: oklch(100% 0 0);
+  --color-surface-overlay: oklch(97% 0.0035 175);
+
+  /* ink */
+  --color-fg: oklch(27% 0.011 172);
+  --color-fg-muted: oklch(50% 0.01 172);
+  --color-fg-faint: oklch(63% 0.008 172);
+  --color-fg-inverse: oklch(98.5% 0.006 165);
+
+  /* borders */
+  --color-border: oklch(90.5% 0.006 172);
+  --color-border-strong: oklch(83.5% 0.008 172);
+
+  /* brand — muted pine green */
+  --color-accent: oklch(41% 0.046 167);
+  --color-accent-hover: oklch(34% 0.045 168);
+  --color-accent-soft: oklch(93.5% 0.018 167);
+  --color-accent-deep: oklch(28% 0.036 170);
+
+  /* status */
+  --color-danger: oklch(49% 0.115 28);
+  --color-danger-soft: oklch(95% 0.03 28);
+  --color-success: oklch(47% 0.07 155);
+  --color-success-soft: oklch(94.5% 0.028 155);
+  --color-warn: oklch(55% 0.075 75);
+  --color-warn-soft: oklch(95% 0.035 75);
+  --color-info: oklch(50% 0.06 245);
+  --color-info-soft: oklch(95% 0.025 245);
+
+  /* typography */
+  --font-sans:
+    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
+}

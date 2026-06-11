@@ -1,0 +1,29 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { render, type RenderResult } from '@testing-library/react'
+import { useState, type ReactElement, type ReactNode } from 'react'
+import { MemoryRouter } from 'react-router-dom'
+import { I18nProvider } from '@/shared/i18n'
+
+export function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  })
+}
+
+function Providers({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(createTestQueryClient)
+  return (
+    <I18nProvider>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>{children}</MemoryRouter>
+      </QueryClientProvider>
+    </I18nProvider>
+  )
+}
+
+export function renderWithProviders(ui: ReactElement): RenderResult {
+  return render(ui, { wrapper: Providers })
+}
