@@ -25,7 +25,7 @@
 - [x] Report 詳細 + 承認/却下 UI（detail取得・review・添付DL）(#45)
 - [x] Report 提出フォーム（mobile・下書き/提出・テンプレート選択）(#47)
 - [x] Templates 管理 UI（admin・CRUD・既定・動的フィールド定義）(#49)
-- [ ] Users 管理 UI
+- [x] Users 管理 UI（admin・CRUD・ロール・自己削除防止）(#51)
 - [ ] Audit log viewer + CSV ダウンロード UI
 - [ ] Export 画面 / Settings
 - [ ] Docker Compose dev environment / Storybook + Playwright e2e

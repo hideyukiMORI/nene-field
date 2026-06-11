@@ -5,6 +5,9 @@ import { ReportsPage } from '@/pages/reports'
 import { TemplateCreatePage } from '@/pages/template-create'
 import { TemplateEditPage } from '@/pages/template-edit'
 import { TemplatesPage } from '@/pages/templates'
+import { UserCreatePage } from '@/pages/user-create'
+import { UserEditPage } from '@/pages/user-edit'
+import { UsersPage } from '@/pages/users'
 
 const router = createBrowserRouter([
   { path: '/', element: <ReportsPage /> },
@@ -13,6 +16,9 @@ const router = createBrowserRouter([
   { path: '/templates', element: <TemplatesPage /> },
   { path: '/templates/new', element: <TemplateCreatePage /> },
   { path: '/templates/:id/edit', element: <TemplateEditPage /> },
+  { path: '/users', element: <UsersPage /> },
+  { path: '/users/new', element: <UserCreatePage /> },
+  { path: '/users/:id/edit', element: <UserEditPage /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
 
