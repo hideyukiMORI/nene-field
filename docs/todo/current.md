@@ -28,7 +28,7 @@
 - [x] Users 管理 UI（admin・CRUD・ロール・自己削除防止）(#51)
 - [x] Audit log viewer + CSV ダウンロード UI（フィルタ・ページング）(#53)
 - [x] Export 画面（レポート CSV・期間/ユーザー/ステータス）(#55)
-- [ ] Settings / 組織設定 UI
+- [x] Settings / 組織設定 UI（名前/AI/通知）(#57)
 - [ ] Docker Compose dev environment / Storybook + Playwright e2e
 
 ## Upcoming

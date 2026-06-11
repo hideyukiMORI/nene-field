@@ -32,6 +32,7 @@ export const enMessages: MessageCatalog = {
   'common.nav.users': 'Users',
   'common.nav.audit': 'Audit log',
   'common.nav.export': 'Export',
+  'common.nav.settings': 'Settings',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
@@ -123,6 +124,25 @@ export const enMessages: MessageCatalog = {
   'template.fieldType.select': 'Select list',
   'template.delete.confirm': 'Delete this template?',
   'template.delete.error': 'Failed to delete.',
+
+  // ── organization settings ────────────────────────────────────────
+  'settings.title': 'Organization settings',
+  'settings.subtitle': 'Configure your organization profile and notifications.',
+  'settings.error': 'Failed to load the organization.',
+  'settings.name': 'Organization name',
+  'settings.aiSummaryEnabled': 'Enable AI summary',
+  'settings.notificationEmail': 'Notification email (optional)',
+  'settings.webhookUrl': 'Webhook URL (optional)',
+  'settings.saveError': 'Failed to save.',
+  'settings.saved': 'Saved.',
+  'settings.info.title': 'Organization info',
+  'settings.info.slug': 'Slug',
+  'settings.info.customDomain': 'Custom domain',
+  'settings.info.status': 'Status',
+  'settings.info.active': 'Active',
+  'settings.info.inactive': 'Inactive',
+  'settings.info.none': 'Not set',
+  'settings.info.note': 'Slug, domain, and active state are managed by a superadmin.',
 
   // ── report CSV export ────────────────────────────────────────────
   'export.title': 'Export reports',

@@ -4,6 +4,7 @@ import { ExportPage } from '@/pages/export'
 import { ReportDetailPage } from '@/pages/report-detail'
 import { ReportSubmitPage } from '@/pages/report-submit'
 import { ReportsPage } from '@/pages/reports'
+import { SettingsPage } from '@/pages/settings'
 import { TemplateCreatePage } from '@/pages/template-create'
 import { TemplateEditPage } from '@/pages/template-edit'
 import { TemplatesPage } from '@/pages/templates'
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
   { path: '/users/:id/edit', element: <UserEditPage /> },
   { path: '/audit-logs', element: <AuditLogsPage /> },
   { path: '/export', element: <ExportPage /> },
+  { path: '/settings', element: <SettingsPage /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
 

@@ -56,6 +56,22 @@ export function userDto(overrides: Partial<Record<string, unknown>> = {}) {
   }
 }
 
+export function organizationDto(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    organization_id: 'org-1',
+    name: '山田造園',
+    slug: 'yamada',
+    custom_domain: null,
+    is_active: true,
+    ai_summary_enabled: false,
+    notification_email: 'kanri@example.com',
+    webhook_url: null,
+    created_at: '2026-06-01 00:00:00',
+    updated_at: '2026-06-10 00:00:00',
+    ...overrides,
+  }
+}
+
 export function auditEventDto(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     event_id: 'e-1',
@@ -157,6 +173,13 @@ export const handlers = [
   http.put('/users/:id', () => HttpResponse.json(userDto())),
 
   http.delete('/users/:id', () => new HttpResponse(null, { status: 204 })),
+
+  http.get('/organizations/:id', () => HttpResponse.json(organizationDto())),
+
+  http.put('/organizations/:id', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json(organizationDto({ ...body }))
+  }),
 
   http.get('/audit-events', () =>
     HttpResponse.json({
