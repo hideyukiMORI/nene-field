@@ -151,6 +151,7 @@ catalog message** and raw API `title`/`detail` is never shown to users.
 | `template.created` | ReportTemplate | Template created |
 | `template.updated` | ReportTemplate | Template updated |
 | `template.deleted` | ReportTemplate | Template deleted |
+| `organization.created` | Organization | Tenant provisioned (superadmin) |
 | `organization.updated` | Organization | Org settings changed (incl. AI / notification) |
 | `report.exported` | Report | CSV export performed (records filters, not rows) |
 | `auth.login_succeeded` | User | Successful login |

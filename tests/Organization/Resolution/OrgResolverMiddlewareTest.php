@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NeneField\Tests\Organization\Resolution;
 
+use Nene2\Database\DatabaseQueryExecutorInterface;
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\RequestScopedHolder;
 use NeneField\Organization\Organization;
@@ -163,6 +164,26 @@ final class OrgResolverMiddlewareTest extends TestCase
             public function findByCustomDomain(string $customDomain): ?Organization
             {
                 return $this->byDomain[$customDomain] ?? null;
+            }
+
+            public function listAll(int $limit, int $offset): array
+            {
+                return array_slice(array_values($this->bySlug), $offset, $limit);
+            }
+
+            public function countAll(): int
+            {
+                return count($this->bySlug);
+            }
+
+            public function insert(DatabaseQueryExecutorInterface $executor, Organization $organization): void
+            {
+                $this->bySlug[$organization->slug] = $organization;
+            }
+
+            public function update(DatabaseQueryExecutorInterface $executor, Organization $organization): void
+            {
+                $this->bySlug[$organization->slug] = $organization;
             }
         };
     }
