@@ -6,9 +6,9 @@ use NeneField\Support\Uuid;
 use Phinx\Seed\AbstractSeed;
 
 /**
- * Local development seed (idempotent): one organization (`demo`) and one admin
- * user. Run with `composer migrations:seed`. DEV ONLY — never run in production;
- * the password is well-known.
+ * Local development seed (idempotent): one organization (`demo`), one admin
+ * user, and one default report template. Run with `composer migrations:seed`.
+ * DEV ONLY — never run in production; the password is well-known.
  *
  * Login locally with NENE_FIELD_TENANT_RESOLUTION=single, NENE_FIELD_ORG_SLUG=demo:
  *   email: admin@example.com   password: password
@@ -46,6 +46,23 @@ final class DevSeeder extends AbstractSeed
             'password_hash' => password_hash('password', PASSWORD_BCRYPT),
             'role' => 'admin',
             'is_active' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->saveData();
+
+        $fields = [
+            ['name' => 'work_summary', 'label' => '作業内容', 'type' => 'textarea', 'required' => true],
+            ['name' => 'hours', 'label' => '作業時間', 'type' => 'number', 'required' => false],
+            ['name' => 'weather', 'label' => '天候', 'type' => 'select', 'required' => false, 'options' => ['晴れ', '曇り', '雨']],
+        ];
+
+        $this->table('report_templates')->insert([
+            'template_id' => Uuid::v4(),
+            'organization_id' => $orgId,
+            'name' => '日報（標準）',
+            'description' => 'デモ組織の既定テンプレート',
+            'fields' => json_encode($fields, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+            'is_default' => 1,
             'created_at' => $now,
             'updated_at' => $now,
         ])->saveData();
