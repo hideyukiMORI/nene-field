@@ -1,6 +1,7 @@
 export { Button } from './primitives/Button'
 export { Input } from './primitives/Input'
 export { Textarea } from './primitives/Textarea'
+export { Select } from './primitives/Select'
 export { Spinner } from './primitives/Spinner'
 export { Text } from './primitives/Text'
 export { Stack } from './primitives/Stack'

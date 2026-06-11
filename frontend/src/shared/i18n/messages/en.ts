@@ -60,6 +60,23 @@ export const enMessages: MessageCatalog = {
   'report.attachment.none': 'No attachments.',
   'report.attachment.downloadError': 'Failed to download the attachment.',
 
+  // ── report submit (create + submit) ──────────────────────────────
+  'report.submit.newAction': 'New report',
+  'report.submit.title': 'New report',
+  'report.submit.subtitle': 'Enter the work details and submit.',
+  'report.submit.fieldTitle': 'Title',
+  'report.submit.workDate': 'Work date',
+  'report.submit.body': 'Work details',
+  'report.submit.projectCode': 'Project code (optional)',
+  'report.submit.tags': 'Tags (optional)',
+  'report.submit.tagsHint': 'Comma-separated',
+  'report.submit.template': 'Template (optional)',
+  'report.submit.templateNone': 'None',
+  'report.submit.saveDraft': 'Save draft',
+  'report.submit.submit': 'Submit',
+  'report.submit.saving': 'Saving…',
+  'report.submit.error': 'Failed to save.',
+
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': 'Review',
   'report.review.commentLabel': 'Comment',

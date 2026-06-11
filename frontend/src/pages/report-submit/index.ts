@@ -1,0 +1,1 @@
+export { ReportSubmitPage } from './ReportSubmitPage'

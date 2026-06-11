@@ -59,6 +59,23 @@ export const jaMessages = {
   'report.attachment.none': '添付ファイルはありません。',
   'report.attachment.downloadError': '添付ファイルのダウンロードに失敗しました。',
 
+  // ── report submit (create + submit) ──────────────────────────────
+  'report.submit.newAction': '新規作成',
+  'report.submit.title': '日報の作成',
+  'report.submit.subtitle': '作業内容を入力して提出します。',
+  'report.submit.fieldTitle': 'タイトル',
+  'report.submit.workDate': '作業日',
+  'report.submit.body': '作業内容',
+  'report.submit.projectCode': '案件コード（任意）',
+  'report.submit.tags': 'タグ（任意）',
+  'report.submit.tagsHint': 'カンマ区切りで入力',
+  'report.submit.template': 'テンプレート（任意）',
+  'report.submit.templateNone': '選択しない',
+  'report.submit.saveDraft': '下書き保存',
+  'report.submit.submit': '提出する',
+  'report.submit.saving': '保存中…',
+  'report.submit.error': '保存に失敗しました。',
+
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': '承認',
   'report.review.commentLabel': 'コメント',
