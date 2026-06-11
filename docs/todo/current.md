@@ -27,7 +27,8 @@
 - [x] Templates 管理 UI（admin・CRUD・既定・動的フィールド定義）(#49)
 - [x] Users 管理 UI（admin・CRUD・ロール・自己削除防止）(#51)
 - [x] Audit log viewer + CSV ダウンロード UI（フィルタ・ページング）(#53)
-- [ ] Export 画面 / Settings
+- [x] Export 画面（レポート CSV・期間/ユーザー/ステータス）(#55)
+- [ ] Settings / 組織設定 UI
 - [ ] Docker Compose dev environment / Storybook + Playwright e2e
 
 ## Upcoming

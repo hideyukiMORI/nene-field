@@ -8,6 +8,7 @@ export {
   type RejectReportInput,
   type CreateReportInput,
 } from './mutations'
+export { downloadReportsCsv, type ReportExportParams } from './export'
 export type { ReportListParams } from './query-keys'
 export type { ReportList, ReportSummary, ReportDetail, ReportAttachmentSummary } from './model'
 export { REPORT_STATUSES, type ReportStatus } from './enum'
