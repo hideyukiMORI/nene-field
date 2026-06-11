@@ -140,6 +140,33 @@ final class AttachmentManagementTest extends TestCase
         $this->uploadUseCase()->execute(new UploadAttachmentInput(self::ORG, self::OWNER, $reportId, 'big.png', $big));
     }
 
+    public function test_file_at_exact_size_limit_is_accepted(): void
+    {
+        $reportId = $this->seedReport('draft', self::OWNER);
+        // A real PNG header (so the media type is detected) padded to exactly the
+        // size limit — the boundary value that must still be accepted.
+        $png = self::png();
+        $atLimit = $png . str_repeat("\0", AttachmentConstraints::MAX_FILE_SIZE_BYTES - strlen($png));
+        self::assertSame(AttachmentConstraints::MAX_FILE_SIZE_BYTES, strlen($atLimit));
+
+        $attachment = $this->uploadUseCase()->execute(new UploadAttachmentInput(self::ORG, self::OWNER, $reportId, 'max.png', $atLimit));
+        self::assertSame(AttachmentConstraints::MAX_FILE_SIZE_BYTES, $attachment->fileSize);
+        self::assertSame('image/png', $attachment->mimeType);
+    }
+
+    public function test_fifth_file_is_accepted_then_sixth_rejected(): void
+    {
+        $reportId = $this->seedReport('draft', self::OWNER);
+
+        for ($i = 0; $i < AttachmentConstraints::MAX_FILES_PER_REPORT; $i++) {
+            $this->uploadUseCase()->execute(new UploadAttachmentInput(self::ORG, self::OWNER, $reportId, "f{$i}.png", self::png()));
+        }
+        self::assertSame(AttachmentConstraints::MAX_FILES_PER_REPORT, $this->attachments->countByReport(self::ORG, $reportId));
+
+        $this->expectException(TooManyAttachmentsException::class);
+        $this->uploadUseCase()->execute(new UploadAttachmentInput(self::ORG, self::OWNER, $reportId, 'sixth.png', self::png()));
+    }
+
     public function test_rejects_more_than_five_files(): void
     {
         $reportId = $this->seedReport('draft', self::OWNER);
