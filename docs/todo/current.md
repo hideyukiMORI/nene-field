@@ -23,7 +23,7 @@
 - [x] Admin UI scaffold — React + Vite + Tailwind tokens + i18n(ja/en) + FSD + MSW tests (#43)
 - [x] 認証(login) + レポート一覧（縦切り1本：auth-gate / 4状態 / locale 切替）(#43)
 - [x] Report 詳細 + 承認/却下 UI（detail取得・review・添付DL）(#45)
-- [ ] Report 提出フォーム（mobile, < 3分）
+- [x] Report 提出フォーム（mobile・下書き/提出・テンプレート選択）(#47)
 - [ ] Templates / Users 管理 UI
 - [ ] Audit log viewer + CSV ダウンロード UI
 - [ ] Export 画面 / Settings

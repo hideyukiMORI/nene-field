@@ -74,7 +74,17 @@ export const handlers = [
     }),
   ),
 
+  http.post('/reports', () => HttpResponse.json(reportDetail('draft'), { status: 201 })),
+
+  http.get('/templates', () =>
+    HttpResponse.json({
+      items: [{ template_id: 't-1', name: '日報（標準）', is_default: true }],
+    }),
+  ),
+
   http.get('/reports/:id', () => HttpResponse.json(reportDetail())),
+
+  http.post('/reports/:id/submit', () => HttpResponse.json(reportDetail('submitted'))),
 
   http.post('/reports/:id/approve', () => HttpResponse.json(reportDetail('approved'))),
 

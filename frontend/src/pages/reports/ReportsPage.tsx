@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { Link } from 'react-router-dom'
 import { getCurrentUser, signOut, subscribeCurrentUser } from '@/entities/auth'
 import { ListReports } from '@/features/list-reports'
 import { LOCALES, resolveLocale, useTranslation } from '@/shared/i18n'
@@ -51,12 +52,20 @@ export function ReportsPage() {
       </header>
       <main className="mx-auto w-full max-w-5xl p-6">
         <Stack gap="md">
-          <Stack gap="sm">
-            <Text variant="title" as="h2">
-              {t('report.list.title')}
-            </Text>
-            <Text variant="subtitle">{t('report.list.subtitle')}</Text>
-          </Stack>
+          <div className="flex items-end justify-between gap-4">
+            <Stack gap="sm">
+              <Text variant="title" as="h2">
+                {t('report.list.title')}
+              </Text>
+              <Text variant="subtitle">{t('report.list.subtitle')}</Text>
+            </Stack>
+            <Link
+              to="/reports/new"
+              className="inline-flex items-center border border-accent bg-accent px-3 py-2 text-sm font-semibold text-fg-inverse"
+            >
+              {t('report.submit.newAction')}
+            </Link>
+          </div>
           <ListReports />
         </Stack>
       </main>
