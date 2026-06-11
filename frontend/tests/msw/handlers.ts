@@ -170,6 +170,12 @@ export const handlers = [
     }),
   ),
 
+  http.get('/export/csv', () =>
+    HttpResponse.arrayBuffer(new TextEncoder().encode('﻿report_id\r\n').buffer, {
+      headers: { 'Content-Type': 'text/csv; charset=utf-8' },
+    }),
+  ),
+
   http.get('/audit-events/export', () =>
     HttpResponse.arrayBuffer(new TextEncoder().encode('﻿event_id\r\n').buffer, {
       headers: { 'Content-Type': 'text/csv; charset=utf-8' },

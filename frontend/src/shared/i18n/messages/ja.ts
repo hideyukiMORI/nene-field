@@ -30,6 +30,7 @@ export const jaMessages = {
   'common.nav.templates': 'テンプレート管理',
   'common.nav.users': 'ユーザー管理',
   'common.nav.audit': '監査ログ',
+  'common.nav.export': 'エクスポート',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',
@@ -121,6 +122,19 @@ export const jaMessages = {
   'template.fieldType.select': '選択リスト',
   'template.delete.confirm': 'このテンプレートを削除しますか？',
   'template.delete.error': '削除に失敗しました。',
+
+  // ── report CSV export ────────────────────────────────────────────
+  'export.title': 'レポートのエクスポート',
+  'export.subtitle': '条件を指定して日報を CSV 出力します。',
+  'export.workDateFrom': '作業日（開始）',
+  'export.workDateTo': '作業日（終了）',
+  'export.user': '担当者',
+  'export.allUsers': 'すべて',
+  'export.projectCode': '案件コード（任意）',
+  'export.statuses': 'ステータス',
+  'export.download': 'CSVダウンロード',
+  'export.hint': '作業日の開始・終了を指定してください。',
+  'export.error': 'エクスポートに失敗しました。',
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': '監査ログ',

@@ -59,6 +59,11 @@ export function ReportsPage() {
               {t('common.nav.audit')}
             </Link>
           )}
+          {user !== null && canManageOrganization(user.role) && (
+            <Link to="/export" className="text-sm font-medium text-accent">
+              {t('common.nav.export')}
+            </Link>
+          )}
           {user !== null && <span className="text-sm text-fg-muted">{user.name}</span>}
           <Button
             variant="secondary"

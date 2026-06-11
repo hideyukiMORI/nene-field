@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuditLogsPage } from '@/pages/audit-logs'
+import { ExportPage } from '@/pages/export'
 import { ReportDetailPage } from '@/pages/report-detail'
 import { ReportSubmitPage } from '@/pages/report-submit'
 import { ReportsPage } from '@/pages/reports'
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
   { path: '/users/new', element: <UserCreatePage /> },
   { path: '/users/:id/edit', element: <UserEditPage /> },
   { path: '/audit-logs', element: <AuditLogsPage /> },
+  { path: '/export', element: <ExportPage /> },
   { path: '*', element: <Navigate to="/" replace /> },
 ])
 

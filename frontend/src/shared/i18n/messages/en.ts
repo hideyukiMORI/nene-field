@@ -31,6 +31,7 @@ export const enMessages: MessageCatalog = {
   'common.nav.templates': 'Templates',
   'common.nav.users': 'Users',
   'common.nav.audit': 'Audit log',
+  'common.nav.export': 'Export',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
@@ -122,6 +123,19 @@ export const enMessages: MessageCatalog = {
   'template.fieldType.select': 'Select list',
   'template.delete.confirm': 'Delete this template?',
   'template.delete.error': 'Failed to delete.',
+
+  // ── report CSV export ────────────────────────────────────────────
+  'export.title': 'Export reports',
+  'export.subtitle': 'Export daily reports as CSV by filter.',
+  'export.workDateFrom': 'Work date (from)',
+  'export.workDateTo': 'Work date (to)',
+  'export.user': 'Author',
+  'export.allUsers': 'All',
+  'export.projectCode': 'Project code (optional)',
+  'export.statuses': 'Status',
+  'export.download': 'Download CSV',
+  'export.hint': 'Set the work-date range to export.',
+  'export.error': 'Export failed.',
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': 'Audit log',
