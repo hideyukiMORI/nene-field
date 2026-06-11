@@ -1,6 +1,11 @@
 import { useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { getCurrentUser, signOut, subscribeCurrentUser } from '@/entities/auth'
+import {
+  canManageOrganization,
+  getCurrentUser,
+  signOut,
+  subscribeCurrentUser,
+} from '@/entities/auth'
 import { ListReports } from '@/features/list-reports'
 import { LOCALES, resolveLocale, useTranslation } from '@/shared/i18n'
 import { Button, Stack, Text } from '@/shared/ui'
@@ -39,6 +44,11 @@ export function ReportsPage() {
         </Text>
         <div className="flex items-center gap-4">
           <LocaleSwitcher />
+          {user !== null && canManageOrganization(user.role) && (
+            <Link to="/templates" className="text-sm font-medium text-accent">
+              {t('common.nav.templates')}
+            </Link>
+          )}
           {user !== null && <span className="text-sm text-fg-muted">{user.name}</span>}
           <Button
             variant="secondary"

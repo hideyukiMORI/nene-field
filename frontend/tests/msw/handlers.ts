@@ -42,6 +42,22 @@ export function reportDetail(status = 'submitted') {
   }
 }
 
+export function templateDto() {
+  return {
+    template_id: 't-1',
+    organization_id: 'org-1',
+    name: '日報（標準）',
+    description: '標準テンプレート',
+    fields: [
+      { name: 'summary', label: '作業内容', type: 'textarea', required: true },
+      { name: 'weather', label: '天候', type: 'select', required: false, options: ['晴れ', '雨'] },
+    ],
+    is_default: true,
+    created_at: '2026-06-01 00:00:00',
+    updated_at: '2026-06-01 00:00:00',
+  }
+}
+
 /** Default handlers mirroring the OpenAPI contract for the auth + reports slice. */
 export const handlers = [
   http.post('/auth/login', async ({ request }) => {
@@ -76,11 +92,15 @@ export const handlers = [
 
   http.post('/reports', () => HttpResponse.json(reportDetail('draft'), { status: 201 })),
 
-  http.get('/templates', () =>
-    HttpResponse.json({
-      items: [{ template_id: 't-1', name: '日報（標準）', is_default: true }],
-    }),
-  ),
+  http.get('/templates', () => HttpResponse.json({ items: [templateDto()] })),
+
+  http.post('/templates', () => HttpResponse.json(templateDto(), { status: 201 })),
+
+  http.get('/templates/:id', () => HttpResponse.json(templateDto())),
+
+  http.put('/templates/:id', () => HttpResponse.json(templateDto())),
+
+  http.delete('/templates/:id', () => new HttpResponse(null, { status: 204 })),
 
   http.get('/reports/:id', () => HttpResponse.json(reportDetail())),
 
