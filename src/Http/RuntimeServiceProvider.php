@@ -29,6 +29,7 @@ use NeneField\Auth\AuthRouteRegistrar;
 use NeneField\Auth\AuthServiceProvider;
 use NeneField\Auth\OrgGuardMiddleware;
 use NeneField\Organization\OrganizationRepositoryInterface;
+use NeneField\Organization\OrganizationRouteRegistrar;
 use NeneField\Organization\OrganizationServiceProvider;
 use NeneField\Organization\Resolution\EnvResolutionStrategy;
 use NeneField\Organization\Resolution\OrgResolutionStrategyInterface;
@@ -37,6 +38,7 @@ use NeneField\Organization\Resolution\PathPrefixResolutionStrategy;
 use NeneField\Organization\Resolution\SubdomainResolutionStrategy;
 use NeneField\Report\ReportRouteRegistrar;
 use NeneField\Report\ReportServiceProvider;
+use NeneField\User\UserRouteRegistrar;
 use NeneField\User\UserServiceProvider;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Container\ContainerInterface;
@@ -187,6 +189,8 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $orgGuard = $container->get(OrgGuardMiddleware::class);
                     $authRoutes = $container->get(AuthRouteRegistrar::class);
                     $reportRoutes = $container->get(ReportRouteRegistrar::class);
+                    $userRoutes = $container->get(UserRouteRegistrar::class);
+                    $orgRoutes = $container->get(OrganizationRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
@@ -195,6 +199,8 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         || !$orgGuard instanceof OrgGuardMiddleware
                         || !$authRoutes instanceof AuthRouteRegistrar
                         || !$reportRoutes instanceof ReportRouteRegistrar
+                        || !$userRoutes instanceof UserRouteRegistrar
+                        || !$orgRoutes instanceof OrganizationRouteRegistrar
                         || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
@@ -204,7 +210,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         responseFactory: $psr17,
                         streamFactory: $psr17,
                         requestIdHolder: $requestIdHolder,
-                        routeRegistrars: [$authRoutes, $reportRoutes],
+                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
                         debug: $config->debug,

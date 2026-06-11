@@ -44,6 +44,68 @@ final readonly class PdoUserRepository implements UserRepositoryInterface
         );
     }
 
+    public function listByOrg(string $organizationId, int $limit, int $offset): array
+    {
+        $rows = $this->query->fetchAll(
+            'SELECT ' . self::COLUMNS . ' FROM users WHERE organization_id = ?
+             ORDER BY created_at ASC, user_id ASC LIMIT ? OFFSET ?',
+            [$organizationId, $limit, $offset],
+        );
+
+        return array_map(static fn (array $row): User => self::hydrate($row), $rows);
+    }
+
+    public function countByOrg(string $organizationId): int
+    {
+        $row = $this->query->fetchOne('SELECT COUNT(*) AS c FROM users WHERE organization_id = ?', [$organizationId]);
+
+        return $row !== null ? (int) $row['c'] : 0;
+    }
+
+    public function insert(DatabaseQueryExecutorInterface $executor, User $user): void
+    {
+        $executor->execute(
+            'INSERT INTO users
+                (user_id, organization_id, name, email, password_hash, role, is_active, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                $user->userId,
+                $user->organizationId,
+                $user->name,
+                $user->email,
+                $user->passwordHash,
+                $user->role->value,
+                $user->isActive,
+                $user->createdAt,
+                $user->updatedAt,
+            ],
+        );
+    }
+
+    public function update(DatabaseQueryExecutorInterface $executor, User $user): void
+    {
+        $executor->execute(
+            'UPDATE users SET name = ?, role = ?, is_active = ?, updated_at = ?
+             WHERE organization_id = ? AND user_id = ?',
+            [
+                $user->name,
+                $user->role->value,
+                $user->isActive,
+                $user->updatedAt,
+                $user->organizationId,
+                $user->userId,
+            ],
+        );
+    }
+
+    public function delete(DatabaseQueryExecutorInterface $executor, string $organizationId, string $userId): void
+    {
+        $executor->execute(
+            'DELETE FROM users WHERE organization_id = ? AND user_id = ?',
+            [$organizationId, $userId],
+        );
+    }
+
     /**
      * @param array<string, mixed> $row
      */

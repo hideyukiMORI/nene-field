@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NeneField\Tests\Support;
 
+use Nene2\Database\DatabaseQueryExecutorInterface;
 use NeneField\User\User;
 use NeneField\User\UserRepositoryInterface;
 
@@ -62,5 +63,42 @@ final class InMemoryUserRepository implements UserRepositoryInterface
             createdAt: $user->createdAt,
             updatedAt: $now,
         );
+    }
+
+    public function listByOrg(string $organizationId, int $limit, int $offset): array
+    {
+        $matches = array_values(array_filter(
+            $this->users,
+            static fn (User $u): bool => $u->organizationId === $organizationId,
+        ));
+
+        return array_slice($matches, $offset, $limit);
+    }
+
+    public function countByOrg(string $organizationId): int
+    {
+        return count(array_filter(
+            $this->users,
+            static fn (User $u): bool => $u->organizationId === $organizationId,
+        ));
+    }
+
+    public function insert(DatabaseQueryExecutorInterface $executor, User $user): void
+    {
+        $this->users[$user->userId] = $user;
+    }
+
+    public function update(DatabaseQueryExecutorInterface $executor, User $user): void
+    {
+        $this->users[$user->userId] = $user;
+    }
+
+    public function delete(DatabaseQueryExecutorInterface $executor, string $organizationId, string $userId): void
+    {
+        $user = $this->findById($organizationId, $userId);
+
+        if ($user !== null) {
+            unset($this->users[$userId]);
+        }
     }
 }
