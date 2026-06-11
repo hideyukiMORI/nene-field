@@ -19,11 +19,15 @@
 - [x] Audit log read API — `/audit-events` list + `/audit-events/export` CSV (#41)
 
 **Phase 2 の backend API は完了。残りはフロントエンド。**
-### Frontend (not started)
-- [ ] Admin UI scaffold — React + Vite + i18n catalog (ADR 0015)
-- [ ] Report list / detail+approval / submission form (mobile)
-- [ ] Audit log viewer (admin)
-- [ ] Docker Compose dev environment
+### Frontend
+- [x] Admin UI scaffold — React + Vite + Tailwind tokens + i18n(ja/en) + FSD + MSW tests (#43)
+- [x] 認証(login) + レポート一覧（縦切り1本：auth-gate / 4状態 / locale 切替）(#43)
+- [ ] Report 詳細 + 承認/却下 UI
+- [ ] Report 提出フォーム（mobile, < 3分）
+- [ ] Templates / Users 管理 UI
+- [ ] Audit log viewer + CSV ダウンロード UI
+- [ ] Export 画面 / Settings
+- [ ] Docker Compose dev environment / Storybook + Playwright e2e
 
 ## Upcoming
 

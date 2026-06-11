@@ -9,6 +9,7 @@
 
 # Build output
 /public_html/assets/dist/
+/public_html/admin/
 /storage/
 
 # PHP
@@ -27,5 +28,6 @@ Thumbs.db
 # Composer
 composer.lock
 
-# npm
+# npm — ignore stray root lockfiles, but the frontend lockfile is committed
 package-lock.json
+!/frontend/package-lock.json
