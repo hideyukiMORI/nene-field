@@ -31,6 +31,7 @@ export const jaMessages = {
   'common.nav.users': 'ユーザー管理',
   'common.nav.audit': '監査ログ',
   'common.nav.export': 'エクスポート',
+  'common.nav.settings': '組織設定',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',
@@ -122,6 +123,25 @@ export const jaMessages = {
   'template.fieldType.select': '選択リスト',
   'template.delete.confirm': 'このテンプレートを削除しますか？',
   'template.delete.error': '削除に失敗しました。',
+
+  // ── organization settings ────────────────────────────────────────
+  'settings.title': '組織設定',
+  'settings.subtitle': '組織の基本情報と通知を設定します。',
+  'settings.error': '組織情報の読み込みに失敗しました。',
+  'settings.name': '組織名',
+  'settings.aiSummaryEnabled': 'AI要約を有効にする',
+  'settings.notificationEmail': '通知メールアドレス（任意）',
+  'settings.webhookUrl': 'Webhook URL（任意）',
+  'settings.saveError': '保存に失敗しました。',
+  'settings.saved': '保存しました。',
+  'settings.info.title': '組織情報',
+  'settings.info.slug': 'スラッグ',
+  'settings.info.customDomain': 'カスタムドメイン',
+  'settings.info.status': '状態',
+  'settings.info.active': '有効',
+  'settings.info.inactive': '無効',
+  'settings.info.none': '未設定',
+  'settings.info.note': 'スラッグ・ドメイン・有効状態の変更はスーパー管理者が行います。',
 
   // ── report CSV export ────────────────────────────────────────────
   'export.title': 'レポートのエクスポート',
