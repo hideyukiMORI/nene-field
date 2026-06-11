@@ -38,6 +38,8 @@ use NeneField\Organization\Resolution\PathPrefixResolutionStrategy;
 use NeneField\Organization\Resolution\SubdomainResolutionStrategy;
 use NeneField\Report\ReportRouteRegistrar;
 use NeneField\Report\ReportServiceProvider;
+use NeneField\Template\TemplateRouteRegistrar;
+use NeneField\Template\TemplateServiceProvider;
 use NeneField\User\UserRouteRegistrar;
 use NeneField\User\UserServiceProvider;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -70,6 +72,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
         $builder->addProvider(new AuthServiceProvider());
         $builder->addProvider(new AuditServiceProvider());
         $builder->addProvider(new ReportServiceProvider());
+        $builder->addProvider(new TemplateServiceProvider());
 
         $builder
             ->set(
@@ -191,6 +194,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $reportRoutes = $container->get(ReportRouteRegistrar::class);
                     $userRoutes = $container->get(UserRouteRegistrar::class);
                     $orgRoutes = $container->get(OrganizationRouteRegistrar::class);
+                    $templateRoutes = $container->get(TemplateRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
                     if (
@@ -201,6 +205,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         || !$reportRoutes instanceof ReportRouteRegistrar
                         || !$userRoutes instanceof UserRouteRegistrar
                         || !$orgRoutes instanceof OrganizationRouteRegistrar
+                        || !$templateRoutes instanceof TemplateRouteRegistrar
                         || !$requestIdHolder instanceof RequestIdHolder
                     ) {
                         throw new LogicException('Runtime middleware/route services are invalid.');
@@ -210,7 +215,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                         responseFactory: $psr17,
                         streamFactory: $psr17,
                         requestIdHolder: $requestIdHolder,
-                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes],
+                        routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
                         healthChecks: [$databaseHealthCheck],
                         debug: $config->debug,

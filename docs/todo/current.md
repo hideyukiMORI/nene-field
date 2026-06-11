@@ -8,7 +8,7 @@
 - [x] Audit logging — sanitized before/after, same transaction (#25)
 - [x] Report CRUD + submission lifecycle (draft → submitted → approved/rejected) (#27, #29)
 - [x] Organization + User management endpoints (#31)
-- [ ] Report template management endpoints
+- [x] Report template management endpoints (#33)
 - [ ] File attachment upload + storage
 
 ## Upcoming
