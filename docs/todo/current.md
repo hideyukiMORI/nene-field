@@ -16,7 +16,9 @@
 
 ### Backend API
 - [x] CSV export — reports (`/export/csv`, UTF-8 BOM, `report.exported` audit) (#39)
-- [ ] Audit log read API — `/audit-events` list + `/audit-events/export` CSV
+- [x] Audit log read API — `/audit-events` list + `/audit-events/export` CSV (#41)
+
+**Phase 2 の backend API は完了。残りはフロントエンド。**
 ### Frontend (not started)
 - [ ] Admin UI scaffold — React + Vite + i18n catalog (ADR 0015)
 - [ ] Report list / detail+approval / submission form (mobile)
