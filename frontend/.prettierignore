@@ -6,3 +6,4 @@ playwright-report
 test-results
 src/shared/api/schema.gen.ts
 package-lock.json
+shot*.mjs

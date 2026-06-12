@@ -176,6 +176,7 @@ export const jaMessages = {
   'report.submit.photoHint': 'カメラまたはギャラリーから（最大5枚）',
   'report.submit.offline': 'オフライン中：提出は未送信キューに保存され、復帰後に自動送信されます。',
   'report.submit.rejectedBanner': '差し戻されました。修正して再提出してください。',
+  'report.submit.mobileTitle': '新規日報',
 
   // ── template management ──────────────────────────────────────────
   'template.list.title': 'テンプレート管理',
