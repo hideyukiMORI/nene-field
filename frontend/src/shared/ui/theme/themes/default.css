@@ -1,45 +1,93 @@
 /*
- * Default theme — the complete semantic token set. Every visual value in the app
- * lives here; components consume Tailwind semantic utilities (bg-surface, text-fg,
- * border-border, bg-accent, …) and never hard-code color/font literals.
+ * Default theme — NeNe Field hi-fi design tokens (blue-teal / IBM Plex Sans JP).
+ * Source of truth: design_handoff_nene_field/tokens.css (hex committed values),
+ * mapped onto Tailwind v4 semantic tokens. Components consume semantic utilities
+ * (bg-surface-raised, text-fg, border-border, bg-accent, …) and never hard-code
+ * color/font/shadow literals (frontend-standards.md).
  *
- * Utility names derive from the part after --color-, e.g. --color-surface →
- * bg-surface / text-surface; --color-fg → text-fg.
+ * Utility names derive from the part after --color-, e.g. --color-surface-raised →
+ * bg-surface-raised; --color-fg → text-fg. --radius-* → rounded-*, --shadow-* →
+ * shadow-*, --font-* → font-*.
  */
 @theme {
-  /* surfaces */
-  --color-surface: oklch(98% 0.0025 175);
-  --color-surface-raised: oklch(100% 0 0);
-  --color-surface-overlay: oklch(97% 0.0035 175);
+  /* ── surfaces ───────────────────────────────────────────────── */
+  --color-surface: #eef2f3; /* app background (body)            --bg-app */
+  --color-surface-raised: #ffffff; /* cards / panels                  --surface */
+  --color-surface-overlay: #f1f4f5; /* soft hover / inset              --bg-soft */
+  --color-surface-soft: #f4f7f7; /* --bg-soft-2 */
+  --color-surface-faint: #fafbfb; /* --bg-soft-3 */
 
-  /* ink */
-  --color-fg: oklch(27% 0.011 172);
-  --color-fg-muted: oklch(50% 0.01 172);
-  --color-fg-faint: oklch(63% 0.008 172);
-  --color-fg-inverse: oklch(98.5% 0.006 165);
+  /* ── ink ────────────────────────────────────────────────────── */
+  --color-fg: #16201f;
+  --color-fg-strong: #1f1f1d;
+  --color-fg-muted: #5f6b6e;
+  --color-fg-muted-2: #6b7679;
+  --color-fg-faint: #8a9498;
+  --color-fg-faint-2: #9aa3a5;
+  --color-fg-inverse: #ffffff;
 
-  /* borders */
-  --color-border: oklch(90.5% 0.006 172);
-  --color-border-strong: oklch(83.5% 0.008 172);
+  /* ── borders ────────────────────────────────────────────────── */
+  --color-border: #e7ecec;
+  --color-border-2: #eef2f2;
+  --color-border-input: #d3dadb;
+  --color-border-strong: #cdd5d6;
 
-  /* brand — muted pine green */
-  --color-accent: oklch(41% 0.046 167);
-  --color-accent-hover: oklch(34% 0.045 168);
-  --color-accent-soft: oklch(93.5% 0.018 167);
-  --color-accent-deep: oklch(28% 0.036 170);
+  /* ── brand — blue-teal ──────────────────────────────────────── */
+  --color-accent: #1488ad; /* primary action / FAB / active / link */
+  --color-accent-hover: #0f6f93; /* --ac-ink (darker teal) */
+  --color-accent-soft: #e0f0f6; /* chip bg / soft surface */
+  --color-accent-soft-border: #b2dcea;
+  --color-accent-ink: #0f6f93; /* text on soft / headings on light */
+  --color-accent-deep: #0e4a5e; /* sidebar / app bar / brand surface */
+  --color-accent-deep-2: #0a3a4a; /* sidebar gradient end */
 
-  /* status */
-  --color-danger: oklch(49% 0.115 28);
-  --color-danger-soft: oklch(95% 0.03 28);
-  --color-success: oklch(47% 0.07 155);
-  --color-success-soft: oklch(94.5% 0.028 155);
-  --color-warn: oklch(55% 0.075 75);
-  --color-warn-soft: oklch(95% 0.035 75);
-  --color-info: oklch(50% 0.06 245);
-  --color-info-soft: oklch(95% 0.025 245);
+  /* ── status (semantic, theme-independent) ───────────────────── */
+  --color-submitted: #2a6f9e;
+  --color-submitted-soft: #e6eef6;
+  --color-approved: #1f8a5b;
+  --color-approved-soft: #e3f3ea;
+  --color-rejected: #c0492f;
+  --color-rejected-soft: #fbe9e4;
+  --color-draft: #6b7679;
+  --color-draft-soft: #eef1f2;
+  --color-ai: #6d52a8;
+  --color-ai-soft: #f1ecf7;
 
-  /* typography */
-  --font-sans:
-    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', system-ui, -apple-system,
-    'Segoe UI', sans-serif;
+  /* general-purpose aliases (kept aligned with the status palette so existing
+     Badge/Alert tones re-skin automatically) */
+  --color-info: #2a6f9e;
+  --color-info-soft: #e6eef6;
+  --color-success: #1f8a5b;
+  --color-success-soft: #e3f3ea;
+  --color-danger: #c0492f;
+  --color-danger-soft: #fbe9e4;
+  --color-warn: #b07d1a;
+  --color-warn-soft: #fbf1da;
+
+  /* button fills */
+  --color-btn-success: #2f7d57;
+  --color-btn-danger: #c0492f;
+  --color-btn-disabled: #dcc4bd;
+
+  /* approval pulse / toast accents */
+  --color-pulse: #1f8a5b;
+  --color-toast-check: #5fd6a0;
+
+  /* ── radius ─────────────────────────────────────────────────── */
+  --radius-pill: 999px; /* buttons / chips / badges (committed) */
+  --radius-input: 11px; /* inputs / small cards (10–12) */
+  --radius-card: 16px; /* cards (13–18) */
+  --radius-modal: 18px;
+  --radius-sheet: 26px; /* mobile bottom sheet */
+
+  /* ── shadows ────────────────────────────────────────────────── */
+  --shadow-card: 0 1px 2px rgba(16, 32, 36, 0.05), 0 6px 18px -8px rgba(16, 32, 36, 0.12);
+  --shadow-btn: 0 8px 16px -8px rgba(20, 136, 173, 0.6);
+  --shadow-btn-success: 0 8px 16px -8px rgba(31, 138, 91, 0.5);
+  --shadow-modal: 0 30px 70px -20px rgba(0, 0, 0, 0.45);
+  --shadow-drawer: -22px 0 54px -22px rgba(0, 0, 0, 0.4);
+  --shadow-fab: 0 12px 26px -8px rgba(20, 136, 173, 0.75);
+
+  /* ── typography ─────────────────────────────────────────────── */
+  --font-sans: 'IBM Plex Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }

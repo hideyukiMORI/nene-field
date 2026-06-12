@@ -6,5 +6,85 @@
     font-family: var(--font-sans);
     color: var(--color-fg);
     background: var(--color-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Tabular figures for the dense numeric UI (KPI values, dates, counts). */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ── motion (design handoff §4) ───────────────────────────────────────────────
+   Reusable keyframes consumed by overlay / pulse / toast components. */
+@keyframes nfpop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nfslide {
+  0% {
+    opacity: 0.4;
+    transform: translateX(34px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nfup {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nfcheckpop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes nfring {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+@keyframes nffade {
+  0% {
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
