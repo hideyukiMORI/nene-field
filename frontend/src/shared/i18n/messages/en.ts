@@ -193,6 +193,11 @@ export const enMessages: MessageCatalog = {
   'export.download': 'Download CSV',
   'export.hint': 'Set the work-date range to export.',
   'export.error': 'Export failed.',
+  'export.preview.title': 'Preview',
+  'export.preview.count': '{{count}} matching',
+  'export.preview.empty': 'No matching reports.',
+  'export.downloaded': 'Download started',
+  'export.legalNote': 'This CSV is not a statutory record (attendance / payroll ledger).',
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': 'Audit log',

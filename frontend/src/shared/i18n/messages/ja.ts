@@ -192,6 +192,11 @@ export const jaMessages = {
   'export.download': 'CSVダウンロード',
   'export.hint': '作業日の開始・終了を指定してください。',
   'export.error': 'エクスポートに失敗しました。',
+  'export.preview.title': 'プレビュー',
+  'export.preview.count': '該当 {{count}} 件',
+  'export.preview.empty': '該当するレポートはありません。',
+  'export.downloaded': 'ダウンロードを開始しました',
+  'export.legalNote': 'このCSVは法定帳簿（出勤簿・賃金台帳）ではありません。',
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': '監査ログ',

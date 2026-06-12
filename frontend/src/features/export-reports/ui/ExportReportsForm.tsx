@@ -1,9 +1,21 @@
-import { useState } from 'react'
-import { REPORT_STATUSES, type ReportStatus } from '@/entities/report'
+import { useMemo, useState } from 'react'
+import { REPORT_STATUSES, useReportListQuery, type ReportStatus } from '@/entities/report'
 import { useUserListQuery } from '@/entities/user'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
-import { Button, Field, InlineAlert, Input, Select, Stack, Text } from '@/shared/ui'
+import {
+  Badge,
+  Button,
+  Card,
+  Chip,
+  Field,
+  InlineAlert,
+  Input,
+  Select,
+  Stack,
+  Text,
+  useToast,
+} from '@/shared/ui'
 import { useExportReports } from '../hooks/use-export-reports'
 
 const statusLabelKey: Record<ReportStatus, MessageKey> = {
@@ -15,8 +27,10 @@ const statusLabelKey: Record<ReportStatus, MessageKey> = {
 
 export function ExportReportsForm() {
   const { t } = useTranslation()
+  const toast = useToast()
   const { exportCsv, isExporting, errorKey } = useExportReports()
   const users = useUserListQuery({ limit: 100, offset: 0 })
+  const reports = useReportListQuery({ limit: 100, offset: 0 })
 
   const [workDateFrom, setWorkDateFrom] = useState('')
   const [workDateTo, setWorkDateTo] = useState('')
@@ -30,7 +44,31 @@ export function ExportReportsForm() {
     )
   }
 
+  // Live preview against the loaded page (the export endpoint is authoritative).
+  const matched = useMemo(() => {
+    const items = reports.data?.items ?? []
+    return items.filter((r) => {
+      if (statuses.length > 0 && !statuses.includes(r.status)) return false
+      if (userId !== '' && r.userId !== userId) return false
+      if (projectCode !== '' && (r.projectCode ?? '') !== projectCode) return false
+      if (workDateFrom !== '' && r.workDate < workDateFrom) return false
+      if (workDateTo !== '' && r.workDate > workDateTo) return false
+      return true
+    })
+  }, [reports.data, statuses, userId, projectCode, workDateFrom, workDateTo])
+
   const canExport = workDateFrom !== '' && workDateTo !== '' && !isExporting
+
+  const onDownload = (): void => {
+    exportCsv({
+      workDateFrom,
+      workDateTo,
+      statuses,
+      ...(userId !== '' ? { userId } : {}),
+      ...(projectCode !== '' ? { projectCode } : {}),
+    })
+    toast.show(t('export.downloaded'))
+  }
 
   return (
     <Stack gap="md">
@@ -43,94 +81,111 @@ export function ExportReportsForm() {
 
       {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
 
-      <div className="border border-border bg-surface-raised p-4">
-        <Stack gap="md">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <Field label={t('export.workDateFrom')} htmlFor="export-from">
-              <Input
-                id="export-from"
-                type="date"
-                value={workDateFrom}
-                onChange={(event) => {
-                  setWorkDateFrom(event.target.value)
-                }}
-              />
-            </Field>
-            <Field label={t('export.workDateTo')} htmlFor="export-to">
-              <Input
-                id="export-to"
-                type="date"
-                value={workDateTo}
-                onChange={(event) => {
-                  setWorkDateTo(event.target.value)
-                }}
-              />
-            </Field>
-            <Field label={t('export.user')} htmlFor="export-user">
-              <Select
-                id="export-user"
-                value={userId}
-                onChange={(event) => {
-                  setUserId(event.target.value)
-                }}
-              >
-                <option value="">{t('export.allUsers')}</option>
-                {(users.data?.items ?? []).map((user) => (
-                  <option key={user.id} value={user.id}>
-                    {user.name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label={t('export.projectCode')} htmlFor="export-project">
-              <Input
-                id="export-project"
-                value={projectCode}
-                onChange={(event) => {
-                  setProjectCode(event.target.value)
-                }}
-              />
-            </Field>
-          </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* filters */}
+        <Card>
+          <Stack gap="md">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Field label={t('export.workDateFrom')} htmlFor="export-from">
+                <Input
+                  id="export-from"
+                  type="date"
+                  value={workDateFrom}
+                  onChange={(event) => {
+                    setWorkDateFrom(event.target.value)
+                  }}
+                />
+              </Field>
+              <Field label={t('export.workDateTo')} htmlFor="export-to">
+                <Input
+                  id="export-to"
+                  type="date"
+                  value={workDateTo}
+                  onChange={(event) => {
+                    setWorkDateTo(event.target.value)
+                  }}
+                />
+              </Field>
+              <Field label={t('export.user')} htmlFor="export-user">
+                <Select
+                  id="export-user"
+                  value={userId}
+                  onChange={(event) => {
+                    setUserId(event.target.value)
+                  }}
+                >
+                  <option value="">{t('export.allUsers')}</option>
+                  {(users.data?.items ?? []).map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+              <Field label={t('export.projectCode')} htmlFor="export-project">
+                <Input
+                  id="export-project"
+                  value={projectCode}
+                  onChange={(event) => {
+                    setProjectCode(event.target.value)
+                  }}
+                />
+              </Field>
+            </div>
 
-          <fieldset>
-            <legend className="mb-1 text-sm font-medium text-fg">{t('export.statuses')}</legend>
-            <div className="flex flex-wrap gap-4">
-              {REPORT_STATUSES.map((status) => (
-                <label key={status} className="flex items-center gap-2 text-sm text-fg">
-                  <input
-                    type="checkbox"
-                    checked={statuses.includes(status)}
-                    onChange={() => {
+            <div>
+              <span className="mb-2 block text-sm font-medium text-fg">{t('export.statuses')}</span>
+              <div className="flex flex-wrap gap-1.5">
+                {REPORT_STATUSES.map((status) => (
+                  <Chip
+                    key={status}
+                    active={statuses.includes(status)}
+                    onClick={() => {
                       toggleStatus(status)
                     }}
-                  />
-                  {t(statusLabelKey[status])}
-                </label>
-              ))}
+                  >
+                    {t(statusLabelKey[status])}
+                  </Chip>
+                ))}
+              </div>
             </div>
-          </fieldset>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              disabled={!canExport}
-              onClick={() => {
-                exportCsv({
-                  workDateFrom,
-                  workDateTo,
-                  statuses,
-                  ...(userId !== '' ? { userId } : {}),
-                  ...(projectCode !== '' ? { projectCode } : {}),
-                })
-              }}
-            >
-              {t('export.download')}
-            </Button>
-            {(workDateFrom === '' || workDateTo === '') && (
-              <span className="text-xs text-fg-muted">{t('export.hint')}</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button disabled={!canExport} onClick={onDownload}>
+                ⬇ {t('export.download')}
+              </Button>
+              {(workDateFrom === '' || workDateTo === '') && (
+                <span className="text-xs text-fg-muted">{t('export.hint')}</span>
+              )}
+            </div>
+          </Stack>
+        </Card>
+
+        {/* live preview */}
+        <Card>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-fg">{t('export.preview.title')}</h3>
+            <Badge tone="info">{t('export.preview.count', { count: matched.length })}</Badge>
+          </div>
+          <div className="mt-3 flex flex-col gap-2">
+            {matched.length === 0 ? (
+              <p className="text-sm text-fg-faint">{t('export.preview.empty')}</p>
+            ) : (
+              matched.slice(0, 5).map((r) => (
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between gap-2 rounded-input bg-surface-overlay px-3 py-2 text-sm"
+                >
+                  <span className="truncate text-fg">{r.title}</span>
+                  <span className="flex-none text-xs text-fg-faint tnum">{r.workDate}</span>
+                </div>
+              ))
             )}
           </div>
-        </Stack>
+          <div className="mt-3">
+            <InlineAlert variant="warn">{t('export.legalNote')}</InlineAlert>
+          </div>
+        </Card>
       </div>
     </Stack>
   )
