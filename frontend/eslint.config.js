@@ -4,6 +4,7 @@ import importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import storybook from 'eslint-plugin-storybook'
 import globals from 'globals'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -37,7 +38,15 @@ const importZones = [
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', 'coverage', 'src/shared/api/schema.gen.ts'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'coverage',
+      'storybook-static',
+      'playwright-report',
+      'test-results',
+      'src/shared/api/schema.gen.ts',
+    ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked],
@@ -89,12 +98,23 @@ export default tseslint.config(
     },
   },
   {
-    files: ['vite.config.ts', 'vitest.config.ts', 'eslint.config.js'],
+    files: ['vite.config.ts', 'vitest.config.ts', 'eslint.config.js', '.storybook/**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: 2023,
       globals: { ...globals.browser, ...globals.node },
     },
   },
+  {
+    // Playwright e2e specs run under the node test runner, not the typed app
+    // project, so they use the untyped recommended rules.
+    files: ['e2e/**/*.ts', 'playwright.config.ts'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2023,
+      globals: { ...globals.node },
+    },
+  },
+  ...storybook.configs['flat/recommended'],
   eslintConfigPrettier,
 )

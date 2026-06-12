@@ -29,7 +29,8 @@
 - [x] Audit log viewer + CSV ダウンロード UI（フィルタ・ページング）(#53)
 - [x] Export 画面（レポート CSV・期間/ユーザー/ステータス）(#55)
 - [x] Settings / 組織設定 UI（名前/AI/通知）(#57)
-- [ ] Docker Compose dev environment / Storybook + Playwright e2e
+- [x] Storybook + Playwright e2e（primitives/components stories・サインイン/言語切替/レポート詳細 e2e）(#59)
+- [ ] Docker Compose dev environment
 
 ## Upcoming
 
@@ -38,4 +39,4 @@
 
 See [`docs/roadmap.md`](../roadmap.md) for full phase breakdown.
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
