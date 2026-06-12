@@ -235,6 +235,12 @@ export const jaMessages = {
   'user.role.superadmin': 'スーパー管理者',
   'user.delete.confirm': 'このユーザーを削除しますか？',
   'user.delete.error': '削除に失敗しました。',
+  'user.invite.title': 'ユーザーを招待',
+  'user.invite.submit': '招待する',
+  'user.invite.tempNote': '仮パスワードがメールで送信されます。',
+  'user.actions.disable': '無効化',
+  'user.actions.enable': '有効化',
+  'user.list.selfBadge': '自分',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': '承認',

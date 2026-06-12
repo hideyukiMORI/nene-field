@@ -236,6 +236,12 @@ export const enMessages: MessageCatalog = {
   'user.role.superadmin': 'Superadmin',
   'user.delete.confirm': 'Delete this user?',
   'user.delete.error': 'Failed to delete.',
+  'user.invite.title': 'Invite user',
+  'user.invite.submit': 'Send invite',
+  'user.invite.tempNote': 'A temporary password will be emailed.',
+  'user.actions.disable': 'Disable',
+  'user.actions.enable': 'Enable',
+  'user.list.selfBadge': 'You',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': 'Review',
