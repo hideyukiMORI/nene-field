@@ -339,7 +339,9 @@ export const jaMessages = {
   'report.review.rejected': '差し戻しました',
 
   // ── report list (admin: filters / bulk / drawer) ─────────────────
-  'report.list.search': 'タイトル・担当者で検索',
+  'report.list.search': 'タイトル・提出者・現場で検索',
+  'report.list.csvExport': 'CSV出力',
+  'report.list.count': '{{count}} 件',
   'report.list.filter.all': 'すべて',
   'report.list.submitterAll': 'すべての担当者',
   'report.list.aiSummaryNone': '— 要約なし',

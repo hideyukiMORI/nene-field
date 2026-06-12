@@ -340,7 +340,9 @@ export const enMessages: MessageCatalog = {
   'report.review.rejected': 'Sent back',
 
   // ── report list (admin: filters / bulk / drawer) ─────────────────
-  'report.list.search': 'Search by title or person',
+  'report.list.search': 'Search title, submitter, site',
+  'report.list.csvExport': 'Export CSV',
+  'report.list.count': '{{count}}',
   'report.list.filter.all': 'All',
   'report.list.submitterAll': 'All people',
   'report.list.aiSummaryNone': '— no summary',
