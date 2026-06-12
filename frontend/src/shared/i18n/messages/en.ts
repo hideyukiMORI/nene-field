@@ -324,6 +324,7 @@ export const enMessages: MessageCatalog = {
   'user.actions.disable': 'Disable',
   'user.actions.enable': 'Enable',
   'user.list.selfBadge': 'You',
+  'user.list.count': '{{active}} active / {{total}} total',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': 'Review',

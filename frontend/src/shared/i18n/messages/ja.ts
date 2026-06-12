@@ -323,6 +323,7 @@ export const jaMessages = {
   'user.actions.disable': '無効化',
   'user.actions.enable': '有効化',
   'user.list.selfBadge': '自分',
+  'user.list.count': '有効 {{active}} / 全 {{total}} 名',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': '承認',
