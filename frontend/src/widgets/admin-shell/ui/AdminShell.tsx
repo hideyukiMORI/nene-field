@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSyncExternalStore } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { canManageOrganization } from '@/entities/auth/enum'
 import { getCurrentUser, signOut, subscribeCurrentUser } from '@/entities/auth/session'
 import { useTranslation } from '@/shared/i18n'
@@ -39,8 +39,33 @@ const TITLE_BY_PATH: Record<string, MessageKey> = {
   '/settings': 'common.nav.settings',
 }
 
-// Placeholder notifications until the notification entity is wired (task #18).
-const MOCK_NOTIFICATIONS: NotificationItem[] = []
+// Seed notifications (dummy data per design handoff §0; wire to an entity later).
+const SEED_NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: 'n1',
+    type: 'submitted',
+    title: '山田 太郎さんが日報を提出',
+    sub: '現場A 基礎打設',
+    time: '5分前',
+    unread: true,
+  },
+  {
+    id: 'n2',
+    type: 'rejected',
+    title: '配筋検査が差し戻されました',
+    sub: '写真が不足しています',
+    time: '1時間前',
+    unread: true,
+  },
+  {
+    id: 'n3',
+    type: 'approved',
+    title: '現場B 仮設足場を承認',
+    sub: '田中 一郎',
+    time: '昨日',
+    unread: false,
+  },
+]
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
   return cn(
@@ -53,11 +78,22 @@ export function AdminShell() {
   const { t, locale, setLocale } = useTranslation()
   const user = useSyncExternalStore(subscribeCurrentUser, getCurrentUser)
   const location = useLocation()
+  const navigate = useNavigate()
   const [bellOpen, setBellOpen] = useState(false)
+  const [notifications, setNotifications] = useState<NotificationItem[]>(SEED_NOTIFICATIONS)
 
   const canManage = user !== null && canManageOrganization(user.role)
   const titleKey = TITLE_BY_PATH[location.pathname] ?? 'common.app.name'
-  const unread = MOCK_NOTIFICATIONS.filter((n) => n.unread).length
+  const unread = notifications.filter((n) => n.unread).length
+
+  const markAllRead = (): void => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })))
+  }
+  const selectNotification = (id: string): void => {
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, unread: false } : n)))
+    setBellOpen(false)
+    void navigate('/reports')
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-surface">
@@ -150,15 +186,11 @@ export function AdminShell() {
             {bellOpen && (
               <div className="absolute right-0 top-12 w-80 overflow-hidden rounded-card border border-border bg-surface-raised shadow-modal animate-nfpop">
                 <NotificationList
-                  items={MOCK_NOTIFICATIONS}
+                  items={notifications}
                   markAllLabel={t('shell.notifications.markAll')}
                   emptyLabel={t('shell.notifications.empty')}
-                  onSelect={() => {
-                    setBellOpen(false)
-                  }}
-                  onMarkAllRead={() => {
-                    setBellOpen(false)
-                  }}
+                  onSelect={selectNotification}
+                  onMarkAllRead={markAllRead}
                 />
               </div>
             )}
