@@ -54,6 +54,11 @@ export const enMessages: MessageCatalog = {
   'auth.login.submitting': 'Signing in…',
   'auth.login.sessionExpired': 'Your session expired. Please sign in again.',
   'auth.login.invalid': 'Incorrect email or password.',
+  'auth.login.tagline': 'Daily field reports, right in your pocket.',
+  'auth.login.lead': 'Submit from your phone, approve in one tap, review fast with AI summaries.',
+  'auth.login.point.speed': 'Submit in 3 min',
+  'auth.login.point.bilingual': '日本語 / English',
+  'auth.login.point.ai': 'AI summary',
 
   // ── reports list ─────────────────────────────────────────────────
   'report.list.title': 'Reports',

@@ -53,6 +53,11 @@ export const jaMessages = {
   'auth.login.submitting': 'サインイン中…',
   'auth.login.sessionExpired': 'セッションの有効期限が切れました。再度ログインしてください。',
   'auth.login.invalid': 'メールアドレスまたはパスワードが正しくありません。',
+  'auth.login.tagline': '現場の日報を、ポケットひとつで。',
+  'auth.login.lead': 'スマホから提出、ワンタップで承認。AI要約でレビューも素早く。',
+  'auth.login.point.speed': '3分で提出',
+  'auth.login.point.bilingual': '日本語 / English',
+  'auth.login.point.ai': 'AI要約',
 
   // ── reports list ─────────────────────────────────────────────────
   'report.list.title': '日報一覧',
