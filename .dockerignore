@@ -1,0 +1,16 @@
+.git
+.cursor
+vendor
+node_modules
+frontend/node_modules
+.phpunit.cache
+.phpstan.cache
+.php-cs-fixer.cache
+coverage
+var/attachments
+var/*.sqlite
+public_html/assets
+public_html/admin
+frontend/storybook-static
+frontend/playwright-report
+frontend/test-results
