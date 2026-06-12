@@ -2,8 +2,8 @@ import { useApproveReportMutation, useRejectReportMutation } from '@/entities/re
 import type { MessageKey } from '@/shared/i18n'
 
 export interface ReviewReport {
-  approve: (comment?: string) => void
-  reject: (comment: string) => void
+  approve: (comment?: string, onDone?: () => void) => void
+  reject: (comment: string, onDone?: () => void) => void
   isPending: boolean
   errorKey: MessageKey | null
 }
@@ -19,11 +19,17 @@ export function useReviewReport(reportId: string): ReviewReport {
   const errored = approveMutation.error !== null || rejectMutation.error !== null
 
   return {
-    approve: (comment) => {
-      approveMutation.mutate({ reportId, ...(comment !== undefined ? { comment } : {}) })
+    approve: (comment, onDone) => {
+      approveMutation.mutate(
+        { reportId, ...(comment !== undefined && comment !== '' ? { comment } : {}) },
+        onDone !== undefined ? { onSuccess: onDone } : undefined,
+      )
     },
-    reject: (comment) => {
-      rejectMutation.mutate({ reportId, comment })
+    reject: (comment, onDone) => {
+      rejectMutation.mutate(
+        { reportId, comment },
+        onDone !== undefined ? { onSuccess: onDone } : undefined,
+      )
     },
     isPending: approveMutation.isPending || rejectMutation.isPending,
     errorKey: errored ? 'report.review.error' : null,

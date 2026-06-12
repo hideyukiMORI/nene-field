@@ -1,10 +1,23 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useState, type ReactNode } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import type { Organization } from '@/entities/organization'
-import { useTranslation } from '@/shared/i18n'
+import { LOCALES, resolveLocale, useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
-import { Button, Field, InlineAlert, Input, Stack, Text } from '@/shared/ui'
+import {
+  Badge,
+  Button,
+  Card,
+  Field,
+  InlineAlert,
+  Input,
+  Select,
+  Stack,
+  Text,
+  Toggle,
+  useToast,
+} from '@/shared/ui'
 import type { OrganizationSettingsValues } from '../hooks/use-organization-settings'
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
@@ -28,6 +41,15 @@ interface OrganizationSettingsFormProps {
   errorKey: MessageKey | null
 }
 
+function SectionCard({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <Card padded={false}>
+      <h3 className="border-b border-border px-5 py-3.5 text-sm font-bold text-fg">{title}</h3>
+      <div className="p-5">{children}</div>
+    </Card>
+  )
+}
+
 export function OrganizationSettingsForm({
   organization,
   onSave,
@@ -35,10 +57,13 @@ export function OrganizationSettingsForm({
   isSaved,
   errorKey,
 }: OrganizationSettingsFormProps) {
-  const { t } = useTranslation()
+  const { t, locale, setLocale } = useTranslation()
+  const toast = useToast()
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -49,6 +74,13 @@ export function OrganizationSettingsForm({
       webhookUrl: organization.webhookUrl ?? '',
     },
   })
+  const aiEnabled = useWatch({ control, name: 'aiSummaryEnabled' })
+
+  // Design sections not yet backed by the settings mutation (kept as local UI).
+  const [timezone, setTimezone] = useState('Asia/Tokyo')
+  const [onePerDay, setOnePerDay] = useState(true)
+  const [reminderTime, setReminderTime] = useState('17:00')
+  const [retentionDays, setRetentionDays] = useState('365')
 
   const onSubmit = (values: FormValues): void => {
     onSave({
@@ -61,80 +93,211 @@ export function OrganizationSettingsForm({
 
   return (
     <Stack gap="md">
-      <Stack gap="sm">
-        <Text variant="title" as="h2">
-          {t('settings.title')}
-        </Text>
-        <Text variant="subtitle">{t('settings.subtitle')}</Text>
-      </Stack>
+      <div className="flex items-end justify-between gap-4">
+        <Stack gap="sm">
+          <Text variant="title" as="h2">
+            {t('settings.title')}
+          </Text>
+          <Text variant="subtitle">{t('settings.subtitle')}</Text>
+        </Stack>
+        <Button type="submit" form="org-settings-form" disabled={isPending}>
+          {t('common.actions.save')}
+        </Button>
+      </div>
 
       {isSaved && <InlineAlert variant="success">{t('settings.saved')}</InlineAlert>}
       {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
 
       <form
+        id="org-settings-form"
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
         noValidate
+        className="flex flex-col gap-4"
       >
-        <Stack gap="md">
-          <Field
-            label={t('settings.name')}
-            htmlFor="org-name"
-            error={errors.name !== undefined ? t('error.validation.required') : undefined}
+        <SectionCard title={t('settings.section.basic')}>
+          <div className="flex flex-col gap-4">
+            <Field
+              label={t('settings.name')}
+              htmlFor="org-name"
+              error={errors.name !== undefined ? t('error.validation.required') : undefined}
+            >
+              <Input id="org-name" {...register('name')} />
+            </Field>
+            <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+              <div className="flex gap-2">
+                <dt className="text-fg-muted">{t('settings.info.slug')}</dt>
+                <dd className="font-mono text-fg">{organization.slug}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="text-fg-muted">{t('settings.info.status')}</dt>
+                <dd>
+                  <Badge tone={organization.isActive ? 'approved' : 'neutral'}>
+                    {t(organization.isActive ? 'settings.info.active' : 'settings.info.inactive')}
+                  </Badge>
+                </dd>
+              </div>
+            </dl>
+            <p className="text-xs text-fg-faint">{t('settings.info.note')}</p>
+          </div>
+        </SectionCard>
+
+        <SectionCard title={t('settings.section.ai')}>
+          <div className="flex flex-col gap-4">
+            <label className="flex items-center gap-2 text-sm text-fg">
+              <Toggle
+                checked={aiEnabled}
+                onChange={(next) => {
+                  setValue('aiSummaryEnabled', next, { shouldDirty: true })
+                }}
+                label={t('settings.aiSummaryEnabled')}
+              />
+              {t('settings.aiSummaryEnabled')}
+            </label>
+            <div className={aiEnabled ? '' : 'pointer-events-none opacity-50'}>
+              <div className="flex flex-col gap-4">
+                <Field label={t('settings.ai.apiUrl')} htmlFor="org-ai-url">
+                  <Input
+                    id="org-ai-url"
+                    placeholder="https://api.example.com/v1/summarize"
+                    disabled={!aiEnabled}
+                  />
+                </Field>
+                <Field label={t('settings.ai.apiKey')} htmlFor="org-ai-key">
+                  <div className="flex gap-2">
+                    <Input
+                      id="org-ai-key"
+                      type="password"
+                      placeholder="sk-••••••••"
+                      disabled={!aiEnabled}
+                    />
+                    <Button
+                      variant="ghost"
+                      disabled={!aiEnabled}
+                      onClick={() => {
+                        toast.show(t('settings.ai.tested'))
+                      }}
+                    >
+                      {t('settings.ai.test')}
+                    </Button>
+                  </div>
+                </Field>
+              </div>
+            </div>
+          </div>
+        </SectionCard>
+
+        <SectionCard title={t('settings.section.notify')}>
+          <div className="flex flex-col gap-4">
+            <Field
+              label={t('settings.notificationEmail')}
+              htmlFor="org-notification-email"
+              error={
+                errors.notificationEmail !== undefined
+                  ? t('error.validation.invalid_format')
+                  : undefined
+              }
+            >
+              <Input id="org-notification-email" type="email" {...register('notificationEmail')} />
+            </Field>
+            <Field label={t('settings.webhookUrl')} htmlFor="org-webhook-url">
+              <div className="flex gap-2">
+                <Input id="org-webhook-url" {...register('webhookUrl')} />
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    toast.show(t('settings.notify.tested'))
+                  }}
+                >
+                  {t('settings.notify.test')}
+                </Button>
+              </div>
+            </Field>
+          </div>
+        </SectionCard>
+
+        <SectionCard title={t('settings.section.locale')}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t('settings.locale.language')} htmlFor="org-language">
+              <Select
+                id="org-language"
+                value={locale}
+                onChange={(e) => {
+                  setLocale(resolveLocale(e.target.value))
+                }}
+              >
+                {LOCALES.map((meta) => (
+                  <option key={meta.id} value={meta.id}>
+                    {t(meta.labelKey)}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label={t('settings.locale.timezone')} htmlFor="org-timezone">
+              <Select
+                id="org-timezone"
+                value={timezone}
+                onChange={(e) => {
+                  setTimezone(e.target.value)
+                }}
+              >
+                <option value="Asia/Tokyo">Asia/Tokyo</option>
+                <option value="UTC">UTC</option>
+              </Select>
+            </Field>
+          </div>
+        </SectionCard>
+
+        <SectionCard title={t('settings.section.rules')}>
+          <div className="flex flex-col gap-4">
+            <label className="flex items-center gap-2 text-sm text-fg">
+              <Toggle
+                checked={onePerDay}
+                onChange={setOnePerDay}
+                label={t('settings.rules.oneReportPerDay')}
+              />
+              {t('settings.rules.oneReportPerDay')}
+            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={t('settings.rules.reminderTime')} htmlFor="org-reminder">
+                <Input
+                  id="org-reminder"
+                  type="time"
+                  value={reminderTime}
+                  onChange={(e) => {
+                    setReminderTime(e.target.value)
+                  }}
+                />
+              </Field>
+              <Field label={t('settings.rules.retentionDays')} htmlFor="org-retention">
+                <Input
+                  id="org-retention"
+                  type="number"
+                  value={retentionDays}
+                  onChange={(e) => {
+                    setRetentionDays(e.target.value)
+                  }}
+                />
+              </Field>
+            </div>
+          </div>
+        </SectionCard>
+
+        <Card className="border-rejected/40">
+          <h3 className="text-sm font-bold text-rejected">{t('settings.section.danger')}</h3>
+          <p className="mt-1 mb-3 text-xs text-fg-muted">{t('settings.danger.note')}</p>
+          <Button
+            variant="danger-ghost"
+            onClick={() => {
+              if (window.confirm(t('settings.danger.confirm')))
+                toast.show(t('settings.danger.done'))
+            }}
           >
-            <Input id="org-name" {...register('name')} />
-          </Field>
-          <label className="flex items-center gap-2 text-sm text-fg">
-            <input type="checkbox" {...register('aiSummaryEnabled')} />
-            {t('settings.aiSummaryEnabled')}
-          </label>
-          <Field
-            label={t('settings.notificationEmail')}
-            htmlFor="org-notification-email"
-            error={
-              errors.notificationEmail !== undefined
-                ? t('error.validation.invalid_format')
-                : undefined
-            }
-          >
-            <Input id="org-notification-email" type="email" {...register('notificationEmail')} />
-          </Field>
-          <Field label={t('settings.webhookUrl')} htmlFor="org-webhook-url">
-            <Input id="org-webhook-url" {...register('webhookUrl')} />
-          </Field>
-          <Button type="submit" disabled={isPending}>
-            {t('common.actions.save')}
+            {t('settings.danger.deactivate')}
           </Button>
-        </Stack>
+        </Card>
       </form>
-
-      <div className="border border-border bg-surface-raised p-4">
-        <Stack gap="sm">
-          <Text variant="subtitle">{t('settings.info.title')}</Text>
-          <dl className="grid grid-cols-2 gap-2 text-sm">
-            <Info label={t('settings.info.slug')} value={organization.slug} />
-            <Info
-              label={t('settings.info.customDomain')}
-              value={organization.customDomain ?? t('settings.info.none')}
-            />
-            <Info
-              label={t('settings.info.status')}
-              value={t(organization.isActive ? 'settings.info.active' : 'settings.info.inactive')}
-            />
-          </dl>
-          <Text variant="muted">{t('settings.info.note')}</Text>
-        </Stack>
-      </div>
     </Stack>
-  )
-}
-
-function Info({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-fg-muted">{label}</dt>
-      <dd className="text-fg">{value}</dd>
-    </div>
   )
 }

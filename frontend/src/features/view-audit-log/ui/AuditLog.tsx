@@ -3,16 +3,24 @@ import type { AuditEvent } from '@/entities/audit-event'
 import { useTranslation } from '@/shared/i18n'
 import { formatJstDateTime } from '@/shared/lib/format-date'
 import {
+  Badge,
   Button,
+  Card,
   EmptyState,
   ErrorState,
   Field,
   InlineAlert,
   Input,
   LoadingState,
+  Modal,
   Select,
   Stack,
+  Table,
+  TableWrap,
+  Td,
   Text,
+  Th,
+  Tr,
 } from '@/shared/ui'
 import { useAuditLog, type AuditFilterValues } from '../hooks/use-audit-log'
 import { useExportAudit } from '../hooks/use-export-audit'
@@ -25,6 +33,16 @@ const ENTITY_TYPES = [
   'Organization',
   'AuditEvent',
 ]
+
+type BadgeTone = 'approved' | 'rejected' | 'submitted' | 'info' | 'neutral'
+
+function eventTone(eventName: string): BadgeTone {
+  if (eventName.includes('approved')) return 'approved'
+  if (eventName.includes('rejected') || eventName.includes('deleted')) return 'rejected'
+  if (eventName.includes('submitted')) return 'submitted'
+  if (eventName.includes('created')) return 'info'
+  return 'neutral'
+}
 
 function FilterBar({
   initial,
@@ -47,7 +65,7 @@ function FilterBar({
   const canExport = values.occurredFrom !== '' && values.occurredTo !== ''
 
   return (
-    <div className="border border-border bg-surface-raised p-4">
+    <Card>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Field label={t('audit.filter.entityType')} htmlFor="audit-entity-type">
           <Select
@@ -129,49 +147,76 @@ function FilterBar({
         </Button>
         {!canExport && <span className="text-xs text-fg-muted">{t('audit.export.hint')}</span>}
       </div>
-    </div>
+    </Card>
   )
 }
 
-function AuditTable({ events }: { events: AuditEvent[] }) {
+function fmt(value: unknown): string {
+  if (value === null || value === undefined) return '—'
+  if (typeof value === 'string') return value
+  return JSON.stringify(value)
+}
+
+function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void }) {
   const { t } = useTranslation()
+  const before = event.before
+  const after = event.after
+  const keys = [...new Set([...Object.keys(before ?? {}), ...Object.keys(after ?? {})])]
+  const created = before === null
+  const deleted = after === null
+
   return (
-    <div className="overflow-x-auto border border-border bg-surface-raised">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border-strong text-left text-fg-muted">
-            <th scope="col" className="px-3 py-2 font-semibold">
-              {t('audit.col.occurredAt')}
-            </th>
-            <th scope="col" className="px-3 py-2 font-semibold">
-              {t('audit.col.event')}
-            </th>
-            <th scope="col" className="px-3 py-2 font-semibold">
-              {t('audit.col.entityType')}
-            </th>
-            <th scope="col" className="px-3 py-2 font-semibold">
-              {t('audit.col.entityId')}
-            </th>
-            <th scope="col" className="px-3 py-2 font-semibold">
-              {t('audit.col.actor')}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((event) => (
-            <tr key={event.id} className="border-b border-border">
-              <td className="px-3 py-2 whitespace-nowrap text-fg-muted">
-                {formatJstDateTime(event.occurredAt)}
-              </td>
-              <td className="px-3 py-2 text-fg">{event.eventName}</td>
-              <td className="px-3 py-2 text-fg-muted">{event.entityType}</td>
-              <td className="px-3 py-2 font-mono text-xs text-fg-muted">{event.entityId}</td>
-              <td className="px-3 py-2 text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Modal open onClose={onClose} title={t('audit.diff.title')} size="lg">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
+          <span className="text-xs text-fg-faint">
+            {event.entityType} · {formatJstDateTime(event.occurredAt)}
+          </span>
+        </div>
+        {created && <InlineAlert variant="success">{t('audit.diff.created')}</InlineAlert>}
+        {deleted && <InlineAlert variant="error">{t('audit.diff.deleted')}</InlineAlert>}
+        {keys.length === 0 ? (
+          <p className="text-sm text-fg-faint">{t('audit.diff.noChanges')}</p>
+        ) : (
+          <div className="overflow-hidden rounded-input border border-border">
+            <div className="grid grid-cols-2 border-b border-border bg-surface-overlay text-xs font-semibold text-fg-muted">
+              <span className="px-3 py-2">{t('audit.diff.before')}</span>
+              <span className="border-l border-border px-3 py-2">{t('audit.diff.after')}</span>
+            </div>
+            <dl className="divide-y divide-border-2 font-mono text-xs">
+              {keys.map((key) => {
+                const b = before?.[key]
+                const a = after?.[key]
+                const changed = fmt(b) !== fmt(a)
+                return (
+                  <div key={key} className="grid grid-cols-2">
+                    <div
+                      className={
+                        changed && b !== undefined ? 'bg-rejected-soft px-3 py-1.5' : 'px-3 py-1.5'
+                      }
+                    >
+                      <span className="text-fg-faint">{key}: </span>
+                      <span className="text-fg">{fmt(b)}</span>
+                    </div>
+                    <div
+                      className={
+                        changed && a !== undefined
+                          ? 'border-l border-border bg-approved-soft px-3 py-1.5'
+                          : 'border-l border-border px-3 py-1.5'
+                      }
+                    >
+                      <span className="text-fg-faint">{key}: </span>
+                      <span className="text-fg">{fmt(a)}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </dl>
+          </div>
+        )}
+      </div>
+    </Modal>
   )
 }
 
@@ -179,6 +224,7 @@ export function AuditLog() {
   const { t } = useTranslation()
   const audit = useAuditLog()
   const { exportCsv, isExporting, errorKey: exportErrorKey } = useExportAudit()
+  const [selected, setSelected] = useState<AuditEvent | null>(null)
 
   const from = audit.total === 0 ? 0 : audit.offset + 1
   const to = Math.min(audit.offset + audit.limit, audit.total)
@@ -208,7 +254,45 @@ export function AuditLog() {
         <EmptyState message={t('audit.list.empty')} />
       ) : (
         <Stack gap="sm">
-          <AuditTable events={audit.events} />
+          <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
+            <TableWrap>
+              <Table className="min-w-160">
+                <thead>
+                  <Tr>
+                    <Th className="w-44">{t('audit.col.occurredAt')}</Th>
+                    <Th className="w-40">{t('audit.col.event')}</Th>
+                    <Th>{t('audit.col.entityType')}</Th>
+                    <Th className="w-32">{t('audit.col.actor')}</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  {audit.events.map((event) => (
+                    <Tr
+                      key={event.id}
+                      interactive
+                      onClick={() => {
+                        setSelected(event)
+                      }}
+                    >
+                      <Td className="whitespace-nowrap text-fg-muted tnum">
+                        {formatJstDateTime(event.occurredAt)}
+                      </Td>
+                      <Td>
+                        <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
+                      </Td>
+                      <Td className="text-fg-muted">
+                        {event.entityType}
+                        <span className="block truncate font-mono text-xs text-fg-faint">
+                          {event.entityId}
+                        </span>
+                      </Td>
+                      <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
+                    </Tr>
+                  ))}
+                </tbody>
+              </Table>
+            </TableWrap>
+          </div>
           <div className="flex items-center justify-between gap-3">
             <Text variant="muted">
               {t('audit.pagination.range', { from, to, total: audit.total })}
@@ -216,6 +300,7 @@ export function AuditLog() {
             <div className="flex gap-2">
               <Button
                 variant="secondary"
+                size="sm"
                 disabled={audit.offset === 0}
                 onClick={() => {
                   audit.goToOffset(audit.offset - audit.limit)
@@ -225,6 +310,7 @@ export function AuditLog() {
               </Button>
               <Button
                 variant="secondary"
+                size="sm"
                 disabled={audit.offset + audit.limit >= audit.total}
                 onClick={() => {
                   audit.goToOffset(audit.offset + audit.limit)
@@ -235,6 +321,15 @@ export function AuditLog() {
             </div>
           </div>
         </Stack>
+      )}
+
+      {selected !== null && (
+        <DiffModal
+          event={selected}
+          onClose={() => {
+            setSelected(null)
+          }}
+        />
       )}
     </Stack>
   )

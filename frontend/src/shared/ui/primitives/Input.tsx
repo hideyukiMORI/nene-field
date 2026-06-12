@@ -9,8 +9,8 @@ export function Input({ className, ...rest }: InputProps) {
   return (
     <input
       className={cn(
-        'block w-full border border-border bg-surface-raised px-2 py-2 text-sm text-fg outline-none',
-        'focus:border-accent focus:ring-2 focus:ring-accent-soft',
+        'block w-full rounded-input border border-border-input bg-surface-raised px-3 py-2.5 text-sm text-fg outline-none',
+        'placeholder:text-fg-faint focus:border-accent focus:ring-2 focus:ring-accent-soft',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}

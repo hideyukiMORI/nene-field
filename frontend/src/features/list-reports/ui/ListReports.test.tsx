@@ -10,8 +10,10 @@ describe('ListReports', () => {
     renderWithProviders(<ListReports />)
 
     expect(await screen.findByText('現場A 報告')).toBeInTheDocument()
-    expect(screen.getByText('田中太郎')).toBeInTheDocument()
-    expect(screen.getByText('提出済み')).toBeInTheDocument()
+    // The submitter name appears both in the filter <select> and the table row,
+    // and '提出済み' appears as both a filter chip and a status badge.
+    expect(screen.getAllByText('田中太郎').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('提出済み').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders the empty state when there are no reports', async () => {
