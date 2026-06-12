@@ -6,7 +6,15 @@ import {
   subscribeCurrentUser,
 } from '@/entities/auth'
 import { LOCALES, resolveLocale, useTranslation } from '@/shared/i18n'
+import type { MessageKey } from '@/shared/i18n'
 import { Badge, Button, Card, Select } from '@/shared/ui'
+
+const roleLabelKey: Record<string, MessageKey> = {
+  submitter: 'user.role.submitter',
+  approver: 'user.role.approver',
+  admin: 'user.role.admin',
+  superadmin: 'user.role.superadmin',
+}
 
 /** Mobile account / settings tab (design handoff §5.2 settings). */
 export function AccountPage() {
@@ -29,7 +37,7 @@ export function AccountPage() {
             <p className="truncate font-bold text-fg">{user?.name}</p>
             <p className="truncate text-xs text-fg-muted">{user?.email}</p>
           </div>
-          {user !== null && <Badge tone="info">{user.role}</Badge>}
+          {user !== null && <Badge tone="info">{t(roleLabelKey[user.role])}</Badge>}
         </Card>
 
         <Card padded={false}>
