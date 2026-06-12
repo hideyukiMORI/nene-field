@@ -60,6 +60,11 @@ export const jaMessages = {
   'dashboard.quick.today': '本日',
   'dashboard.quick.week': '今週',
   'dashboard.quick.toExport': 'CSVエクスポートへ',
+  'dashboard.view': '承認者・管理者ビュー',
+  'dashboard.reviewCta': '承認待ちをレビュー',
+  'dashboard.summary.title': '今週のサマリー',
+  'dashboard.summary.body':
+    '提出 {{total}} 件中 {{approved}} 件を承認、{{pending}} 件が承認待ちです。',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',

@@ -61,6 +61,11 @@ export const enMessages: MessageCatalog = {
   'dashboard.quick.today': 'Today',
   'dashboard.quick.week': 'This week',
   'dashboard.quick.toExport': 'Go to CSV export',
+  'dashboard.view': 'Approver / Admin view',
+  'dashboard.reviewCta': 'Review pending',
+  'dashboard.summary.title': 'This week',
+  'dashboard.summary.body':
+    '{{approved}} of {{total}} submitted reports approved, {{pending}} pending.',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
