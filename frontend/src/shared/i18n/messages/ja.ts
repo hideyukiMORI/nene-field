@@ -244,6 +244,24 @@ export const jaMessages = {
   'report.review.reject': '差し戻す',
   'report.review.commentRequired': '差し戻しにはコメントが必要です。',
   'report.review.error': '操作に失敗しました。',
+  'report.review.approveTitle': '承認',
+  'report.review.rejectTitle': '差し戻し',
+  'report.review.commentOptional': 'コメント（任意）',
+  'report.review.approved': '承認しました',
+  'report.review.rejected': '差し戻しました',
+
+  // ── report list (admin: filters / bulk / drawer) ─────────────────
+  'report.list.search': 'タイトル・担当者で検索',
+  'report.list.filter.all': 'すべて',
+  'report.list.submitterAll': 'すべての担当者',
+  'report.list.aiSummaryNone': '— 要約なし',
+  'report.list.bulk.selected': '{{count}} 件選択中',
+  'report.list.bulk.approve': '一括承認',
+  'report.list.bulk.reject': '一括差し戻し',
+  'report.list.bulk.clear': '選択解除',
+  'report.drawer.position': '{{current}} / {{total}}',
+  'report.drawer.processed': '処理済みの日報です。',
+  'report.col.aiSummary': 'AI要約',
 
   // ── server error slugs (error.{problem-slug}) ────────────────────
   'error.generic': '問題が発生しました。',

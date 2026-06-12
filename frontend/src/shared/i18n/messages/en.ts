@@ -245,6 +245,24 @@ export const enMessages: MessageCatalog = {
   'report.review.reject': 'Send back',
   'report.review.commentRequired': 'A comment is required to send back.',
   'report.review.error': 'The action failed.',
+  'report.review.approveTitle': 'Approve',
+  'report.review.rejectTitle': 'Send back',
+  'report.review.commentOptional': 'Comment (optional)',
+  'report.review.approved': 'Approved',
+  'report.review.rejected': 'Sent back',
+
+  // ── report list (admin: filters / bulk / drawer) ─────────────────
+  'report.list.search': 'Search by title or person',
+  'report.list.filter.all': 'All',
+  'report.list.submitterAll': 'All people',
+  'report.list.aiSummaryNone': '— no summary',
+  'report.list.bulk.selected': '{{count}} selected',
+  'report.list.bulk.approve': 'Approve all',
+  'report.list.bulk.reject': 'Send all back',
+  'report.list.bulk.clear': 'Clear',
+  'report.drawer.position': '{{current}} / {{total}}',
+  'report.drawer.processed': 'This report has been processed.',
+  'report.col.aiSummary': 'AI summary',
 
   // ── server error slugs ───────────────────────────────────────────
   'error.generic': 'Something went wrong.',
