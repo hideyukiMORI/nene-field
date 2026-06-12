@@ -209,7 +209,9 @@ export const jaMessages = {
 
   // ── organization settings ────────────────────────────────────────
   'settings.title': '組織設定',
-  'settings.subtitle': '組織の基本情報と通知を設定します。',
+  'settings.subtitle': '組織情報・AI要約・通知の設定。出勤簿や法定帳簿ではありません。',
+  'settings.contactEmail': '連絡先メール',
+  'settings.ai.subtitle': '日報の内容を1行に自動要約します（生成内容は「AI要約」と明示）。',
   'settings.error': '組織情報の読み込みに失敗しました。',
   'settings.name': '組織名',
   'settings.aiSummaryEnabled': 'AI要約を有効にする',
@@ -231,7 +233,7 @@ export const jaMessages = {
   'settings.section.locale': '表示・地域',
   'settings.section.rules': '日報ルール',
   'settings.section.danger': '危険ゾーン',
-  'settings.ai.apiUrl': 'API URL',
+  'settings.ai.apiUrl': 'APIエンドポイント',
   'settings.ai.apiKey': 'API キー',
   'settings.ai.test': '接続テスト',
   'settings.ai.tested': 'AI接続テストを実行しました',

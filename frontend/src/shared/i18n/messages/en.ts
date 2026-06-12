@@ -210,7 +210,10 @@ export const enMessages: MessageCatalog = {
 
   // ── organization settings ────────────────────────────────────────
   'settings.title': 'Organization settings',
-  'settings.subtitle': 'Configure your organization profile and notifications.',
+  'settings.subtitle':
+    'Organization profile, AI summary, and notifications. Not a statutory ledger.',
+  'settings.contactEmail': 'Contact email',
+  'settings.ai.subtitle': 'Summarizes each report into one line (labeled “AI summary”).',
   'settings.error': 'Failed to load the organization.',
   'settings.name': 'Organization name',
   'settings.aiSummaryEnabled': 'Enable AI summary',
@@ -232,7 +235,7 @@ export const enMessages: MessageCatalog = {
   'settings.section.locale': 'Display & region',
   'settings.section.rules': 'Report rules',
   'settings.section.danger': 'Danger zone',
-  'settings.ai.apiUrl': 'API URL',
+  'settings.ai.apiUrl': 'API endpoint',
   'settings.ai.apiKey': 'API key',
   'settings.ai.test': 'Test connection',
   'settings.ai.tested': 'Ran AI connection test',
