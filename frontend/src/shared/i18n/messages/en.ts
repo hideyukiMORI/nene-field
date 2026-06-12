@@ -200,6 +200,7 @@ export const enMessages: MessageCatalog = {
   'template.form.editor': 'Fields',
   'template.form.fieldsLabel': 'Form fields',
   'template.form.reorderHint': 'Drag or use ▲▼ to reorder',
+  'template.form.previewPlaceholder': 'Enter…',
   'template.form.preview': 'Preview (submitter’s view)',
   'template.form.moveUp': 'Move up',
   'template.form.moveDown': 'Move down',
