@@ -73,6 +73,10 @@
   --color-pulse: #1f8a5b;
   --color-toast-check: #5fd6a0;
 
+  /* table rows */
+  --color-row-hover: #eef7fa; /* hover / selected (clickable rows) */
+  --color-row-active: #f7fafa; /* :active */
+
   /* ── radius ─────────────────────────────────────────────────── */
   --radius-pill: 999px; /* buttons / chips / badges (committed) */
   --radius-input: 11px; /* inputs / small cards (10–12) */
@@ -90,4 +94,13 @@
 
   /* ── typography ─────────────────────────────────────────────── */
   --font-sans: 'IBM Plex Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* ── animations (keyframes in theme/index.css, handoff §4) ──────
+     Exposed as animate-* utilities so components avoid arbitrary values. */
+  --animate-nfpop: nfpop 0.2s ease;
+  --animate-nfslide: nfslide 0.26s ease;
+  --animate-nfup: nfup 0.24s ease;
+  --animate-nfcheckpop: nfcheckpop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+  --animate-nfring: nfring 0.95s ease-out;
+  --animate-nffade: nffade 1.15s ease forwards;
 }
