@@ -4,3 +4,7 @@ coverage
 *.local
 .vite
 node_modules/.tmp
+storybook-static
+playwright-report
+test-results
+.playwright
