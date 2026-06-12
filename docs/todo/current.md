@@ -30,6 +30,7 @@
 - [x] Export 画面（レポート CSV・期間/ユーザー/ステータス）(#55)
 - [x] Settings / 組織設定 UI（名前/AI/通知）(#57)
 - [ ] Docker Compose dev environment / Storybook + Playwright e2e
+- [x] ハイファイ全面リデザイン（ブルーティール/IBM Plex Sans JP・管理PC＋提出者モバイル＋ログイン）(#63)
 
 ## Upcoming
 
@@ -38,4 +39,4 @@
 
 See [`docs/roadmap.md`](../roadmap.md) for full phase breakdown.
 
-Last updated: 2026-06-11
+Last updated: 2026-06-13
