@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRef } from 'react'
+import { useRef, useSyncExternalStore } from 'react'
 import { useForm, type FieldError } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import type { CreateReportInput } from '@/entities/report'
 import { useTemplateListQuery } from '@/entities/report-template'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
-import { Button, Field, InlineAlert, Input, Select, Stack, Text, Textarea } from '@/shared/ui'
+import { Button, Field, InlineAlert, Input, Select, Textarea } from '@/shared/ui'
 import { useSubmitReport } from '../hooks/use-submit-report'
 
 const schema = z.object({
@@ -32,8 +33,26 @@ function parseTags(raw: string | undefined): string[] {
     .filter((tag) => tag !== '')
 }
 
+/** Subscribes to the browser online/offline status. */
+function useOnline(): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener('online', cb)
+      window.addEventListener('offline', cb)
+      return () => {
+        window.removeEventListener('online', cb)
+        window.removeEventListener('offline', cb)
+      }
+    },
+    () => navigator.onLine,
+    () => true,
+  )
+}
+
 export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => void }) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const online = useOnline()
   const { saveDraft, submit, isPending, errorKey } = useSubmitReport(onDone)
   const templates = useTemplateListQuery()
   const modeRef = useRef<'draft' | 'submit'>('submit')
@@ -79,31 +98,48 @@ export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => voi
   }
 
   return (
-    <main className="mx-auto w-full max-w-md p-4">
-      <Stack gap="md">
-        <Stack gap="sm">
-          <Text variant="title" as="h2">
-            {t('report.submit.title')}
-          </Text>
-          <Text variant="subtitle">{t('report.submit.subtitle')}</Text>
-        </Stack>
-
-        {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
-
-        <form
-          onSubmit={(event) => {
-            void handleSubmit(onSubmit)(event)
+    <div className="flex h-full flex-col">
+      {/* mobile app bar */}
+      <header className="flex items-center gap-3 border-b border-border bg-surface-raised px-4 py-3">
+        <button
+          type="button"
+          aria-label={t('common.actions.back')}
+          onClick={() => {
+            void navigate(-1)
           }}
-          noValidate
+          className="text-xl text-fg-muted"
         >
-          <Stack gap="md">
-            <Field
-              label={t('report.submit.fieldTitle')}
-              htmlFor="report-title"
-              error={errorText(errors.title)}
-            >
-              <Input id="report-title" {...register('title')} />
-            </Field>
+          ✕
+        </button>
+        <h1 className="flex-1 text-base font-bold text-fg">{t('report.submit.title')}</h1>
+        <span className="flex items-center gap-1 text-xs text-approved">
+          ✓ {t('report.submit.autosave')}
+        </span>
+      </header>
+
+      <form
+        onSubmit={(event) => {
+          void handleSubmit(onSubmit)(event)
+        }}
+        noValidate
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <div className="flex flex-1 flex-col gap-4 overflow-auto p-4">
+          {!online && <InlineAlert variant="warn">{t('report.submit.offline')}</InlineAlert>}
+          {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
+
+          <Field label={t('report.submit.template')} htmlFor="report-template">
+            <Select id="report-template" {...register('templateId')}>
+              <option value="">{t('report.submit.templateNone')}</option>
+              {(templates.data ?? []).map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <div className="grid grid-cols-2 gap-3">
             <Field
               label={t('report.submit.workDate')}
               htmlFor="report-work-date"
@@ -111,58 +147,75 @@ export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => voi
             >
               <Input id="report-work-date" type="date" {...register('workDate')} />
             </Field>
-            <Field
-              label={t('report.submit.body')}
-              htmlFor="report-body"
-              error={errorText(errors.body)}
-            >
-              <Textarea id="report-body" rows={6} {...register('body')} />
-            </Field>
             <Field label={t('report.submit.projectCode')} htmlFor="report-project">
               <Input id="report-project" {...register('projectCode')} />
             </Field>
-            <Field label={t('report.submit.tags')} htmlFor="report-tags">
-              <Input
-                id="report-tags"
-                placeholder={t('report.submit.tagsHint')}
-                {...register('tags')}
-              />
-            </Field>
-            <Field label={t('report.submit.template')} htmlFor="report-template">
-              <Select id="report-template" {...register('templateId')}>
-                <option value="">{t('report.submit.templateNone')}</option>
-                {(templates.data ?? []).map((template) => (
-                  <option key={template.id} value={template.id}>
-                    {template.name}
-                  </option>
-                ))}
-              </Select>
-            </Field>
+          </div>
 
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                onClick={() => {
-                  modeRef.current = 'submit'
-                }}
-                disabled={isPending}
-              >
-                {isPending ? t('report.submit.saving') : t('report.submit.submit')}
-              </Button>
-              <Button
-                type="submit"
-                variant="secondary"
-                onClick={() => {
-                  modeRef.current = 'draft'
-                }}
-                disabled={isPending}
-              >
-                {t('report.submit.saveDraft')}
-              </Button>
-            </div>
-          </Stack>
-        </form>
-      </Stack>
-    </main>
+          <Field
+            label={t('report.submit.fieldTitle')}
+            htmlFor="report-title"
+            error={errorText(errors.title)}
+          >
+            <Input id="report-title" {...register('title')} />
+          </Field>
+
+          <Field
+            label={t('report.submit.body')}
+            htmlFor="report-body"
+            error={errorText(errors.body)}
+          >
+            <Textarea id="report-body" rows={6} {...register('body')} />
+          </Field>
+
+          <Field label={t('report.submit.tags')} htmlFor="report-tags">
+            <Input
+              id="report-tags"
+              placeholder={t('report.submit.tagsHint')}
+              {...register('tags')}
+            />
+          </Field>
+
+          {/* camera-style attachment area */}
+          <div>
+            <span className="mb-1.5 block text-xs font-semibold text-fg">
+              {t('report.submit.photo')}
+            </span>
+            <button
+              type="button"
+              className="flex w-full flex-col items-center gap-1 rounded-input border-2 border-dashed border-border-strong bg-surface-overlay py-6 text-fg-muted"
+            >
+              <span className="text-2xl">📷</span>
+              <span className="text-xs">{t('report.submit.photoHint')}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* sticky bottom actions */}
+        <div className="flex gap-2.5 border-t border-border bg-surface-raised p-4">
+          <Button
+            type="submit"
+            variant="secondary"
+            className="flex-1"
+            onClick={() => {
+              modeRef.current = 'draft'
+            }}
+            disabled={isPending}
+          >
+            {t('report.submit.saveDraft')}
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1"
+            onClick={() => {
+              modeRef.current = 'submit'
+            }}
+            disabled={isPending}
+          >
+            {isPending ? t('report.submit.saving') : t('report.submit.submit')}
+          </Button>
+        </div>
+      </form>
+    </div>
   )
 }

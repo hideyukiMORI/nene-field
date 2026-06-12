@@ -142,6 +142,11 @@ export const enMessages: MessageCatalog = {
   'report.submit.submit': 'Submit',
   'report.submit.saving': 'Saving…',
   'report.submit.error': 'Failed to save.',
+  'report.submit.autosave': 'Auto-saved',
+  'report.submit.photo': 'Add photo',
+  'report.submit.photoHint': 'From camera or gallery (up to 5)',
+  'report.submit.offline': 'Offline: submission is queued and sent automatically when back online.',
+  'report.submit.rejectedBanner': 'Sent back. Please fix and resubmit.',
 
   // ── template management ──────────────────────────────────────────
   'template.list.title': 'Templates',

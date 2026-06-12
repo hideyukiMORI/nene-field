@@ -141,6 +141,11 @@ export const jaMessages = {
   'report.submit.submit': '提出する',
   'report.submit.saving': '保存中…',
   'report.submit.error': '保存に失敗しました。',
+  'report.submit.autosave': '自動保存',
+  'report.submit.photo': '写真を追加',
+  'report.submit.photoHint': 'カメラまたはギャラリーから（最大5枚）',
+  'report.submit.offline': 'オフライン中：提出は未送信キューに保存され、復帰後に自動送信されます。',
+  'report.submit.rejectedBanner': '差し戻されました。修正して再提出してください。',
 
   // ── template management ──────────────────────────────────────────
   'template.list.title': 'テンプレート管理',
