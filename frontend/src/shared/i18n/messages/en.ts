@@ -252,8 +252,9 @@ export const enMessages: MessageCatalog = {
   'settings.danger.done': 'Organization deactivated',
 
   // ── report CSV export ────────────────────────────────────────────
-  'export.title': 'Export reports',
-  'export.subtitle': 'Export daily reports as CSV by filter.',
+  'export.title': 'CSV export',
+  'export.subtitle':
+    'Export daily report data as CSV by criteria. Not a payroll / statutory ledger.',
   'export.workDateFrom': 'Work date (from)',
   'export.workDateTo': 'Work date (to)',
   'export.user': 'Author',
@@ -263,7 +264,10 @@ export const enMessages: MessageCatalog = {
   'export.download': 'Download CSV',
   'export.hint': 'Set the work-date range to export.',
   'export.error': 'Export failed.',
-  'export.preview.title': 'Preview',
+  'export.preview.title': 'Output preview',
+  'export.preview.lead': 'Reports matching the criteria',
+  'export.preview.leading': 'First rows',
+  'export.preview.columns': 'Columns: work date, submitter, title, status, site code …',
   'export.preview.count': '{{count}} matching',
   'export.preview.empty': 'No matching reports.',
   'export.downloaded': 'Download started',
@@ -271,7 +275,11 @@ export const enMessages: MessageCatalog = {
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': 'Audit log',
-  'audit.list.subtitle': 'Review the activity history of your organization.',
+  'audit.list.subtitle': 'Records all important operations (newest first)',
+  'audit.filter.entityReport': 'Reports',
+  'audit.filter.entityUser': 'Users',
+  'audit.filter.entityTemplate': 'Templates',
+  'audit.col.diff': 'Diff',
   'audit.list.empty': 'No matching audit events.',
   'audit.list.error': 'Failed to load the audit log.',
   'audit.col.occurredAt': 'When',

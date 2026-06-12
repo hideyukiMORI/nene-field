@@ -1,19 +1,18 @@
 import { useState } from 'react'
 import type { AuditEvent } from '@/entities/audit-event'
 import { useTranslation } from '@/shared/i18n'
+import type { MessageKey } from '@/shared/i18n'
 import { formatJstDateTime } from '@/shared/lib/format-date'
 import {
   Badge,
   Button,
-  Card,
+  Chip,
   EmptyState,
   ErrorState,
-  Field,
   InlineAlert,
   Input,
   LoadingState,
   Modal,
-  Select,
   Stack,
   Table,
   TableWrap,
@@ -24,15 +23,6 @@ import {
 } from '@/shared/ui'
 import { useAuditLog, type AuditFilterValues } from '../hooks/use-audit-log'
 import { useExportAudit } from '../hooks/use-export-audit'
-
-const ENTITY_TYPES = [
-  'Report',
-  'ReportTemplate',
-  'ReportAttachment',
-  'User',
-  'Organization',
-  'AuditEvent',
-]
 
 type BadgeTone = 'approved' | 'rejected' | 'submitted' | 'info' | 'neutral'
 
@@ -64,90 +54,60 @@ function FilterBar({
 
   const canExport = values.occurredFrom !== '' && values.occurredTo !== ''
 
+  const ENTITY_CHIPS: { value: string; labelKey: MessageKey }[] = [
+    { value: '', labelKey: 'audit.filter.allTypes' },
+    { value: 'Report', labelKey: 'audit.filter.entityReport' },
+    { value: 'User', labelKey: 'audit.filter.entityUser' },
+    { value: 'ReportTemplate', labelKey: 'audit.filter.entityTemplate' },
+  ]
+
+  const selectEntity = (value: string): void => {
+    const next = { ...values, entityType: value }
+    setValues(next)
+    onApply(next)
+  }
+
   return (
-    <Card>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Field label={t('audit.filter.entityType')} htmlFor="audit-entity-type">
-          <Select
-            id="audit-entity-type"
-            value={values.entityType}
-            onChange={(event) => {
-              set({ entityType: event.target.value })
-            }}
-          >
-            <option value="">{t('audit.filter.allTypes')}</option>
-            {ENTITY_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label={t('audit.filter.eventName')} htmlFor="audit-event-name">
-          <Input
-            id="audit-event-name"
-            value={values.eventName}
-            onChange={(event) => {
-              set({ eventName: event.target.value })
-            }}
-          />
-        </Field>
-        <Field label={t('audit.filter.occurredFrom')} htmlFor="audit-from">
-          <Input
-            id="audit-from"
-            type="date"
-            value={values.occurredFrom}
-            onChange={(event) => {
-              set({ occurredFrom: event.target.value })
-            }}
-          />
-        </Field>
-        <Field label={t('audit.filter.occurredTo')} htmlFor="audit-to">
-          <Input
-            id="audit-to"
-            type="date"
-            value={values.occurredTo}
-            onChange={(event) => {
-              set({ occurredTo: event.target.value })
-            }}
-          />
-        </Field>
-      </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Button
+    <div className="flex flex-wrap items-center gap-2">
+      {ENTITY_CHIPS.map((c) => (
+        <Chip
+          key={c.value}
+          active={values.entityType === c.value}
           onClick={() => {
-            onApply(values)
+            selectEntity(c.value)
           }}
         >
-          {t('common.actions.apply')}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={() => {
-            const cleared: AuditFilterValues = {
-              entityType: '',
-              eventName: '',
-              occurredFrom: '',
-              occurredTo: '',
-            }
-            setValues(cleared)
-            onApply(cleared)
+          {t(c.labelKey)}
+        </Chip>
+      ))}
+      <div className="ml-auto flex items-center gap-2">
+        <Input
+          type="date"
+          aria-label={t('audit.filter.occurredFrom')}
+          value={values.occurredFrom}
+          onChange={(event) => {
+            set({ occurredFrom: event.target.value })
           }}
-        >
-          {t('common.actions.clear')}
-        </Button>
+        />
+        <Input
+          type="date"
+          aria-label={t('audit.filter.occurredTo')}
+          value={values.occurredTo}
+          onChange={(event) => {
+            set({ occurredTo: event.target.value })
+          }}
+        />
         <Button
-          variant="secondary"
+          variant="ghost"
           disabled={!canExport || isExporting}
           onClick={() => {
             onExport(values)
           }}
         >
-          {t('audit.export.action')}
+          ⬇ {t('audit.export.action')}
         </Button>
-        {!canExport && <span className="text-xs text-fg-muted">{t('audit.export.hint')}</span>}
       </div>
-    </Card>
+    </div>
   )
 }
 
@@ -261,8 +221,9 @@ export function AuditLog() {
                   <Tr>
                     <Th className="w-44">{t('audit.col.occurredAt')}</Th>
                     <Th className="w-40">{t('audit.col.event')}</Th>
-                    <Th>{t('audit.col.entityType')}</Th>
                     <Th className="w-32">{t('audit.col.actor')}</Th>
+                    <Th>{t('audit.col.entityType')}</Th>
+                    <Th className="w-20" />
                   </Tr>
                 </thead>
                 <tbody>
@@ -274,19 +235,24 @@ export function AuditLog() {
                         setSelected(event)
                       }}
                     >
-                      <Td className="whitespace-nowrap text-fg-muted tnum">
+                      <Td className="whitespace-nowrap text-fg-muted tabular-nums">
                         {formatJstDateTime(event.occurredAt)}
                       </Td>
                       <Td>
                         <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
                       </Td>
+                      <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
                       <Td className="text-fg-muted">
                         {event.entityType}
                         <span className="block truncate font-mono text-xs text-fg-faint">
                           {event.entityId}
                         </span>
                       </Td>
-                      <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
+                      <Td className="text-right">
+                        <span className="text-sm font-semibold text-accent">
+                          {t('audit.col.diff')} ›
+                        </span>
+                      </Td>
                     </Tr>
                   ))}
                 </tbody>

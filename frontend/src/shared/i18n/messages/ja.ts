@@ -250,8 +250,8 @@ export const jaMessages = {
   'settings.danger.done': '組織を無効化しました',
 
   // ── report CSV export ────────────────────────────────────────────
-  'export.title': 'レポートのエクスポート',
-  'export.subtitle': '条件を指定して日報を CSV 出力します。',
+  'export.title': 'CSVエクスポート',
+  'export.subtitle': '条件を指定して日報データをCSVで出力します。給与・法定帳簿ではありません。',
   'export.workDateFrom': '作業日（開始）',
   'export.workDateTo': '作業日（終了）',
   'export.user': '担当者',
@@ -261,7 +261,10 @@ export const jaMessages = {
   'export.download': 'CSVダウンロード',
   'export.hint': '作業日の開始・終了を指定してください。',
   'export.error': 'エクスポートに失敗しました。',
-  'export.preview.title': 'プレビュー',
+  'export.preview.title': '出力プレビュー',
+  'export.preview.lead': '指定条件に該当する日報',
+  'export.preview.leading': '先頭プレビュー',
+  'export.preview.columns': '列：作業日・提出者・タイトル・状態・現場コード …',
   'export.preview.count': '該当 {{count}} 件',
   'export.preview.empty': '該当するレポートはありません。',
   'export.downloaded': 'ダウンロードを開始しました',
@@ -269,7 +272,11 @@ export const jaMessages = {
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': '監査ログ',
-  'audit.list.subtitle': '組織の操作履歴を確認します。',
+  'audit.list.subtitle': 'すべての重要操作を記録（新しい順）',
+  'audit.filter.entityReport': '日報',
+  'audit.filter.entityUser': 'ユーザー',
+  'audit.filter.entityTemplate': 'テンプレート',
+  'audit.col.diff': '差分',
   'audit.list.empty': '該当する監査ログはありません。',
   'audit.list.error': '監査ログの読み込みに失敗しました。',
   'audit.col.occurredAt': '日時',
