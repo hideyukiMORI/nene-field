@@ -153,6 +153,7 @@ export const jaMessages = {
   'mobile.reports.filter.rejected': '差し戻し',
   'mobile.reports.filter.draft': '下書き',
   'mobile.reports.notSent': '未送信',
+  'mobile.reports.count': '全 {{count}} 件',
   'mobile.account.title': 'アカウント',
   'mobile.account.openAdmin': '管理者画面を開く（PC）',
   'mobile.account.language': '言語',

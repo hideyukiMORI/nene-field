@@ -154,6 +154,7 @@ export const enMessages: MessageCatalog = {
   'mobile.reports.filter.rejected': 'Sent back',
   'mobile.reports.filter.draft': 'Draft',
   'mobile.reports.notSent': 'Not sent',
+  'mobile.reports.count': '{{count}} total',
   'mobile.account.title': 'Account',
   'mobile.account.openAdmin': 'Open admin (PC)',
   'mobile.account.language': 'Language',
