@@ -32,7 +32,7 @@ describe('TemplateForm', () => {
       <TemplateForm mode="create" onSave={vi.fn()} isPending={false} errorKey={null} />,
     )
 
-    await user.click(screen.getByRole('button', { name: '項目を追加' }))
+    await user.click(screen.getByRole('button', { name: /項目を追加/ }))
     expect(screen.getAllByLabelText('項目名')).toHaveLength(2)
 
     const [firstRemove] = screen.getAllByRole('button', { name: '削除' })
@@ -50,7 +50,10 @@ describe('TemplateForm', () => {
     await user.type(screen.getByLabelText('名前'), 'T')
     await user.type(screen.getByLabelText('項目名'), 'weather')
     await user.type(screen.getByLabelText('ラベル'), '天候')
-    await user.selectOptions(screen.getByLabelText('種類'), 'select')
+    // Type is a cycling pill (text→textarea→number→checkbox→date→select); 5 clicks
+    // from the default 'text' lands on 'select'.
+    const typePill = screen.getByRole('button', { name: 'テキスト' })
+    for (let i = 0; i < 5; i++) await user.click(typePill)
     await user.click(screen.getByRole('button', { name: '保存' }))
 
     expect(await screen.findByText('必須項目です。')).toBeInTheDocument()
