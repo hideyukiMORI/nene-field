@@ -27,7 +27,7 @@ export function TemplateEditPage() {
   }
 
   return (
-    <Stack gap="md" className="mx-auto w-full max-w-5xl">
+    <Stack gap="md" className="w-full">
       <Stack gap="sm">
         <Link to="/templates" className="text-sm font-medium text-accent">
           ← {t('common.actions.back')}

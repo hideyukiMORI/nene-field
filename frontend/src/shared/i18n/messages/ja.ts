@@ -197,6 +197,8 @@ export const jaMessages = {
   'template.form.fieldsRequired': '項目を1つ以上追加してください。',
   'template.form.error': '保存に失敗しました。',
   'template.form.editor': '項目編集',
+  'template.form.fieldsLabel': 'フォーム項目',
+  'template.form.reorderHint': 'ドラッグまたは ▲▼ で並べ替え',
   'template.form.preview': 'プレビュー（提出者の見え方）',
   'template.form.moveUp': '上へ',
   'template.form.moveDown': '下へ',

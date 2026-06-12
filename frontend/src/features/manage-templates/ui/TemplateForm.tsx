@@ -17,17 +17,7 @@ import {
 } from '@/entities/report-template'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
-import {
-  Button,
-  Card,
-  Chip,
-  Field,
-  InlineAlert,
-  Input,
-  Select,
-  Textarea,
-  Toggle,
-} from '@/shared/ui'
+import { Button, Chip, Field, InlineAlert, Input, Select, Textarea, Toggle } from '@/shared/ui'
 
 const fieldSchema = z
   .object({
@@ -125,28 +115,16 @@ function FieldEditor({
   const rowErrors = errors.fields?.[index]
 
   return (
-    <Card className="flex flex-col gap-3 p-3.5">
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-fg-muted">{t('template.field.type')}</span>
-        <Chip
-          onClick={() => {
-            setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
-          }}
-        >
-          {t(TYPE_LABEL_KEY[type])} ⇄
-        </Chip>
-        <label className="ml-2 flex items-center gap-1.5 text-sm text-fg">
-          <Toggle
-            size="sm"
-            checked={required}
-            onChange={(next) => {
-              setValue(`fields.${index}.required`, next, { shouldDirty: true })
-            }}
-            label={t('template.field.required')}
-          />
-          {t('template.field.required')}
-        </label>
-        <div className="ml-auto flex items-center gap-1">
+    <div className="rounded-card border border-border bg-surface-raised p-4 shadow-card">
+      {/* label + reorder */}
+      <div className="flex items-start gap-2">
+        <input
+          aria-label={t('template.field.label')}
+          placeholder={t('template.field.label')}
+          {...register(`fields.${index}.label`)}
+          className="min-w-0 flex-1 rounded-input border border-border-input bg-surface-raised px-3 py-2 text-sm font-semibold text-fg outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft"
+        />
+        <div className="flex flex-none flex-col">
           <button
             type="button"
             aria-label={t('template.form.moveUp')}
@@ -154,7 +132,7 @@ function FieldEditor({
             onClick={() => {
               onMove(-1)
             }}
-            className="grid h-7 w-7 place-items-center rounded-pill text-fg-muted hover:bg-surface-overlay disabled:opacity-40"
+            className="grid h-5 w-6 place-items-center text-fg-muted hover:text-fg disabled:opacity-30"
           >
             ▲
           </button>
@@ -165,84 +143,114 @@ function FieldEditor({
             onClick={() => {
               onMove(1)
             }}
-            className="grid h-7 w-7 place-items-center rounded-pill text-fg-muted hover:bg-surface-overlay disabled:opacity-40"
+            className="grid h-5 w-6 place-items-center text-fg-muted hover:text-fg disabled:opacity-30"
           >
             ▼
           </button>
-          <button
-            type="button"
-            aria-label={t('template.form.removeField')}
-            disabled={isPending}
-            onClick={onRemove}
-            className="grid h-7 w-7 place-items-center rounded-pill text-rejected hover:bg-rejected-soft"
-          >
-            ✕
-          </button>
         </div>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
-        <Field label={t('template.field.label')} htmlFor={`field-${String(index)}-label`}>
-          <Input id={`field-${String(index)}-label`} {...register(`fields.${index}.label`)} />
-        </Field>
+
+      {/* type pill + required + delete */}
+      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+        <span className="text-xs text-fg-muted">{t('template.field.type')}</span>
+        <Chip
+          onClick={() => {
+            setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
+          }}
+        >
+          {t(TYPE_LABEL_KEY[type])} ⇄
+        </Chip>
+        <label className="flex items-center gap-1.5 text-sm text-fg">
+          <Toggle
+            size="sm"
+            checked={required}
+            onChange={(next) => {
+              setValue(`fields.${index}.required`, next, { shouldDirty: true })
+            }}
+            label={t('template.field.required')}
+          />
+          {t('template.field.required')}
+        </label>
+        <button
+          type="button"
+          disabled={isPending}
+          onClick={onRemove}
+          className="ml-auto text-sm font-semibold text-rejected hover:underline"
+        >
+          {t('template.form.removeField')}
+        </button>
+      </div>
+
+      {/* name + select options (secondary) */}
+      <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
         <Field label={t('template.field.name')} htmlFor={`field-${String(index)}-name`}>
           <Input id={`field-${String(index)}-name`} {...register(`fields.${index}.name`)} />
         </Field>
+        {type === 'select' && (
+          <Field
+            label={t('template.field.options')}
+            htmlFor={`field-${String(index)}-options`}
+            error={rowErrors?.options !== undefined ? t('error.validation.required') : undefined}
+          >
+            <Input
+              id={`field-${String(index)}-options`}
+              placeholder={t('template.field.optionsHint')}
+              {...register(`fields.${index}.options`)}
+            />
+          </Field>
+        )}
       </div>
-      {type === 'select' && (
-        <Field
-          label={t('template.field.options')}
-          htmlFor={`field-${String(index)}-options`}
-          error={rowErrors?.options !== undefined ? t('error.validation.required') : undefined}
-        >
-          <Input
-            id={`field-${String(index)}-options`}
-            placeholder={t('template.field.optionsHint')}
-            {...register(`fields.${index}.options`)}
-          />
-        </Field>
-      )}
-    </Card>
+    </div>
   )
 }
 
-function PreviewPane({ control }: { control: Control<FormValues> }) {
+function PreviewPanel({ control }: { control: Control<FormValues> }) {
   const { t } = useTranslation()
   const fields = useWatch({ control, name: 'fields' })
+  const name = useWatch({ control, name: 'name' })
 
   return (
-    <div className="flex flex-col gap-4">
-      {fields.map((f, i) => {
-        const label = f.label.trim() === '' ? t('template.field.label') : f.label
-        return (
-          <div key={i}>
-            {f.type === 'checkbox' ? (
-              <label className="flex items-center gap-2 text-sm text-fg">
-                <input type="checkbox" disabled className="accent-accent" />
-                {label}
-                {f.required && <span className="text-rejected">*</span>}
-              </label>
-            ) : (
-              <>
-                <span className="mb-1.5 block text-xs font-semibold text-fg">
+    <div className="overflow-hidden rounded-card border border-border bg-surface-raised shadow-card">
+      <div className="bg-accent-deep px-4 py-3 font-bold text-fg-inverse">
+        {name.trim() === '' ? t('template.form.preview') : name}
+      </div>
+      <div className="flex flex-col gap-4 p-4">
+        {fields.map((f, i) => {
+          const label = f.label.trim() === '' ? t('template.field.label') : f.label
+          return (
+            <div key={i}>
+              {f.type === 'checkbox' ? (
+                <label className="flex items-center gap-2 text-sm text-fg">
+                  <input type="checkbox" disabled className="accent-accent" />
                   {label}
-                  {f.required && <span className="ml-0.5 text-rejected">*</span>}
-                </span>
-                {f.type === 'textarea' && <Textarea disabled rows={2} />}
-                {f.type === 'select' && (
-                  <Select disabled>
-                    {splitOptions(f.options).map((o) => (
-                      <option key={o}>{o}</option>
-                    ))}
-                  </Select>
-                )}
-                {(f.type === 'text' || f.type === 'number' || f.type === 'date') && (
-                  <Input disabled type={f.type === 'text' ? 'text' : f.type} />
-                )}
-              </>
-            )}
-          </div>
-        )
-      })}
+                  {f.required && <span className="text-rejected">*</span>}
+                </label>
+              ) : (
+                <>
+                  <span className="mb-1.5 block text-xs font-semibold text-fg">
+                    {label}
+                    {f.required && <span className="ml-0.5 text-rejected">*</span>}
+                  </span>
+                  {f.type === 'textarea' && <Textarea disabled rows={2} />}
+                  {f.type === 'select' && (
+                    <Select disabled>
+                      {splitOptions(f.options).map((o) => (
+                        <option key={o}>{o}</option>
+                      ))}
+                    </Select>
+                  )}
+                  {(f.type === 'text' || f.type === 'number' || f.type === 'date') && (
+                    <Input disabled type={f.type === 'text' ? 'text' : f.type} />
+                  )}
+                </>
+              )}
+            </div>
+          )
+        })}
+        <Button disabled className="w-full">
+          {t('report.submit.submit')}
+        </Button>
+      </div>
     </div>
   )
 }
@@ -291,17 +299,22 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
         void handleSubmit(onSubmit)(event)
       }}
       noValidate
-      className="flex flex-col gap-5"
+      className="flex w-full flex-col gap-5"
     >
-      <div className="flex flex-wrap items-end gap-3">
+      {/* header: name + default + save */}
+      <div className="flex flex-wrap items-end gap-4">
         <div className="min-w-3xs flex-1">
-          <Field
-            label={t('template.form.name')}
-            htmlFor="template-name"
-            error={errors.name !== undefined ? t('error.validation.required') : undefined}
-          >
-            <Input id="template-name" {...register('name')} />
-          </Field>
+          <label htmlFor="template-name" className="mb-1 block text-xs font-semibold text-fg-muted">
+            {t('template.form.name')}
+          </label>
+          <input
+            id="template-name"
+            {...register('name')}
+            className="w-full rounded-input border border-border-input bg-surface-raised px-3 py-2.5 text-lg font-bold text-fg outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft"
+          />
+          {errors.name !== undefined && (
+            <p className="mt-1 text-xs text-rejected">{t('error.validation.required')}</p>
+          )}
         </div>
         <label className="flex items-center gap-2 pb-2.5 text-sm text-fg">
           <Toggle
@@ -313,19 +326,20 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
           />
           {t('template.form.isDefault')}
         </label>
-        <Button type="submit" disabled={isPending} className="ml-auto">
+        <Button type="submit" disabled={isPending}>
           {t('common.actions.save')}
         </Button>
       </div>
 
       {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        {/* editor pane */}
-        <div className="flex flex-col gap-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-fg-faint">
-            {t('template.form.editor')}
-          </h3>
+      {/* two columns: wider editor + preview */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* editor (wider) */}
+        <div className="flex flex-col gap-3 lg:col-span-2">
+          <p className="text-xs font-semibold text-fg-faint">
+            {t('template.form.fieldsLabel')} · {t('template.form.reorderHint')}
+          </p>
           {fields.map((field, index) => (
             <FieldEditor
               key={field.id}
@@ -347,26 +361,23 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
           {fields.length === 0 && (
             <InlineAlert variant="warn">{t('template.form.fieldsRequired')}</InlineAlert>
           )}
-          <div>
-            <Button
-              variant="secondary"
-              disabled={isPending}
-              onClick={() => {
-                append({ name: '', label: '', type: 'text', required: false, options: '' })
-              }}
-            >
-              ＋ {t('template.form.addField')}
-            </Button>
-          </div>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => {
+              append({ name: '', label: '', type: 'text', required: false, options: '' })
+            }}
+            className="rounded-card border-2 border-dashed border-border-strong bg-surface-raised py-3 text-sm font-semibold text-accent hover:bg-surface-overlay disabled:opacity-50"
+          >
+            ＋ {t('template.form.addField')}
+          </button>
         </div>
 
-        {/* preview pane */}
-        <Card className="h-fit">
-          <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-fg-faint">
-            {t('template.form.preview')}
-          </h3>
-          <PreviewPane control={control} />
-        </Card>
+        {/* preview */}
+        <div className="flex flex-col gap-3">
+          <p className="text-xs font-semibold text-fg-faint">{t('template.form.preview')}</p>
+          <PreviewPanel control={control} />
+        </div>
       </div>
 
       <Field label={t('template.form.description')} htmlFor="template-description">
