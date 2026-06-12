@@ -4,6 +4,7 @@ import { AuditLogsPage } from '@/pages/audit-logs'
 import { DashboardPage } from '@/pages/dashboard'
 import { ExportPage } from '@/pages/export'
 import { MobileHomePage } from '@/pages/mobile-home'
+import { MobileNotificationsPage } from '@/pages/mobile-notifications'
 import { MobileReportsPage } from '@/pages/mobile-reports'
 import { ReportDetailPage } from '@/pages/report-detail'
 import { ReportSubmitPage } from '@/pages/report-submit'
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: 'reports/new', element: <ReportSubmitPage /> },
       { path: 'reports/:id', element: <ReportDetailPage /> },
       { path: 'account', element: <AccountPage /> },
+      { path: 'notifications', element: <MobileNotificationsPage /> },
       { path: 'templates', element: <TemplatesPage /> },
       { path: 'templates/new', element: <TemplateCreatePage /> },
       { path: 'templates/:id/edit', element: <TemplateEditPage /> },

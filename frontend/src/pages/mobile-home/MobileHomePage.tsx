@@ -41,9 +41,18 @@ export function MobileHomePage() {
       <header className="bg-gradient-to-br from-accent to-accent-deep px-4 pb-6 pt-6 text-fg-inverse">
         <div className="flex items-center justify-between">
           <span className="text-lg font-extrabold tracking-wide">{t('common.app.name')}</span>
-          <span className="grid h-9 w-9 place-items-center rounded-pill bg-white/15 text-sm font-bold">
-            {user?.name.slice(0, 2) ?? '??'}
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/notifications"
+              aria-label={t('shell.notifications.title')}
+              className="grid h-9 w-9 place-items-center rounded-pill bg-white/15 text-base"
+            >
+              ◔
+            </Link>
+            <span className="grid h-9 w-9 place-items-center rounded-pill bg-white/15 text-sm font-bold">
+              {user?.name.slice(0, 2) ?? '??'}
+            </span>
+          </div>
         </div>
         <p className="mt-4 text-sm text-fg-inverse/80">{t('mobile.home.greeting')}</p>
         <p className="text-xl font-bold">{user?.name ?? ''}</p>
