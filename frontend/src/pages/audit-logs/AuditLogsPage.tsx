@@ -2,9 +2,9 @@ import { useSyncExternalStore } from 'react'
 import { canManageOrganization, getCurrentUser, subscribeCurrentUser } from '@/entities/auth'
 import { AuditLog } from '@/features/view-audit-log'
 import { useTranslation } from '@/shared/i18n'
-import { InlineAlert, Stack, Text } from '@/shared/ui'
+import { InlineAlert } from '@/shared/ui'
 
-/** Audit log (admin). Chrome from AdminShell; content only. */
+/** Audit log (admin). Full-bleed white-header screen; AuditLog renders its own header. */
 export function AuditLogsPage() {
   const { t } = useTranslation()
   const user = useSyncExternalStore(subscribeCurrentUser, getCurrentUser)
@@ -15,14 +15,8 @@ export function AuditLogsPage() {
   }
 
   return (
-    <Stack gap="md" className="mx-auto w-full max-w-6xl">
-      <Stack gap="sm">
-        <Text variant="title" as="h2">
-          {t('audit.list.title')}
-        </Text>
-        <Text variant="subtitle">{t('audit.list.subtitle')}</Text>
-      </Stack>
+    <div className="-m-6">
       <AuditLog />
-    </Stack>
+    </div>
   )
 }
