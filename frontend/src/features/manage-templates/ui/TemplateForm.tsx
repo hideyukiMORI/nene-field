@@ -127,13 +127,25 @@ function FieldEditor({
   return (
     <Card className="flex flex-col gap-3 p-3.5">
       <div className="flex items-center gap-2">
+        <span className="text-xs text-fg-muted">{t('template.field.type')}</span>
         <Chip
           onClick={() => {
             setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
           }}
         >
-          {t(TYPE_LABEL_KEY[type])}
+          {t(TYPE_LABEL_KEY[type])} ⇄
         </Chip>
+        <label className="ml-2 flex items-center gap-1.5 text-sm text-fg">
+          <Toggle
+            size="sm"
+            checked={required}
+            onChange={(next) => {
+              setValue(`fields.${index}.required`, next, { shouldDirty: true })
+            }}
+            label={t('template.field.required')}
+          />
+          {t('template.field.required')}
+        </label>
         <div className="ml-auto flex items-center gap-1">
           <button
             type="button"
@@ -189,17 +201,6 @@ function FieldEditor({
           />
         </Field>
       )}
-      <label className="flex items-center gap-2 text-sm text-fg">
-        <Toggle
-          size="sm"
-          checked={required}
-          onChange={(next) => {
-            setValue(`fields.${index}.required`, next, { shouldDirty: true })
-          }}
-          label={t('template.field.required')}
-        />
-        {t('template.field.required')}
-      </label>
     </Card>
   )
 }
