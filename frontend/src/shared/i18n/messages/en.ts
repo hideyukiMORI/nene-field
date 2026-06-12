@@ -213,6 +213,12 @@ export const enMessages: MessageCatalog = {
   'audit.export.action': 'Download CSV',
   'audit.export.hint': 'Set a From and To date to export.',
   'audit.export.error': 'Export failed.',
+  'audit.diff.title': 'Change diff',
+  'audit.diff.before': 'Before',
+  'audit.diff.after': 'After',
+  'audit.diff.created': 'This record was created.',
+  'audit.diff.deleted': 'This record was deleted.',
+  'audit.diff.noChanges': 'No recorded changes.',
 
   // ── user management ──────────────────────────────────────────────
   'user.list.title': 'Users',

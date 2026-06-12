@@ -212,6 +212,12 @@ export const jaMessages = {
   'audit.export.action': 'CSVダウンロード',
   'audit.export.hint': 'エクスポートには開始日・終了日を指定してください。',
   'audit.export.error': 'エクスポートに失敗しました。',
+  'audit.diff.title': '変更差分',
+  'audit.diff.before': '変更前',
+  'audit.diff.after': '変更後',
+  'audit.diff.created': '新規作成されたレコードです。',
+  'audit.diff.deleted': '削除されたレコードです。',
+  'audit.diff.noChanges': '記録された差分はありません。',
 
   // ── user management ──────────────────────────────────────────────
   'user.list.title': 'ユーザー管理',
