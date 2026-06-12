@@ -19,7 +19,6 @@ import {
   Drawer,
   EmptyState,
   ErrorState,
-  Input,
   LoadingState,
   Modal,
   Select,
@@ -153,61 +152,70 @@ export function ListReports() {
   const current = drawerIndex !== null ? filtered[drawerIndex] : undefined
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* header row: title + search + submitter + CSV */}
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-xl font-bold text-fg">{t('report.list.title')}</h2>
-        <div className="min-w-3xs max-w-xs flex-1">
-          <Input
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-            }}
-            placeholder={t('report.list.search')}
-          />
+    <div className="flex flex-col">
+      {/* white header bar (full-bleed) */}
+      <div className="flex flex-col gap-3 border-b border-border bg-surface-raised px-6 py-4">
+        {/* row: title + search + submitter + CSV */}
+        <div className="flex flex-wrap items-center gap-3">
+          <h2 className="mr-1 text-lg font-bold text-fg">{t('report.list.title')}</h2>
+          <div className="flex w-70 items-center gap-2 rounded-pill border border-border bg-surface-soft px-3.5 py-2">
+            <span className="text-fg-faint">⌕</span>
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+              }}
+              placeholder={t('report.list.search')}
+              className="w-full border-0 bg-transparent text-sm text-fg outline-none placeholder:text-fg-faint"
+            />
+          </div>
+          <div className="w-44">
+            <Select
+              value={submitter}
+              onChange={(e) => {
+                setSubmitter(e.target.value)
+              }}
+              className="rounded-pill"
+            >
+              <option value="">{t('report.list.submitterAll')}</option>
+              {submitters.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <Link to="/export" className="ml-auto">
+            <Button variant="ghost" size="sm">
+              ⬇ {t('report.list.csvExport')}
+            </Button>
+          </Link>
         </div>
-        <div className="w-44">
-          <Select
-            value={submitter}
-            onChange={(e) => {
-              setSubmitter(e.target.value)
-            }}
-          >
-            <option value="">{t('report.list.submitterAll')}</option>
-            {submitters.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </Select>
+
+        {/* status chips + count */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {STATUS_FILTERS.map((s) => (
+            <Chip
+              key={s}
+              active={status === s}
+              onClick={() => {
+                setStatus(s)
+              }}
+            >
+              {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
+            </Chip>
+          ))}
+          <span className="ml-auto text-sm text-fg-faint tabular-nums">
+            {t('report.list.count', { count: filtered.length })}
+          </span>
         </div>
-        <Link to="/export" className="ml-auto">
-          <Button variant="ghost">⬇ {t('report.list.csvExport')}</Button>
-        </Link>
       </div>
 
-      {/* status chips + count */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {STATUS_FILTERS.map((s) => (
-          <Chip
-            key={s}
-            active={status === s}
-            onClick={() => {
-              setStatus(s)
-            }}
-          >
-            {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
-          </Chip>
-        ))}
-        <span className="ml-auto text-sm text-fg-muted tabular-nums">
-          {t('report.list.count', { count: filtered.length })}
-        </span>
-      </div>
-
-      {filtered.length === 0 ? (
-        <EmptyState message={t('report.list.empty')} />
-      ) : (
-        <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
+      {/* body */}
+      <div className="flex flex-col gap-4 px-6 py-4">
+        {filtered.length === 0 ? (
+          <EmptyState message={t('report.list.empty')} />
+        ) : (
           <TableWrap>
             <Table className="min-w-160">
               <thead>
@@ -267,34 +275,34 @@ export function ListReports() {
               </tbody>
             </Table>
           </TableWrap>
-        </div>
-      )}
+        )}
 
-      {/* bulk action bar */}
-      {selected.size > 0 && (
-        <div className="sticky bottom-4 z-10 flex items-center gap-2 rounded-pill border border-border bg-surface-raised px-4 py-2.5 shadow-card">
-          <span className="text-sm font-semibold text-fg">
-            {t('report.list.bulk.selected', { count: selected.size })}
-          </span>
-          <div className="ml-auto flex gap-2">
-            <Button variant="ghost" size="sm" onClick={clearSelection}>
-              {t('report.list.bulk.clear')}
-            </Button>
-            <Button
-              variant="danger-ghost"
-              size="sm"
-              onClick={() => {
-                setBulkReject(true)
-              }}
-            >
-              {t('report.list.bulk.reject')}
-            </Button>
-            <Button variant="success" size="sm" onClick={bulkApprove}>
-              {t('report.list.bulk.approve')}
-            </Button>
+        {/* bulk action bar */}
+        {selected.size > 0 && (
+          <div className="sticky bottom-4 z-10 flex items-center gap-2 rounded-pill border border-border bg-surface-raised px-4 py-2.5 shadow-card">
+            <span className="text-sm font-semibold text-fg">
+              {t('report.list.bulk.selected', { count: selected.size })}
+            </span>
+            <div className="ml-auto flex gap-2">
+              <Button variant="ghost" size="sm" onClick={clearSelection}>
+                {t('report.list.bulk.clear')}
+              </Button>
+              <Button
+                variant="danger-ghost"
+                size="sm"
+                onClick={() => {
+                  setBulkReject(true)
+                }}
+              >
+                {t('report.list.bulk.reject')}
+              </Button>
+              <Button variant="success" size="sm" onClick={bulkApprove}>
+                {t('report.list.bulk.approve')}
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* continuous-review drawer */}
       <Drawer

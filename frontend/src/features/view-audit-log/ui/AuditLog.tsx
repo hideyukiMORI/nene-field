@@ -190,104 +190,113 @@ export function AuditLog() {
   const to = Math.min(audit.offset + audit.limit, audit.total)
 
   return (
-    <Stack gap="md">
-      <FilterBar
-        initial={audit.filters}
-        onApply={audit.applyFilters}
-        onExport={(values) => {
-          exportCsv(values.occurredFrom, values.occurredTo, values.entityType)
-        }}
-        isExporting={isExporting}
-      />
-
-      {exportErrorKey !== null && <InlineAlert variant="error">{t(exportErrorKey)}</InlineAlert>}
-
-      {audit.isLoading ? (
-        <LoadingState label={t('common.state.loading')} />
-      ) : audit.isError ? (
-        <ErrorState
-          message={t('audit.list.error')}
-          retryLabel={t('common.actions.retry')}
-          onRetry={audit.refetch}
+    <div className="flex flex-col">
+      {/* white header bar (full-bleed) */}
+      <div className="flex flex-col gap-3 border-b border-border bg-surface-raised px-6 py-4">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 className="text-lg font-bold text-fg">{t('audit.list.title')}</h2>
+          <span className="text-sm text-fg-faint">{t('audit.list.subtitle')}</span>
+        </div>
+        <FilterBar
+          initial={audit.filters}
+          onApply={audit.applyFilters}
+          onExport={(values) => {
+            exportCsv(values.occurredFrom, values.occurredTo, values.entityType)
+          }}
+          isExporting={isExporting}
         />
-      ) : audit.events.length === 0 ? (
-        <EmptyState message={t('audit.list.empty')} />
-      ) : (
-        <Stack gap="sm">
-          <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
-            <TableWrap>
-              <Table className="min-w-160">
-                <thead>
-                  <Tr>
-                    <Th className="w-44">{t('audit.col.occurredAt')}</Th>
-                    <Th className="w-40">{t('audit.col.event')}</Th>
-                    <Th className="w-32">{t('audit.col.actor')}</Th>
-                    <Th>{t('audit.col.entityType')}</Th>
-                    <Th className="w-20" />
-                  </Tr>
-                </thead>
-                <tbody>
-                  {audit.events.map((event) => (
-                    <Tr
-                      key={event.id}
-                      interactive
-                      onClick={() => {
-                        setSelected(event)
-                      }}
-                    >
-                      <Td className="whitespace-nowrap text-fg-muted tabular-nums">
-                        {formatJstDateTime(event.occurredAt)}
-                      </Td>
-                      <Td>
-                        <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
-                      </Td>
-                      <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
-                      <Td className="text-fg-muted">
-                        {event.entityType}
-                        <span className="block truncate font-mono text-xs text-fg-faint">
-                          {event.entityId}
-                        </span>
-                      </Td>
-                      <Td className="text-right">
-                        <span className="text-sm font-semibold text-accent">
-                          {t('audit.col.diff')} ›
-                        </span>
-                      </Td>
+      </div>
+
+      <div className="flex flex-col gap-4 px-6 py-4">
+        {exportErrorKey !== null && <InlineAlert variant="error">{t(exportErrorKey)}</InlineAlert>}
+
+        {audit.isLoading ? (
+          <LoadingState label={t('common.state.loading')} />
+        ) : audit.isError ? (
+          <ErrorState
+            message={t('audit.list.error')}
+            retryLabel={t('common.actions.retry')}
+            onRetry={audit.refetch}
+          />
+        ) : audit.events.length === 0 ? (
+          <EmptyState message={t('audit.list.empty')} />
+        ) : (
+          <Stack gap="sm">
+            <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
+              <TableWrap>
+                <Table className="min-w-160">
+                  <thead>
+                    <Tr>
+                      <Th className="w-44">{t('audit.col.occurredAt')}</Th>
+                      <Th className="w-40">{t('audit.col.event')}</Th>
+                      <Th className="w-32">{t('audit.col.actor')}</Th>
+                      <Th>{t('audit.col.entityType')}</Th>
+                      <Th className="w-20" />
                     </Tr>
-                  ))}
-                </tbody>
-              </Table>
-            </TableWrap>
-          </div>
-          <div className="flex items-center justify-between gap-3">
-            <Text variant="muted">
-              {t('audit.pagination.range', { from, to, total: audit.total })}
-            </Text>
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={audit.offset === 0}
-                onClick={() => {
-                  audit.goToOffset(audit.offset - audit.limit)
-                }}
-              >
-                {t('common.actions.previous')}
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={audit.offset + audit.limit >= audit.total}
-                onClick={() => {
-                  audit.goToOffset(audit.offset + audit.limit)
-                }}
-              >
-                {t('common.actions.next')}
-              </Button>
+                  </thead>
+                  <tbody>
+                    {audit.events.map((event) => (
+                      <Tr
+                        key={event.id}
+                        interactive
+                        onClick={() => {
+                          setSelected(event)
+                        }}
+                      >
+                        <Td className="whitespace-nowrap text-fg-muted tabular-nums">
+                          {formatJstDateTime(event.occurredAt)}
+                        </Td>
+                        <Td>
+                          <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
+                        </Td>
+                        <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
+                        <Td className="text-fg-muted">
+                          {event.entityType}
+                          <span className="block truncate font-mono text-xs text-fg-faint">
+                            {event.entityId}
+                          </span>
+                        </Td>
+                        <Td className="text-right">
+                          <span className="text-sm font-semibold text-accent">
+                            {t('audit.col.diff')} ›
+                          </span>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </TableWrap>
             </div>
-          </div>
-        </Stack>
-      )}
+            <div className="flex items-center justify-between gap-3">
+              <Text variant="muted">
+                {t('audit.pagination.range', { from, to, total: audit.total })}
+              </Text>
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={audit.offset === 0}
+                  onClick={() => {
+                    audit.goToOffset(audit.offset - audit.limit)
+                  }}
+                >
+                  {t('common.actions.previous')}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={audit.offset + audit.limit >= audit.total}
+                  onClick={() => {
+                    audit.goToOffset(audit.offset + audit.limit)
+                  }}
+                >
+                  {t('common.actions.next')}
+                </Button>
+              </div>
+            </div>
+          </Stack>
+        )}
+      </div>
 
       {selected !== null && (
         <DiffModal
@@ -297,6 +306,6 @@ export function AuditLog() {
           }}
         />
       )}
-    </Stack>
+    </div>
   )
 }
