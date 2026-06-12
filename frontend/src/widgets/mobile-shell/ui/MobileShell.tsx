@@ -16,8 +16,8 @@ const TABS: Tab[] = [
   { to: '/account', labelKey: 'mobile.tab.account', icon: '⚇' },
 ]
 
-// The FAB (new report) shows on the list-oriented tabs, not deep in a flow.
-const FAB_PATHS = new Set(['/', '/reports'])
+// The FAB (new report) shows on the reports list; home uses the large CTA instead.
+const FAB_PATHS = new Set(['/reports'])
 
 function tabClass({ isActive }: { isActive: boolean }): string {
   return cn(

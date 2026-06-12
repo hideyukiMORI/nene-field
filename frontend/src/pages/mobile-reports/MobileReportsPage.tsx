@@ -43,8 +43,11 @@ export function MobileReportsPage() {
 
   return (
     <div className="flex flex-col">
-      <header className="border-b border-border bg-surface-raised px-4 py-3.5">
+      <header className="flex items-center justify-between border-b border-border bg-surface-raised px-4 py-3.5">
         <h1 className="text-base font-bold text-fg">{t('mobile.tab.reports')}</h1>
+        <span className="text-xs text-fg-faint tabular-nums">
+          {t('mobile.reports.count', { count: reports.length })}
+        </span>
       </header>
 
       <div className="flex gap-1.5 overflow-x-auto px-4 py-3">
@@ -100,14 +103,15 @@ export function MobileReportsPage() {
                 <span className="truncate font-semibold text-fg">{r.title}</span>
                 <Badge tone={statusTone[r.status]}>{t(statusKey[r.status])}</Badge>
               </div>
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-fg-muted">
-                <span className="font-mono tnum">{formatCalendarDate(r.workDate)}</span>
-                {r.tags.slice(0, 2).map((tag) => (
-                  <Chip key={tag}>{tag}</Chip>
-                ))}
-              </div>
+              <p className="mt-1 text-xs text-fg-muted">
+                <span className="font-mono tabular-nums">{formatCalendarDate(r.workDate)}</span>
+                {r.tags.length > 0 && <span> · {r.tags.slice(0, 2).join(' · ')}</span>}
+              </p>
               {r.aiSummary !== null && (
-                <p className="mt-1.5 line-clamp-2 text-xs text-fg-faint">{r.aiSummary}</p>
+                <div className="mt-2 rounded-input bg-ai-soft px-3 py-2">
+                  <span className="mr-1 text-xs font-bold text-ai">AI</span>
+                  <span className="text-xs text-fg">{r.aiSummary}</span>
+                </div>
               )}
             </Link>
           ))

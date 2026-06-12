@@ -61,18 +61,41 @@ export const enMessages: MessageCatalog = {
   'dashboard.quick.today': 'Today',
   'dashboard.quick.week': 'This week',
   'dashboard.quick.toExport': 'Go to CSV export',
+  'dashboard.view': 'Approver / Admin view',
+  'dashboard.reviewCta': 'Review pending',
+  'dashboard.summary.title': 'This week',
+  'dashboard.summary.body':
+    '{{approved}} of {{total}} submitted reports approved, {{pending}} pending.',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
-  'auth.login.subtitle': 'Sign in to the admin console.',
+  'auth.login.subtitle': 'Enter your account details',
   'auth.login.email': 'Email',
   'auth.login.password': 'Password',
   'auth.login.button': 'Sign in',
   'auth.login.submitting': 'Signing in…',
   'auth.login.sessionExpired': 'Your session expired. Please sign in again.',
   'auth.login.invalid': 'Incorrect email or password.',
-  'auth.login.tagline': 'Daily field reports, right in your pocket.',
-  'auth.login.lead': 'Submit from your phone, approve in one tap, review fast with AI summaries.',
+  'auth.login.brandSubtitle': 'Field report management',
+  'auth.login.tagline': 'Record and approve the workday, simply.',
+  'auth.login.lead':
+    'Submitters file reports from their phone; managers list, bulk-approve, and aggregate on PC.',
+  'auth.login.roleLabel': 'Sign in as',
+  'auth.login.roleSubmitter': 'Submitter',
+  'auth.login.roleManager': 'Approver / Admin',
+  'auth.login.loginAsSubmitter': 'Sign in as submitter',
+  'auth.login.loginAsManager': 'Sign in as manager',
+  'auth.login.destSubmitter': 'Continues to the mobile report-submission screens.',
+  'auth.login.destManager': 'Continues to the PC admin console (list, approve, aggregate).',
+  'auth.login.forgot': 'Forgot your password?',
+  'auth.login.demoNote':
+    'Demo environment. Keep the prefilled details, pick a role, and press Sign in to open each screen.',
+  'auth.login.metric.speedValue': '3 min',
+  'auth.login.metric.speedLabel': 'to submit',
+  'auth.login.metric.langValue': 'ja / en',
+  'auth.login.metric.langLabel': 'bilingual',
+  'auth.login.metric.aiValue': 'AI',
+  'auth.login.metric.aiLabel': 'skim summaries',
   'auth.login.point.speed': 'Submit in 3 min',
   'auth.login.point.bilingual': '日本語 / English',
   'auth.login.point.ai': 'AI summary',
@@ -121,10 +144,17 @@ export const enMessages: MessageCatalog = {
   'mobile.home.notSubmitted': 'Not submitted',
   'mobile.home.cta': 'Submit a report',
   'mobile.home.recent': 'Recent reports',
+  'mobile.home.greetingName': 'Good morning, {{name}}',
+  'mobile.home.notSubmittedTitle': 'Not submitted yet today',
+  'mobile.home.notSubmittedSub': 'Record today’s work',
+  'mobile.home.viewAll': 'View all',
+  'mobile.home.roleSubmitter': 'Submitter',
+  'mobile.home.roleApprover': 'Approver',
   'mobile.reports.filter.all': 'All',
   'mobile.reports.filter.rejected': 'Sent back',
   'mobile.reports.filter.draft': 'Draft',
   'mobile.reports.notSent': 'Not sent',
+  'mobile.reports.count': '{{count}} total',
   'mobile.account.title': 'Account',
   'mobile.account.openAdmin': 'Open admin (PC)',
   'mobile.account.language': 'Language',
@@ -147,6 +177,7 @@ export const enMessages: MessageCatalog = {
   'report.submit.photoHint': 'From camera or gallery (up to 5)',
   'report.submit.offline': 'Offline: submission is queued and sent automatically when back online.',
   'report.submit.rejectedBanner': 'Sent back. Please fix and resubmit.',
+  'report.submit.mobileTitle': 'New report',
 
   // ── template management ──────────────────────────────────────────
   'template.list.title': 'Templates',
@@ -187,7 +218,10 @@ export const enMessages: MessageCatalog = {
 
   // ── organization settings ────────────────────────────────────────
   'settings.title': 'Organization settings',
-  'settings.subtitle': 'Configure your organization profile and notifications.',
+  'settings.subtitle':
+    'Organization profile, AI summary, and notifications. Not a statutory ledger.',
+  'settings.contactEmail': 'Contact email',
+  'settings.ai.subtitle': 'Summarizes each report into one line (labeled “AI summary”).',
   'settings.error': 'Failed to load the organization.',
   'settings.name': 'Organization name',
   'settings.aiSummaryEnabled': 'Enable AI summary',
@@ -209,7 +243,7 @@ export const enMessages: MessageCatalog = {
   'settings.section.locale': 'Display & region',
   'settings.section.rules': 'Report rules',
   'settings.section.danger': 'Danger zone',
-  'settings.ai.apiUrl': 'API URL',
+  'settings.ai.apiUrl': 'API endpoint',
   'settings.ai.apiKey': 'API key',
   'settings.ai.test': 'Test connection',
   'settings.ai.tested': 'Ran AI connection test',
@@ -226,8 +260,9 @@ export const enMessages: MessageCatalog = {
   'settings.danger.done': 'Organization deactivated',
 
   // ── report CSV export ────────────────────────────────────────────
-  'export.title': 'Export reports',
-  'export.subtitle': 'Export daily reports as CSV by filter.',
+  'export.title': 'CSV export',
+  'export.subtitle':
+    'Export daily report data as CSV by criteria. Not a payroll / statutory ledger.',
   'export.workDateFrom': 'Work date (from)',
   'export.workDateTo': 'Work date (to)',
   'export.user': 'Author',
@@ -237,7 +272,10 @@ export const enMessages: MessageCatalog = {
   'export.download': 'Download CSV',
   'export.hint': 'Set the work-date range to export.',
   'export.error': 'Export failed.',
-  'export.preview.title': 'Preview',
+  'export.preview.title': 'Output preview',
+  'export.preview.lead': 'Reports matching the criteria',
+  'export.preview.leading': 'First rows',
+  'export.preview.columns': 'Columns: work date, submitter, title, status, site code …',
   'export.preview.count': '{{count}} matching',
   'export.preview.empty': 'No matching reports.',
   'export.downloaded': 'Download started',
@@ -245,7 +283,11 @@ export const enMessages: MessageCatalog = {
 
   // ── audit log viewer ─────────────────────────────────────────────
   'audit.list.title': 'Audit log',
-  'audit.list.subtitle': 'Review the activity history of your organization.',
+  'audit.list.subtitle': 'Records all important operations (newest first)',
+  'audit.filter.entityReport': 'Reports',
+  'audit.filter.entityUser': 'Users',
+  'audit.filter.entityTemplate': 'Templates',
+  'audit.col.diff': 'Diff',
   'audit.list.empty': 'No matching audit events.',
   'audit.list.error': 'Failed to load the audit log.',
   'audit.col.occurredAt': 'When',
@@ -301,6 +343,7 @@ export const enMessages: MessageCatalog = {
   'user.actions.disable': 'Disable',
   'user.actions.enable': 'Enable',
   'user.list.selfBadge': 'You',
+  'user.list.count': '{{active}} active / {{total}} total',
 
   // ── report review (approve / reject) ─────────────────────────────
   'report.review.title': 'Review',
@@ -317,7 +360,9 @@ export const enMessages: MessageCatalog = {
   'report.review.rejected': 'Sent back',
 
   // ── report list (admin: filters / bulk / drawer) ─────────────────
-  'report.list.search': 'Search by title or person',
+  'report.list.search': 'Search title, submitter, site',
+  'report.list.csvExport': 'Export CSV',
+  'report.list.count': '{{count}}',
   'report.list.filter.all': 'All',
   'report.list.submitterAll': 'All people',
   'report.list.aiSummaryNone': '— no summary',

@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useSyncExternalStore } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { canManageOrganization } from '@/entities/auth/enum'
 import { getCurrentUser, signOut, subscribeCurrentUser } from '@/entities/auth/session'
+import { useOrganizationQuery } from '@/entities/organization'
+import { useReportListQuery } from '@/entities/report'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import { cn } from '@/shared/lib/cn'
@@ -82,6 +84,11 @@ export function AdminShell() {
   const [bellOpen, setBellOpen] = useState(false)
   const [notifications, setNotifications] = useState<NotificationItem[]>(SEED_NOTIFICATIONS)
 
+  const orgId = user?.organizationId ?? ''
+  const org = useOrganizationQuery(orgId, { enabled: orgId !== '' })
+  const reports = useReportListQuery({ limit: 100, offset: 0 })
+  const pendingCount = (reports.data?.items ?? []).filter((r) => r.status === 'submitted').length
+
   const canManage = user !== null && canManageOrganization(user.role)
   const titleKey = TITLE_BY_PATH[location.pathname] ?? 'common.app.name'
   const unread = notifications.filter((n) => n.unread).length
@@ -100,10 +107,15 @@ export function AdminShell() {
       {/* ── sidebar ─────────────────────────────────────────────── */}
       <aside className="flex w-61 flex-none flex-col bg-gradient-to-b from-accent-deep to-accent-deep-2 px-3 py-4 text-fg-inverse">
         <div className="flex items-center gap-2.5 px-2 pb-4">
-          <span className="grid h-8 w-8 place-items-center rounded-input bg-gradient-to-br from-accent to-accent-deep text-base font-extrabold">
+          <span className="grid h-9 w-9 place-items-center rounded-input bg-gradient-to-br from-accent to-accent-deep text-base font-extrabold">
             N
           </span>
-          <span className="text-base font-extrabold tracking-wide">{t('common.app.name')}</span>
+          <div className="min-w-0">
+            <div className="text-base font-extrabold tracking-wide">{t('common.app.name')}</div>
+            {org.data !== undefined && (
+              <div className="truncate text-xs text-fg-inverse/55">{org.data.name}</div>
+            )}
+          </div>
         </div>
 
         <p className="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-widest text-fg-inverse/55">
@@ -112,7 +124,12 @@ export function AdminShell() {
         {MAIN_NAV.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
             <span className="w-5 text-center opacity-90">{item.icon}</span>
-            {t(item.labelKey)}
+            <span className="flex-1">{t(item.labelKey)}</span>
+            {item.to === '/reports' && pendingCount > 0 && (
+              <span className="grid h-5 min-w-5 place-items-center rounded-pill bg-accent px-1.5 text-xs font-bold text-fg-inverse">
+                {pendingCount}
+              </span>
+            )}
           </NavLink>
         ))}
 
@@ -131,6 +148,13 @@ export function AdminShell() {
         )}
 
         <div className="mt-auto border-t border-white/10 pt-3">
+          <Link
+            to="/"
+            className="flex w-full items-center gap-2.5 rounded-input px-3 py-2 text-sm text-fg-inverse/85 hover:bg-white/10"
+          >
+            <span className="w-5 text-center">📱</span>
+            {t('shell.openSubmitterApp')}
+          </Link>
           <button
             type="button"
             onClick={signOut}
@@ -152,16 +176,47 @@ export function AdminShell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-15 flex-none items-center gap-4 border-b border-border bg-surface-raised px-6">
           <h1 className="text-base font-bold text-fg">{t(titleKey)}</h1>
+
+          <div className="mx-auto hidden w-full max-w-sm items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2 md:flex">
+            <span className="text-fg-faint">⌕</span>
+            <input
+              type="search"
+              placeholder={t('shell.search.placeholder')}
+              className="w-full bg-transparent text-sm text-fg outline-none placeholder:text-fg-faint"
+            />
+          </div>
+
           <div className="relative ml-auto flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setLocale(locale === 'ja' ? 'en' : 'ja')
-              }}
-              className="rounded-pill border border-border-strong px-3 py-1.5 text-xs font-semibold text-fg-muted hover:bg-surface-overlay"
-            >
-              {locale === 'ja' ? 'EN' : '日本語'}
-            </button>
+            <div className="flex items-center rounded-pill bg-surface-overlay p-0.5 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => {
+                  setLocale('ja')
+                }}
+                className={cn(
+                  'rounded-pill px-2.5 py-1',
+                  locale === 'ja'
+                    ? 'bg-surface-raised text-accent-ink shadow-card'
+                    : 'text-fg-muted',
+                )}
+              >
+                日本語
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setLocale('en')
+                }}
+                className={cn(
+                  'rounded-pill px-2.5 py-1',
+                  locale === 'en'
+                    ? 'bg-surface-raised text-accent-ink shadow-card'
+                    : 'text-fg-muted',
+                )}
+              >
+                EN
+              </button>
+            </div>
 
             <button
               type="button"

@@ -4,7 +4,6 @@ import { useUserListQuery } from '@/entities/user'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import {
-  Badge,
   Button,
   Card,
   Chip,
@@ -149,25 +148,21 @@ export function ExportReportsForm() {
                 ))}
               </div>
             </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <Button disabled={!canExport} onClick={onDownload}>
-                ⬇ {t('export.download')}
-              </Button>
-              {(workDateFrom === '' || workDateTo === '') && (
-                <span className="text-xs text-fg-muted">{t('export.hint')}</span>
-              )}
-            </div>
           </Stack>
         </Card>
 
-        {/* live preview */}
+        {/* live preview + download */}
         <Card>
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-fg">{t('export.preview.title')}</h3>
-            <Badge tone="info">{t('export.preview.count', { count: matched.length })}</Badge>
-          </div>
-          <div className="mt-3 flex flex-col gap-2">
+          <h3 className="text-sm font-bold text-fg">{t('export.preview.title')}</h3>
+          <p className="mt-0.5 text-xs text-fg-muted">{t('export.preview.lead')}</p>
+          <p className="mt-1 text-3xl font-extrabold text-accent-ink tabular-nums">
+            {matched.length} <span className="text-base font-bold">件</span>
+          </p>
+
+          <p className="mt-4 mb-2 text-xs font-semibold text-fg-faint">
+            {t('export.preview.leading')}
+          </p>
+          <div className="flex flex-col gap-2">
             {matched.length === 0 ? (
               <p className="text-sm text-fg-faint">{t('export.preview.empty')}</p>
             ) : (
@@ -177,14 +172,19 @@ export function ExportReportsForm() {
                   className="flex items-center justify-between gap-2 rounded-input bg-surface-overlay px-3 py-2 text-sm"
                 >
                   <span className="truncate text-fg">{r.title}</span>
-                  <span className="flex-none text-xs text-fg-faint tnum">{r.workDate}</span>
+                  <span className="flex-none text-xs text-fg-faint tabular-nums">{r.workDate}</span>
                 </div>
               ))
             )}
           </div>
-          <div className="mt-3">
-            <InlineAlert variant="warn">{t('export.legalNote')}</InlineAlert>
-          </div>
+
+          <Button disabled={!canExport} onClick={onDownload} className="mt-4 w-full">
+            ⬇ {t('export.download')}
+          </Button>
+          {(workDateFrom === '' || workDateTo === '') && (
+            <p className="mt-1.5 text-center text-xs text-fg-muted">{t('export.hint')}</p>
+          )}
+          <p className="mt-3 text-xs text-fg-faint">{t('export.preview.columns')}</p>
         </Card>
       </div>
     </Stack>

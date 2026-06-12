@@ -110,10 +110,17 @@ export function UserList() {
     )
   }
 
+  const activeCount = users.filter((u) => u.isActive).length
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="text-xl font-bold text-fg">{t('user.list.title')}</h2>
+        <span className="text-sm text-fg-muted tabular-nums">
+          {t('user.list.count', { active: activeCount, total: users.length })}
+        </span>
         <Button
+          className="ml-auto"
           onClick={() => {
             setInviteOpen(true)
           }}
@@ -142,11 +149,20 @@ export function UserList() {
                   return (
                     <Tr key={user.id} className={user.isActive ? '' : 'opacity-60'}>
                       <Td>
-                        <span className="flex items-center gap-2 font-medium text-fg">
-                          {user.name}
-                          {isSelf && <Badge tone="neutral">{t('user.list.selfBadge')}</Badge>}
-                        </span>
-                        <span className="block text-xs text-fg-faint">{user.email}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="grid h-9 w-9 flex-none place-items-center rounded-pill bg-accent-soft text-sm font-bold text-accent-ink">
+                            {user.name.slice(0, 1)}
+                          </span>
+                          <div className="min-w-0">
+                            <span className="flex items-center gap-2 font-medium text-fg">
+                              {user.name}
+                              {isSelf && <Badge tone="neutral">{t('user.list.selfBadge')}</Badge>}
+                            </span>
+                            <span className="block truncate text-xs text-fg-faint">
+                              {user.email}
+                            </span>
+                          </div>
+                        </div>
                       </Td>
                       <Td>
                         <button

@@ -52,7 +52,7 @@ describe('TemplateForm', () => {
     await user.type(screen.getByLabelText('ラベル'), '天候')
     // Type is a cycling pill (text→textarea→number→checkbox→date→select); 5 clicks
     // from the default 'text' lands on 'select'.
-    const typePill = screen.getByRole('button', { name: 'テキスト' })
+    const typePill = screen.getByRole('button', { name: /テキスト/ })
     for (let i = 0; i < 5; i++) await user.click(typePill)
     await user.click(screen.getByRole('button', { name: '保存' }))
 

@@ -19,12 +19,12 @@ describe('AuditLog', () => {
     renderWithProviders(<AuditLog />)
 
     await screen.findByText('report.approved')
-    expect(screen.getByRole('button', { name: 'CSVダウンロード' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /CSVダウンロード/ })).toBeDisabled()
 
     fireEvent.change(screen.getByLabelText('開始日'), { target: { value: '2026-06-01' } })
     fireEvent.change(screen.getByLabelText('終了日'), { target: { value: '2026-06-30' } })
 
-    const exportButton = screen.getByRole('button', { name: 'CSVダウンロード' })
+    const exportButton = screen.getByRole('button', { name: /CSVダウンロード/ })
     expect(exportButton).toBeEnabled()
     await user.click(exportButton)
 

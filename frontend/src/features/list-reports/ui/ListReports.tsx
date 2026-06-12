@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   useApproveReportMutation,
   useRejectReportMutation,
@@ -153,17 +154,19 @@ export function ListReports() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* filters */}
-      <div className="flex flex-wrap items-center gap-2.5">
-        <Input
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
-          }}
-          placeholder={t('report.list.search')}
-          className="max-w-xs"
-        />
-        <div className="max-w-3xs">
+      {/* header row: title + search + submitter + CSV */}
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 className="text-xl font-bold text-fg">{t('report.list.title')}</h2>
+        <div className="min-w-3xs max-w-xs flex-1">
+          <Input
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value)
+            }}
+            placeholder={t('report.list.search')}
+          />
+        </div>
+        <div className="w-44">
           <Select
             value={submitter}
             onChange={(e) => {
@@ -178,19 +181,27 @@ export function ListReports() {
             ))}
           </Select>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {STATUS_FILTERS.map((s) => (
-            <Chip
-              key={s}
-              active={status === s}
-              onClick={() => {
-                setStatus(s)
-              }}
-            >
-              {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
-            </Chip>
-          ))}
-        </div>
+        <Link to="/export" className="ml-auto">
+          <Button variant="ghost">⬇ {t('report.list.csvExport')}</Button>
+        </Link>
+      </div>
+
+      {/* status chips + count */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        {STATUS_FILTERS.map((s) => (
+          <Chip
+            key={s}
+            active={status === s}
+            onClick={() => {
+              setStatus(s)
+            }}
+          >
+            {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
+          </Chip>
+        ))}
+        <span className="ml-auto text-sm text-fg-muted tabular-nums">
+          {t('report.list.count', { count: filtered.length })}
+        </span>
       </div>
 
       {filtered.length === 0 ? (

@@ -41,10 +41,26 @@ interface OrganizationSettingsFormProps {
   errorKey: MessageKey | null
 }
 
-function SectionCard({ title, children }: { title: string; children: ReactNode }) {
+function SectionCard({
+  title,
+  subtitle,
+  action,
+  children,
+}: {
+  title: string
+  subtitle?: string
+  action?: ReactNode
+  children: ReactNode
+}) {
   return (
     <Card padded={false}>
-      <h3 className="border-b border-border px-5 py-3.5 text-sm font-bold text-fg">{title}</h3>
+      <div className="flex items-center gap-3 border-b border-border px-5 py-3.5">
+        <div className="min-w-0">
+          <h3 className="text-sm font-bold text-fg">{title}</h3>
+          {subtitle !== undefined && <p className="mt-0.5 text-xs text-fg-muted">{subtitle}</p>}
+        </div>
+        {action !== undefined && <div className="ml-auto flex-none">{action}</div>}
+      </div>
       <div className="p-5">{children}</div>
     </Card>
   )
@@ -77,6 +93,7 @@ export function OrganizationSettingsForm({
   const aiEnabled = useWatch({ control, name: 'aiSummaryEnabled' })
 
   // Design sections not yet backed by the settings mutation (kept as local UI).
+  const [contactEmail, setContactEmail] = useState('')
   const [timezone, setTimezone] = useState('Asia/Tokyo')
   const [onePerDay, setOnePerDay] = useState(true)
   const [reminderTime, setReminderTime] = useState('17:00')
@@ -118,13 +135,25 @@ export function OrganizationSettingsForm({
       >
         <SectionCard title={t('settings.section.basic')}>
           <div className="flex flex-col gap-4">
-            <Field
-              label={t('settings.name')}
-              htmlFor="org-name"
-              error={errors.name !== undefined ? t('error.validation.required') : undefined}
-            >
-              <Input id="org-name" {...register('name')} />
-            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field
+                label={t('settings.name')}
+                htmlFor="org-name"
+                error={errors.name !== undefined ? t('error.validation.required') : undefined}
+              >
+                <Input id="org-name" {...register('name')} />
+              </Field>
+              <Field label={t('settings.contactEmail')} htmlFor="org-contact-email">
+                <Input
+                  id="org-contact-email"
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => {
+                    setContactEmail(e.target.value)
+                  }}
+                />
+              </Field>
+            </div>
             <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
               <div className="flex gap-2">
                 <dt className="text-fg-muted">{t('settings.info.slug')}</dt>
@@ -143,18 +172,20 @@ export function OrganizationSettingsForm({
           </div>
         </SectionCard>
 
-        <SectionCard title={t('settings.section.ai')}>
+        <SectionCard
+          title={t('settings.section.ai')}
+          subtitle={t('settings.ai.subtitle')}
+          action={
+            <Toggle
+              checked={aiEnabled}
+              onChange={(next) => {
+                setValue('aiSummaryEnabled', next, { shouldDirty: true })
+              }}
+              label={t('settings.aiSummaryEnabled')}
+            />
+          }
+        >
           <div className="flex flex-col gap-4">
-            <label className="flex items-center gap-2 text-sm text-fg">
-              <Toggle
-                checked={aiEnabled}
-                onChange={(next) => {
-                  setValue('aiSummaryEnabled', next, { shouldDirty: true })
-                }}
-                label={t('settings.aiSummaryEnabled')}
-              />
-              {t('settings.aiSummaryEnabled')}
-            </label>
             <div className={aiEnabled ? '' : 'pointer-events-none opacity-50'}>
               <div className="flex flex-col gap-4">
                 <Field label={t('settings.ai.apiUrl')} htmlFor="org-ai-url">
