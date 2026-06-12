@@ -198,6 +198,8 @@ export const enMessages: MessageCatalog = {
   'template.form.fieldsRequired': 'Add at least one field.',
   'template.form.error': 'Failed to save.',
   'template.form.editor': 'Fields',
+  'template.form.fieldsLabel': 'Form fields',
+  'template.form.reorderHint': 'Drag or use ▲▼ to reorder',
   'template.form.preview': 'Preview (submitter’s view)',
   'template.form.moveUp': 'Move up',
   'template.form.moveDown': 'Move down',
