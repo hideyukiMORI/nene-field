@@ -1,0 +1,1 @@
+export { MobileNotificationsPage } from './MobileNotificationsPage'

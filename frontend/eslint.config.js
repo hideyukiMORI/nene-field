@@ -37,7 +37,15 @@ const importZones = [
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', 'coverage', 'src/shared/api/schema.gen.ts'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'coverage',
+      'storybook-static',
+      'playwright-report',
+      'test-results',
+      'src/shared/api/schema.gen.ts',
+    ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.strictTypeChecked],

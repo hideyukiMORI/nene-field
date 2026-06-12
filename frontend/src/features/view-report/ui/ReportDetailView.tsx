@@ -24,10 +24,10 @@ const statusKey: Record<ReportStatus, MessageKey> = {
 }
 
 const statusTone = {
-  draft: 'neutral',
-  submitted: 'info',
-  approved: 'success',
-  rejected: 'danger',
+  draft: 'draft',
+  submitted: 'submitted',
+  approved: 'approved',
+  rejected: 'rejected',
 } as const
 
 interface ReportDetailViewProps {
@@ -103,12 +103,10 @@ export function ReportDetailView({ reportId, renderActions }: ReportDetailViewPr
       </Stack>
 
       {report.aiSummary !== null && (
-        <Stack gap="sm">
-          <Text variant="subtitle">{t('report.field.aiSummary')}</Text>
-          <p className="border border-accent-soft bg-accent-soft p-4 text-sm text-fg">
-            {report.aiSummary}
-          </p>
-        </Stack>
+        <div className="rounded-card bg-ai-soft p-4">
+          <span className="text-xs font-semibold text-ai">{t('report.field.aiSummary')}</span>
+          <p className="mt-1 text-sm text-fg">{report.aiSummary}</p>
+        </div>
       )}
 
       <Stack gap="sm">
