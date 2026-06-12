@@ -14,8 +14,10 @@ export function UsersPage() {
     return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
   }
 
+  // Full-bleed: cancel the AdminShell <main> padding so the white header bar and
+  // table area span the content edge-to-edge (design handoff layout).
   return (
-    <div className="mx-auto w-full max-w-5xl">
+    <div className="-m-6">
       <UserList />
     </div>
   )
