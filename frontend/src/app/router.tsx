@@ -1,7 +1,10 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { AccountPage } from '@/pages/account'
 import { AuditLogsPage } from '@/pages/audit-logs'
 import { DashboardPage } from '@/pages/dashboard'
 import { ExportPage } from '@/pages/export'
+import { MobileHomePage } from '@/pages/mobile-home'
+import { MobileReportsPage } from '@/pages/mobile-reports'
 import { ReportDetailPage } from '@/pages/report-detail'
 import { ReportSubmitPage } from '@/pages/report-submit'
 import { ReportsPage } from '@/pages/reports'
@@ -12,16 +15,26 @@ import { TemplatesPage } from '@/pages/templates'
 import { UserCreatePage } from '@/pages/user-create'
 import { UserEditPage } from '@/pages/user-edit'
 import { UsersPage } from '@/pages/users'
-import { AdminShell } from '@/widgets/admin-shell'
+import { AppLayout } from './app-layout'
+import { useIsSubmitterSurface } from './use-submitter-surface'
+
+/** '/' and '/reports' render different content for submitters vs. managers. */
+function HomeRoute() {
+  return useIsSubmitterSurface() ? <MobileHomePage /> : <DashboardPage />
+}
+function ReportsRoute() {
+  return useIsSubmitterSurface() ? <MobileReportsPage /> : <ReportsPage />
+}
 
 const router = createBrowserRouter([
   {
-    element: <AdminShell />,
+    element: <AppLayout />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: 'reports', element: <ReportsPage /> },
+      { index: true, element: <HomeRoute /> },
+      { path: 'reports', element: <ReportsRoute /> },
       { path: 'reports/new', element: <ReportSubmitPage /> },
       { path: 'reports/:id', element: <ReportDetailPage /> },
+      { path: 'account', element: <AccountPage /> },
       { path: 'templates', element: <TemplatesPage /> },
       { path: 'templates/new', element: <TemplateCreatePage /> },
       { path: 'templates/:id/edit', element: <TemplateEditPage /> },
