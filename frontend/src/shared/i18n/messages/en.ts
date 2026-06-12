@@ -33,6 +33,17 @@ export const enMessages: MessageCatalog = {
   'common.nav.audit': 'Audit log',
   'common.nav.export': 'Export',
   'common.nav.settings': 'Settings',
+  'common.nav.dashboard': 'Dashboard',
+  'common.nav.reportList': 'Reports',
+
+  // ── admin shell chrome ───────────────────────────────────────────
+  'shell.group.main': 'Main',
+  'shell.group.admin': 'Admin',
+  'shell.openSubmitterApp': 'Submitter app',
+  'shell.search.placeholder': 'Search…',
+  'shell.notifications.title': 'Notifications',
+  'shell.notifications.markAll': 'Mark all read',
+  'shell.notifications.empty': 'No notifications.',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',

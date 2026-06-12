@@ -32,6 +32,17 @@ export const jaMessages = {
   'common.nav.audit': '監査ログ',
   'common.nav.export': 'エクスポート',
   'common.nav.settings': '組織設定',
+  'common.nav.dashboard': 'ダッシュボード',
+  'common.nav.reportList': '日報一覧',
+
+  // ── admin shell chrome ───────────────────────────────────────────
+  'shell.group.main': 'メイン',
+  'shell.group.admin': '管理',
+  'shell.openSubmitterApp': '提出者アプリ',
+  'shell.search.placeholder': '検索…',
+  'shell.notifications.title': '通知',
+  'shell.notifications.markAll': 'すべて既読',
+  'shell.notifications.empty': '通知はありません。',
 
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',

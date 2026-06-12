@@ -11,21 +11,27 @@ import { TemplatesPage } from '@/pages/templates'
 import { UserCreatePage } from '@/pages/user-create'
 import { UserEditPage } from '@/pages/user-edit'
 import { UsersPage } from '@/pages/users'
+import { AdminShell } from '@/widgets/admin-shell'
 
 const router = createBrowserRouter([
-  { path: '/', element: <ReportsPage /> },
-  { path: '/reports/new', element: <ReportSubmitPage /> },
-  { path: '/reports/:id', element: <ReportDetailPage /> },
-  { path: '/templates', element: <TemplatesPage /> },
-  { path: '/templates/new', element: <TemplateCreatePage /> },
-  { path: '/templates/:id/edit', element: <TemplateEditPage /> },
-  { path: '/users', element: <UsersPage /> },
-  { path: '/users/new', element: <UserCreatePage /> },
-  { path: '/users/:id/edit', element: <UserEditPage /> },
-  { path: '/audit-logs', element: <AuditLogsPage /> },
-  { path: '/export', element: <ExportPage /> },
-  { path: '/settings', element: <SettingsPage /> },
-  { path: '*', element: <Navigate to="/" replace /> },
+  {
+    element: <AdminShell />,
+    children: [
+      { index: true, element: <ReportsPage /> },
+      { path: 'reports/new', element: <ReportSubmitPage /> },
+      { path: 'reports/:id', element: <ReportDetailPage /> },
+      { path: 'templates', element: <TemplatesPage /> },
+      { path: 'templates/new', element: <TemplateCreatePage /> },
+      { path: 'templates/:id/edit', element: <TemplateEditPage /> },
+      { path: 'users', element: <UsersPage /> },
+      { path: 'users/new', element: <UserCreatePage /> },
+      { path: 'users/:id/edit', element: <UserEditPage /> },
+      { path: 'audit-logs', element: <AuditLogsPage /> },
+      { path: 'export', element: <ExportPage /> },
+      { path: 'settings', element: <SettingsPage /> },
+      { path: '*', element: <Navigate to="/" replace /> },
+    ],
+  },
 ])
 
 export function AppRouter() {
