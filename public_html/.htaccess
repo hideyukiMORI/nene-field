@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Route every request that is not an existing file or directory to the front
+# controller. Matches the NENE2 baseline (vendor/hideyukimori/nene2/public_html/.htaccess).
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

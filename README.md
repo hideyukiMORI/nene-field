@@ -47,13 +47,27 @@ shared hosting or Docker.
 
 ## Quick start (Docker)
 
-> **Status: not yet implemented.** The repository is in the governance and documentation phase.
-> Implementation begins after the OpenAPI skeleton and DB schema are agreed upon.
+`compose.yaml` brings up the full local stack — PHP backend, MySQL, phpMyAdmin,
+and the Vite dev server — on the fixed "90 lane" ports below.
 
 ```sh
 cp .env.example .env
+docker compose build
+docker compose run --rm app composer install   # first run only
+docker compose run --rm app composer migrations:migrate
 docker compose up
 ```
+
+| Service | URL |
+| --- | --- |
+| API (PHP/Apache) | http://localhost:9000 — health: `curl -fsS http://localhost:9000/health` |
+| Admin SPA (Vite dev) | http://localhost:5190 |
+| phpMyAdmin | http://localhost:9001 |
+| MySQL (host) | `localhost:3309` |
+
+The backend defaults to **MySQL** inside Docker (`DB_HOST=mysql`); the Vite dev
+server proxies API paths to the `app` container. The repository's `.env` default
+stays SQLite (Tier A) for non-Docker runs. Stop with `docker compose down`.
 
 ## Local port allocation (binding)
 

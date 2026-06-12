@@ -29,7 +29,8 @@
 - [x] Audit log viewer + CSV ダウンロード UI（フィルタ・ページング）(#53)
 - [x] Export 画面（レポート CSV・期間/ユーザー/ステータス）(#55)
 - [x] Settings / 組織設定 UI（名前/AI/通知）(#57)
-- [ ] Docker Compose dev environment / Storybook + Playwright e2e
+- [ ] Storybook + Playwright e2e
+- [x] Docker Compose dev environment（app/mysql/phpMyAdmin/frontend・90xx レーン）(#61)
 
 ## Upcoming
 
@@ -38,4 +39,4 @@
 
 See [`docs/roadmap.md`](../roadmap.md) for full phase breakdown.
 
-Last updated: 2026-06-11
+Last updated: 2026-06-12
