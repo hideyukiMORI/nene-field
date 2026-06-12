@@ -12,7 +12,7 @@ describe('SignIn', () => {
 
     await user.type(screen.getByLabelText('メールアドレス'), 'admin@example.com')
     await user.type(screen.getByLabelText('パスワード'), 'password')
-    await user.click(screen.getByRole('button', { name: 'ログイン' }))
+    await user.click(screen.getByRole('button', { name: /としてログイン/ }))
 
     await waitFor(() => {
       expect(hasAuthToken()).toBe(true)
@@ -25,7 +25,7 @@ describe('SignIn', () => {
 
     await user.type(screen.getByLabelText('メールアドレス'), 'admin@example.com')
     await user.type(screen.getByLabelText('パスワード'), 'wrong')
-    await user.click(screen.getByRole('button', { name: 'ログイン' }))
+    await user.click(screen.getByRole('button', { name: /としてログイン/ }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'メールアドレスまたはパスワードが正しくありません。',
@@ -37,7 +37,7 @@ describe('SignIn', () => {
     const user = userEvent.setup()
     renderWithProviders(<SignIn />)
 
-    await user.click(screen.getByRole('button', { name: 'ログイン' }))
+    await user.click(screen.getByRole('button', { name: /としてログイン/ }))
 
     expect(hasAuthToken()).toBe(false)
     expect(screen.getAllByText('必須項目です。').length).toBeGreaterThan(0)

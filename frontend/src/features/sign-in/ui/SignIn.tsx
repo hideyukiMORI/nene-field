@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { sessionExpired } from '@/entities/auth'
 import { useTranslation } from '@/shared/i18n'
-import { Button, Chip, Field, InlineAlert, Input } from '@/shared/ui'
+import { Field, InlineAlert, Input } from '@/shared/ui'
 import { useSignIn } from '../hooks/use-sign-in'
 
 const schema = z.object({
@@ -13,14 +14,22 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
+type Role = 'submitter' | 'manager'
+
+// Exact brand colours from the design handoff (NeNe Field Login.dc.html). These
+// are one-off login-surface values, applied inline rather than as theme tokens.
+const PAGE_BG = 'radial-gradient(120% 80% at 20% -10%, #16586e 0%, #0c3a49 55%, #0a2d39 100%)'
+const BRAND_BG = 'linear-gradient(160deg, #0e4a5e 0%, #0b3340 100%)'
+
 /**
- * Login (design handoff §5.1 / §2.3): teal radial background with a split card —
- * brand panel + form. Role is server-authoritative, so the prototype's manual
- * role toggle is intentionally omitted; post-login routing is by the resolved role.
+ * Login (design handoff §5.1 / §2.3): teal radial background, 980px split card —
+ * brand panel (1.1fr) + form (1fr). The role toggle mirrors the prototype; the
+ * actual role is resolved by the API after sign-in, which drives the shell.
  */
 export function SignIn() {
   const { t, locale, setLocale } = useTranslation()
   const { signIn, isPending, errorKey } = useSignIn()
+  const [role, setRole] = useState<Role>('submitter')
   const {
     register,
     handleSubmit,
@@ -34,8 +43,17 @@ export function SignIn() {
     signIn(values)
   }
 
+  const pill = (active: boolean): string =>
+    [
+      'flex-1 rounded-pill py-2 text-center text-sm font-bold transition-colors',
+      active ? 'bg-surface-raised text-accent-ink shadow-card' : 'text-fg-muted',
+    ].join(' ')
+
   return (
-    <main className="grid min-h-screen place-items-center bg-gradient-to-br from-accent-deep to-accent-deep-2 p-5">
+    <main
+      className="grid min-h-screen place-items-center px-4 py-7"
+      style={{ background: PAGE_BG }}
+    >
       <button
         type="button"
         onClick={() => {
@@ -46,44 +64,67 @@ export function SignIn() {
         {locale === 'ja' ? 'EN' : '日本語'}
       </button>
 
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl shadow-modal md:grid-cols-2">
+      <div
+        className="grid w-full overflow-hidden rounded-3xl shadow-modal animate-nfup max-md:grid-cols-1"
+        style={{ maxWidth: 980, gridTemplateColumns: '1.1fr 1fr' }}
+      >
         {/* ── brand panel ─────────────────────────────────────────── */}
-        <div className="hidden flex-col justify-between bg-gradient-to-br from-accent-deep to-accent-deep-2 p-10 text-fg-inverse md:flex">
+        <div
+          className="hidden flex-col justify-between p-9 text-fg-inverse md:flex"
+          style={{ background: BRAND_BG }}
+        >
           <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-input bg-gradient-to-br from-accent to-accent-deep text-xl font-extrabold">
+            <span
+              className="grid h-11 w-11 place-items-center rounded-xl text-xl font-bold text-fg-inverse"
+              style={{ background: 'linear-gradient(150deg, #3fb6c4, #1488ad)' }}
+            >
               N
             </span>
-            <span className="text-xl font-extrabold tracking-wide">{t('common.app.name')}</span>
+            <div>
+              <div className="text-lg font-bold tracking-wide">{t('common.app.name')}</div>
+              <div className="text-xs" style={{ color: '#9fc6d2' }}>
+                {t('auth.login.brandSubtitle')}
+              </div>
+            </div>
           </div>
-          <div className="py-10">
-            <h1 className="text-2xl font-bold leading-snug">{t('auth.login.tagline')}</h1>
-            <p className="mt-3 text-sm leading-relaxed text-fg-inverse/75">
+
+          <div className="py-2">
+            <h1 className="font-bold leading-relaxed" style={{ fontSize: '26px' }}>
+              {t('auth.login.tagline')}
+            </h1>
+            <p className="mt-4 leading-loose" style={{ color: '#bfe2ee', fontSize: '13.5px' }}>
               {t('auth.login.lead')}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-pill bg-white/12 px-3 py-1.5 text-xs font-semibold">
-              ⚡ {t('auth.login.point.speed')}
-            </span>
-            <span className="rounded-pill bg-white/12 px-3 py-1.5 text-xs font-semibold">
-              🌐 {t('auth.login.point.bilingual')}
-            </span>
-            <span className="rounded-pill bg-white/12 px-3 py-1.5 text-xs font-semibold">
-              ✦ {t('auth.login.point.ai')}
-            </span>
+
+          <div className="grid grid-cols-3 gap-3">
+            <Metric
+              value={t('auth.login.metric.speedValue')}
+              label={t('auth.login.metric.speedLabel')}
+            />
+            <Metric
+              value={t('auth.login.metric.langValue')}
+              label={t('auth.login.metric.langLabel')}
+            />
+            <Metric value={t('auth.login.metric.aiValue')} label={t('auth.login.metric.aiLabel')} />
           </div>
         </div>
 
         {/* ── form panel ──────────────────────────────────────────── */}
         <div className="bg-surface-raised p-8 sm:p-10">
           <div className="mb-6 flex items-center gap-2.5 md:hidden">
-            <span className="grid h-9 w-9 place-items-center rounded-input bg-gradient-to-br from-accent to-accent-deep text-base font-extrabold text-fg-inverse">
+            <span
+              className="grid h-9 w-9 place-items-center rounded-xl text-base font-bold text-fg-inverse"
+              style={{ background: 'linear-gradient(150deg, #3fb6c4, #1488ad)' }}
+            >
               N
             </span>
             <span className="text-lg font-extrabold">{t('common.app.name')}</span>
           </div>
 
-          <h2 className="text-xl font-bold text-fg">{t('auth.login.title')}</h2>
+          <h2 className="font-bold text-fg" style={{ fontSize: '22px' }}>
+            {t('auth.login.title')}
+          </h2>
           <p className="mt-1 mb-6 text-sm text-fg-muted">{t('auth.login.subtitle')}</p>
 
           {sessionExpired() && (
@@ -103,42 +144,88 @@ export function SignIn() {
             }}
             noValidate
           >
-            <div className="flex flex-col gap-4">
-              <Field
-                label={t('auth.login.email')}
-                htmlFor="login-email"
-                error={errors.email ? t('error.validation.required') : undefined}
+            <Field
+              label={t('auth.login.email')}
+              htmlFor="login-email"
+              error={errors.email ? t('error.validation.required') : undefined}
+            >
+              <Input id="login-email" type="email" autoComplete="username" {...register('email')} />
+            </Field>
+            <div className="h-4" />
+            <Field
+              label={t('auth.login.password')}
+              htmlFor="login-password"
+              error={errors.password ? t('error.validation.required') : undefined}
+            >
+              <Input
+                id="login-password"
+                type="password"
+                autoComplete="current-password"
+                {...register('password')}
+              />
+            </Field>
+
+            <p className="mt-5 mb-2 text-xs font-bold text-fg-strong">
+              {t('auth.login.roleLabel')}
+            </p>
+            <div className="flex gap-1 rounded-pill bg-surface-overlay p-1">
+              <button
+                type="button"
+                className={pill(role === 'submitter')}
+                onClick={() => {
+                  setRole('submitter')
+                }}
               >
-                <Input
-                  id="login-email"
-                  type="email"
-                  autoComplete="username"
-                  {...register('email')}
-                />
-              </Field>
-              <Field
-                label={t('auth.login.password')}
-                htmlFor="login-password"
-                error={errors.password ? t('error.validation.required') : undefined}
+                {t('auth.login.roleSubmitter')}
+              </button>
+              <button
+                type="button"
+                className={pill(role === 'manager')}
+                onClick={() => {
+                  setRole('manager')
+                }}
               >
-                <Input
-                  id="login-password"
-                  type="password"
-                  autoComplete="current-password"
-                  {...register('password')}
-                />
-              </Field>
-              <Button type="submit" size="lg" disabled={isPending} className="mt-1 w-full">
-                {isPending ? t('auth.login.submitting') : t('auth.login.button')}
-              </Button>
+                {t('auth.login.roleManager')}
+              </button>
             </div>
+            <p className="mt-2 mb-5 text-xs leading-relaxed text-fg-faint-2">
+              {t(role === 'submitter' ? 'auth.login.destSubmitter' : 'auth.login.destManager')}
+            </p>
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="flex w-full items-center justify-center gap-2 rounded-pill bg-accent py-3.5 font-bold text-fg-inverse shadow-btn transition-transform active:scale-95 disabled:opacity-50"
+              style={{ fontSize: '15px' }}
+            >
+              {isPending
+                ? t('auth.login.submitting')
+                : `${t(role === 'submitter' ? 'auth.login.loginAsSubmitter' : 'auth.login.loginAsManager')} →`}
+            </button>
+
+            <p className="mt-4 text-center text-xs font-semibold text-accent-ink">
+              {t('auth.login.forgot')}
+            </p>
           </form>
 
-          <div className="mt-5 flex items-center justify-center">
-            <Chip>single / demo</Chip>
-          </div>
+          <p className="mt-6 border-t border-border-2 pt-4 text-xs leading-relaxed text-fg-faint-2">
+            {t('auth.login.demoNote')}
+          </p>
         </div>
       </div>
     </main>
+  )
+}
+
+function Metric({ value, label }: { value: string; label: string }) {
+  return (
+    <div>
+      <div className="font-bold tabular-nums" style={{ fontSize: '22px' }}>
+        {value}
+      </div>
+      <div className="text-xs" style={{ color: '#9fc6d2' }}>
+        {label}
+      </div>
+    </div>
   )
 }
