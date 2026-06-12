@@ -44,6 +44,23 @@ export const jaMessages = {
   'shell.notifications.markAll': 'すべて既読',
   'shell.notifications.empty': '通知はありません。',
 
+  // ── dashboard ────────────────────────────────────────────────────
+  'dashboard.subtitle': '組織の日報状況のサマリーです。',
+  'dashboard.kpi.pending': '承認待ち',
+  'dashboard.kpi.today': '本日の提出',
+  'dashboard.kpi.week': '今週の提出',
+  'dashboard.kpi.rejectRate': '差し戻し率',
+  'dashboard.chart.daily': '日別の提出数',
+  'dashboard.chart.status': 'ステータス内訳',
+  'dashboard.queue.title': '承認待ちレポート',
+  'dashboard.queue.empty': '承認待ちのレポートはありません。',
+  'dashboard.queue.viewAll': 'すべて表示',
+  'dashboard.quick.title': 'クイックフィルタ',
+  'dashboard.quick.pending': '承認待ち',
+  'dashboard.quick.today': '本日',
+  'dashboard.quick.week': '今週',
+  'dashboard.quick.toExport': 'CSVエクスポートへ',
+
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'ログイン',
   'auth.login.subtitle': '管理コンソールにサインインします。',

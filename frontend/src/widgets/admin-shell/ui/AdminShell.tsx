@@ -16,7 +16,10 @@ interface NavItem {
   end?: boolean
 }
 
-const MAIN_NAV: NavItem[] = [{ to: '/', labelKey: 'common.nav.reportList', icon: '▤', end: true }]
+const MAIN_NAV: NavItem[] = [
+  { to: '/', labelKey: 'common.nav.dashboard', icon: '⌂', end: true },
+  { to: '/reports', labelKey: 'common.nav.reportList', icon: '▤' },
+]
 
 const ADMIN_NAV: NavItem[] = [
   { to: '/templates', labelKey: 'common.nav.templates', icon: '◫' },
@@ -27,7 +30,8 @@ const ADMIN_NAV: NavItem[] = [
 ]
 
 const TITLE_BY_PATH: Record<string, MessageKey> = {
-  '/': 'common.nav.reportList',
+  '/': 'common.nav.dashboard',
+  '/reports': 'common.nav.reportList',
   '/templates': 'common.nav.templates',
   '/users': 'common.nav.users',
   '/audit-logs': 'common.nav.audit',

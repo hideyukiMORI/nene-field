@@ -45,6 +45,23 @@ export const enMessages: MessageCatalog = {
   'shell.notifications.markAll': 'Mark all read',
   'shell.notifications.empty': 'No notifications.',
 
+  // ── dashboard ────────────────────────────────────────────────────
+  'dashboard.subtitle': 'A summary of your organization’s daily reports.',
+  'dashboard.kpi.pending': 'Pending approval',
+  'dashboard.kpi.today': 'Submitted today',
+  'dashboard.kpi.week': 'Submitted this week',
+  'dashboard.kpi.rejectRate': 'Rejection rate',
+  'dashboard.chart.daily': 'Daily submissions',
+  'dashboard.chart.status': 'Status breakdown',
+  'dashboard.queue.title': 'Reports awaiting approval',
+  'dashboard.queue.empty': 'No reports awaiting approval.',
+  'dashboard.queue.viewAll': 'View all',
+  'dashboard.quick.title': 'Quick filters',
+  'dashboard.quick.pending': 'Pending',
+  'dashboard.quick.today': 'Today',
+  'dashboard.quick.week': 'This week',
+  'dashboard.quick.toExport': 'Go to CSV export',
+
   // ── auth / login ─────────────────────────────────────────────────
   'auth.login.title': 'Sign in',
   'auth.login.subtitle': 'Sign in to the admin console.',

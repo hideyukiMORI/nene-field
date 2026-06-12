@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AuditLogsPage } from '@/pages/audit-logs'
+import { DashboardPage } from '@/pages/dashboard'
 import { ExportPage } from '@/pages/export'
 import { ReportDetailPage } from '@/pages/report-detail'
 import { ReportSubmitPage } from '@/pages/report-submit'
@@ -17,7 +18,8 @@ const router = createBrowserRouter([
   {
     element: <AdminShell />,
     children: [
-      { index: true, element: <ReportsPage /> },
+      { index: true, element: <DashboardPage /> },
+      { path: 'reports', element: <ReportsPage /> },
       { path: 'reports/new', element: <ReportSubmitPage /> },
       { path: 'reports/:id', element: <ReportDetailPage /> },
       { path: 'templates', element: <TemplatesPage /> },
