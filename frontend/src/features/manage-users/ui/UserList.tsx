@@ -113,10 +113,11 @@ export function UserList() {
   const activeCount = users.filter((u) => u.isActive).length
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-xl font-bold text-fg">{t('user.list.title')}</h2>
-        <span className="text-sm text-fg-muted tabular-nums">
+    <div className="flex flex-col">
+      {/* white header bar (full-bleed) */}
+      <div className="flex flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6 py-4">
+        <h2 className="text-lg font-bold text-fg">{t('user.list.title')}</h2>
+        <span className="text-sm text-fg-faint tabular-nums">
           {t('user.list.count', { active: activeCount, total: users.length })}
         </span>
         <Button
@@ -129,10 +130,10 @@ export function UserList() {
         </Button>
       </div>
 
-      {users.length === 0 ? (
-        <EmptyState message={t('user.list.empty')} />
-      ) : (
-        <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
+      <div className="px-6 pt-2 pb-6">
+        {users.length === 0 ? (
+          <EmptyState message={t('user.list.empty')} />
+        ) : (
           <TableWrap>
             <Table className="min-w-160">
               <thead>
@@ -140,12 +141,13 @@ export function UserList() {
                   <Th>{t('user.list.colName')}</Th>
                   <Th className="w-32">{t('user.list.colRole')}</Th>
                   <Th className="w-24">{t('user.list.colStatus')}</Th>
-                  <Th className="w-44" />
+                  <Th className="w-48 text-right">{t('user.list.colActions')}</Th>
                 </Tr>
               </thead>
               <tbody>
                 {users.map((user) => {
                   const isSelf = user.id === currentUserId
+                  const canCycle = isAssignable(user.role) && !updateMutation.isPending
                   return (
                     <Tr key={user.id} className={user.isActive ? '' : 'opacity-60'}>
                       <Td>
@@ -154,7 +156,7 @@ export function UserList() {
                             {user.name.slice(0, 1)}
                           </span>
                           <div className="min-w-0">
-                            <span className="flex items-center gap-2 font-medium text-fg">
+                            <span className="flex items-center gap-2 font-semibold text-fg">
                               {user.name}
                               {isSelf && <Badge tone="neutral">{t('user.list.selfBadge')}</Badge>}
                             </span>
@@ -170,10 +172,14 @@ export function UserList() {
                           onClick={() => {
                             cycleRole(user)
                           }}
-                          disabled={!isAssignable(user.role) || updateMutation.isPending}
+                          disabled={!canCycle}
+                          title={t('user.list.colRole')}
                           className="disabled:cursor-not-allowed"
                         >
-                          <Badge tone="info">{t(roleLabelKey[user.role])}</Badge>
+                          <Badge tone="info">
+                            {t(roleLabelKey[user.role])}
+                            {canCycle && <span className="opacity-60"> ⇄</span>}
+                          </Badge>
                         </button>
                       </Td>
                       <Td>
@@ -215,8 +221,8 @@ export function UserList() {
               </tbody>
             </Table>
           </TableWrap>
-        </div>
-      )}
+        )}
+      </div>
 
       <Modal
         open={inviteOpen}
