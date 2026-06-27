@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php)](https://www.php.net/)
-[![Status: Early Development](https://img.shields.io/badge/status-early--development-orange)]()
+[![Status: Phase 2](https://img.shields.io/badge/status-phase%202-yellowgreen)]()
 
 **Daily report platform — self-hosted for Japan SMB.**
 
