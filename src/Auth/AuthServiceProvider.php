@@ -6,11 +6,11 @@ namespace NeneField\Auth;
 
 use LogicException;
 use Nene2\Auth\BearerTokenMiddleware;
+use Nene2\Auth\GuardedJwtSecretResolver;
 use Nene2\Auth\LocalBearerTokenVerifier;
 use Nene2\Auth\TokenIssuerInterface;
 use Nene2\Auth\TokenVerifierInterface;
 use Nene2\Config\AppConfig;
-use Nene2\Config\AppEnvironment;
 use Nene2\DependencyInjection\ContainerBuilder;
 use Nene2\DependencyInjection\ServiceProviderInterface;
 use Nene2\Error\ProblemDetailsResponseFactory;
@@ -18,7 +18,6 @@ use Nene2\Http\ClockInterface;
 use Nene2\Http\JsonResponseFactory;
 use NeneField\User\UserRepositoryInterface;
 use Psr\Container\ContainerInterface;
-use RuntimeException;
 
 /**
  * Wires authentication: the local JWT verifier/issuer, login / me / logout /
@@ -28,9 +27,12 @@ use RuntimeException;
 final readonly class AuthServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Public, OSS-visible dev secret — used ONLY in local/test when
-     * NENE2_LOCAL_JWT_SECRET is unset. Production MUST set its own secret;
-     * signing tokens with this value would be an auth bypass.
+     * Development-only fallback secret, injected into
+     * {@see GuardedJwtSecretResolver} as the product's development secret. It is
+     * used **only** off-production, and only when the operator opts in via
+     * `NENE2_ALLOW_DEV_SECRET=1` and `NENE2_LOCAL_JWT_SECRET` is unset. This
+     * constant is public in the OSS repository, so signing real tokens with it
+     * would be a full auth bypass — production always fails closed instead.
      */
     private const DEFAULT_DEV_SECRET = 'nene-field-dev-secret';
 
@@ -49,7 +51,9 @@ final readonly class AuthServiceProvider implements ServiceProviderInterface
                         throw new LogicException('Application config service is invalid.');
                     }
 
-                    return new LocalBearerTokenVerifier(self::resolveJwtSecret($config));
+                    return new LocalBearerTokenVerifier(
+                        GuardedJwtSecretResolver::fromConfig($config, self::DEFAULT_DEV_SECRET),
+                    );
                 },
             )
             ->set(
@@ -177,21 +181,6 @@ final readonly class AuthServiceProvider implements ServiceProviderInterface
                     );
                 },
             );
-    }
-
-    private static function resolveJwtSecret(AppConfig $config): string
-    {
-        if ($config->localJwtSecret !== null && $config->localJwtSecret !== '') {
-            return $config->localJwtSecret;
-        }
-
-        if ($config->environment === AppEnvironment::Production) {
-            throw new RuntimeException(
-                'NENE2_LOCAL_JWT_SECRET must be set in production; refusing to sign tokens with the dev secret.',
-            );
-        }
-
-        return self::DEFAULT_DEV_SECRET;
     }
 
     private static function users(ContainerInterface $container): UserRepositoryInterface

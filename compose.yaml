@@ -33,6 +33,9 @@ services:
       # fresh stack can log in immediately as admin@example.com / password.
       NENE_FIELD_TENANT_RESOLUTION: single
       NENE_FIELD_ORG_SLUG: demo
+      # Pass-through opt-in for the framework's dev JWT secret (see .env.example).
+      # Defaults to empty, so production hosts that omit this var stay fail-closed.
+      NENE2_ALLOW_DEV_SECRET: ${NENE2_ALLOW_DEV_SECRET:-}
     volumes:
       - .:/var/www/html
     depends_on:
