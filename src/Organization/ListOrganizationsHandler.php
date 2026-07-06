@@ -6,6 +6,8 @@ namespace NeneField\Organization;
 
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\JsonResponseFactory;
+use Nene2\Http\PaginationQueryParser;
+use Nene2\Http\PaginationResponse;
 use NeneField\Auth\AuthContext;
 use NeneField\Auth\Role;
 use Psr\Http\Message\ResponseInterface;
@@ -40,26 +42,16 @@ final readonly class ListOrganizationsHandler implements RequestHandlerInterface
             return $this->problemDetails->create($request, 'forbidden', 'Forbidden', 403, 'Superadmin privileges are required.');
         }
 
-        $query = $request->getQueryParams();
-        $output = $this->useCase->execute(
-            self::intParam($query['limit'] ?? null, self::DEFAULT_LIMIT, 1, self::MAX_LIMIT),
-            self::intParam($query['offset'] ?? null, 0, 0, PHP_INT_MAX),
+        $pagination = PaginationQueryParser::parse($request, self::DEFAULT_LIMIT, self::MAX_LIMIT);
+        $output = $this->useCase->execute($pagination->limit, $pagination->offset);
+
+        return $this->json->create(
+            (new PaginationResponse(
+                items: array_map(static fn (Organization $o): array => OrganizationResponse::toArray($o), $output->items),
+                limit: $output->limit,
+                offset: $output->offset,
+                total: $output->total,
+            ))->toArray(),
         );
-
-        return $this->json->create([
-            'items' => array_map(static fn (Organization $o): array => OrganizationResponse::toArray($o), $output->items),
-            'limit' => $output->limit,
-            'offset' => $output->offset,
-            'total' => $output->total,
-        ]);
-    }
-
-    private static function intParam(mixed $raw, int $default, int $min, int $max): int
-    {
-        if (!is_string($raw) && !is_int($raw)) {
-            return $default;
-        }
-
-        return max($min, min($max, (int) $raw));
     }
 }
