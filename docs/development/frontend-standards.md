@@ -257,7 +257,7 @@ dev-only structured logging behind `import.meta.env.DEV`.
 
 ```bash
 npm ci --prefix frontend
-npm run dev --prefix frontend       # Vite dev server (5190); API proxied to PHP app
+npm run dev --prefix frontend       # Vite dev server (5192); API proxied to PHP app
 npm run codegen --prefix frontend   # regenerate shared/api/schema.gen.ts from OpenAPI
 npm run check --prefix frontend     # type-check + lint + format + test
 npm run build --prefix frontend     # production build → public_html/admin/
