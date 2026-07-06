@@ -61,6 +61,34 @@ final class ReportCsvFormatterTest extends TestCase
     }
 
     /**
+     * User-controlled text that would parse as a spreadsheet formula is
+     * neutralised with a leading apostrophe (CsvWriter default, ADR 0015), so the
+     * value renders as text instead of executing when the CSV is opened in Excel.
+     */
+    public function test_formula_injection_in_user_text_is_neutralised(): void
+    {
+        $row = new ReportExportRow(
+            'r-4',
+            '2026-06-11',
+            'u-1',
+            '=cmd|\'/c calc\'!A1',
+            '@SUM(1+1)',
+            ReportStatus::Draft,
+            '-1+2',
+            [],
+            null,
+            null,
+            null,
+            null,
+        );
+        $record = self::parse((new ReportCsvFormatter())->format([$row]))[1];
+
+        self::assertSame('\'=cmd|\'/c calc\'!A1', $record[3], 'user_name');
+        self::assertSame('\'@SUM(1+1)', $record[4], 'title');
+        self::assertSame('\'-1+2', $record[6], 'project_code');
+    }
+
+    /**
      * Parses the CSV (minus BOM) into records via a stream, so quoted newlines
      * are handled correctly.
      *
