@@ -48,7 +48,7 @@ shared hosting or Docker.
 ## Quick start (Docker)
 
 `compose.yaml` brings up the full local stack — PHP backend, MySQL, phpMyAdmin,
-and the Vite dev server — on the fixed "90 lane" ports below.
+and the Vite dev server — on the fixed "92 lane" ports below.
 
 ```sh
 cp .env.example .env
@@ -60,9 +60,9 @@ docker compose up
 
 | Service | URL |
 | --- | --- |
-| API (PHP/Apache) | http://localhost:9000 — health: `curl -fsS http://localhost:9000/health` |
-| Admin SPA (Vite dev) | http://localhost:5190 |
-| phpMyAdmin | http://localhost:9001 |
+| API (PHP/Apache) | http://localhost:9200 — health: `curl -fsS http://localhost:9200/health` |
+| Admin SPA (Vite dev) | http://localhost:5192 |
+| phpMyAdmin | http://localhost:9201 |
 | MySQL (host) | `localhost:3309` |
 
 The backend defaults to **MySQL** inside Docker (`DB_HOST=mysql`); the Vite dev
@@ -72,19 +72,20 @@ stays SQLite (Tier A) for non-Docker runs. Stop with `docker compose down`.
 ## Local port allocation (binding)
 
 NeNe Field runs alongside sibling products on the same developer machine.
-Its host-published ports are **fixed in the "90 lane"** to avoid collisions:
+Its host-published ports are **fixed in the "92 lane"** to avoid collisions:
 
 | Service | Host port | Env var |
 | --- | --- | --- |
-| PHP backend (Apache) | **9000** | `NENE_FIELD_PORT` |
-| Vite dev server | **5190** | `NENE_FIELD_FRONTEND_PORT` |
+| PHP backend (Apache) | **9200** | `NENE_FIELD_PORT` |
+| Vite dev server | **5192** | `NENE_FIELD_FRONTEND_PORT` |
 | MySQL | **3309** | `NENE_FIELD_MYSQL_PORT` |
-| phpMyAdmin | **9001** | `NENE_FIELD_PHPMYADMIN_PORT` |
+| phpMyAdmin | **9201** | `NENE_FIELD_PHPMYADMIN_PORT` |
 
-> The previous `87xx` HTTP lane and frontend port `5187` were vacated — they belong
-> to **NeNe Concierge** (`87xx`) and **NeNe Deal** (`5187`) respectively. MySQL moved
-> from `3387` to `3309` to keep the whole allocation on the unique `90xx` lane and off
-> any sibling's reserved `33xx` port.
+> The `90xx` HTTP lane and frontend port `5190` were vacated — they belong to
+> **NeNe Payout** (`90xx` / `5190`), which is the registered owner in the port
+> authority (`nene-origin/docs/development/local-ports.md`). NeNe Field moved to the
+> new **`92xx`** block (HTTP `9200`, phpMyAdmin `9201`, Vite `5192`). MySQL stays on
+> `3309` — it has no collision and remains off any sibling's reserved `33xx` port.
 
 ### Portfolio-wide port registry
 
@@ -103,7 +104,7 @@ lane or reserved ports.** `xx` denotes the whole HTTP lane (e.g. `90xx` = 9000�
 | NeNe Concierge | 87xx | — | 3790 | — |
 | NeNe Suite | 88xx | 5188 | 3390 | — |
 | NeNe Coropus | 89xx | 5271 | 3389 | — |
-| **NeNe Field** (this) | **90xx** | **5190** | **3309** | — |
+| **NeNe Field** (this) | **92xx** | **5192** | **3309** | — |
 | NeNe Records | 180xx | — | — | — |
 
 ## NeNe ecosystem

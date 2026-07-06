@@ -5,7 +5,7 @@
 #   docker compose run --rm app composer install
 #   docker compose up
 #
-# Host ports are fixed in the "90 lane" (see README "Local port allocation").
+# Host ports are fixed in the "92 lane" (see README "Local port allocation").
 # Every published port is driven by a NENE_FIELD_* variable so collisions with
 # sibling NeNe products never happen.
 #
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     ports:
-      - "${NENE_FIELD_PORT:-9000}:80"
+      - "${NENE_FIELD_PORT:-9200}:80"
     environment:
       DB_ADAPTER: mysql
       DB_HOST: mysql
@@ -59,7 +59,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5
     ports:
-      - "${NENE_FIELD_PHPMYADMIN_PORT:-9001}:80"
+      - "${NENE_FIELD_PHPMYADMIN_PORT:-9201}:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: "3306"
@@ -73,9 +73,9 @@ services:
     # Install inside the container so platform-native binaries (esbuild/rollup)
     # match Linux even when the host is macOS/Windows. The named volume below
     # keeps these out of the bind-mounted host tree.
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5190"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5192"
     ports:
-      - "${NENE_FIELD_FRONTEND_PORT:-5190}:5190"
+      - "${NENE_FIELD_FRONTEND_PORT:-5192}:5192"
     environment:
       # Proxy API paths to the backend container instead of 127.0.0.1 (vite.config.ts).
       VITE_API_TARGET: http://app

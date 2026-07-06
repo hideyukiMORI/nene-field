@@ -43,12 +43,12 @@ Mobile-first daily report platform for Japan SMB. Field workers submit reports f
 
 | Service | URL | env var |
 | --- | --- | --- |
-| API | http://localhost:9000 | `NENE_FIELD_PORT` |
-| phpMyAdmin | http://localhost:9001 | `NENE_FIELD_PHPMYADMIN_PORT` |
+| API | http://localhost:9200 | `NENE_FIELD_PORT` |
+| phpMyAdmin | http://localhost:9201 | `NENE_FIELD_PHPMYADMIN_PORT` |
 | MySQL (host) | localhost:3309 | `NENE_FIELD_MYSQL_PORT` |
-| Frontend dev | http://localhost:5190 | `NENE_FIELD_FRONTEND_PORT` |
+| Frontend dev | http://localhost:5192 | `NENE_FIELD_FRONTEND_PORT` |
 
-Health check: `curl -fsS http://localhost:9000/health`
+Health check: `curl -fsS http://localhost:9200/health`
 
 ## Verification
 
