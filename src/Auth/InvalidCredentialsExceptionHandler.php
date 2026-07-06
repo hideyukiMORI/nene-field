@@ -29,6 +29,9 @@ final readonly class InvalidCredentialsExceptionHandler implements DomainExcepti
 
     public function handle(Throwable $exception, ServerRequestInterface $request): ResponseInterface
     {
-        return $this->problemDetails->create($request, 'unauthorized', 'Unauthorized', 401, $exception->getMessage());
+        // Static detail rather than $exception->getMessage(): the 401 wording
+        // must not drift silently if the exception message changes, and the
+        // message is deliberately generic (no account existence/status leak).
+        return $this->problemDetails->create($request, 'unauthorized', 'Unauthorized', 401, 'The email or password is incorrect.');
     }
 }
