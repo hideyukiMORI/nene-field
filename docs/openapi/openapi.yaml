@@ -28,7 +28,7 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: http://localhost:9000
+  - url: http://localhost:9200
     description: Local development (Tier B Docker; org via env/subdomain — ADR 0013)
 
 tags:

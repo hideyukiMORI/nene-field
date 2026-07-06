@@ -9,10 +9,10 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 // The PHP API runs same-origin in production (Tier A → public_html/admin). In
 // dev, Vite serves the SPA and proxies API paths to the running PHP app. Override
 // the target with VITE_API_TARGET when the app listens elsewhere.
-// NeNe Field fixed dev: frontend 5190, API 9000 (php -S / docker stack).
+// NeNe Field fixed dev: frontend 5192, API 9200 (php -S / docker stack).
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, dirname, 'VITE_')
-  const target = env['VITE_API_TARGET'] ?? 'http://127.0.0.1:9000'
+  const target = env['VITE_API_TARGET'] ?? 'http://127.0.0.1:9200'
 
   return {
     plugins: [react(), tailwindcss()],
@@ -30,7 +30,7 @@ export default defineConfig(({ command, mode }) => {
       emptyOutDir: true,
     },
     server: {
-      port: 5190,
+      port: 5192,
       proxy: {
         '/health': { target, changeOrigin: true },
         '/auth': { target, changeOrigin: true },
