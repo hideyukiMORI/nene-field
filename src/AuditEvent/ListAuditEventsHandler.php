@@ -6,6 +6,8 @@ namespace NeneField\AuditEvent;
 
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\JsonResponseFactory;
+use Nene2\Http\PaginationQueryParser;
+use Nene2\Http\PaginationResponse;
 use NeneField\Auth\AuthContext;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,6 +19,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final readonly class ListAuditEventsHandler implements RequestHandlerInterface
 {
+    private const MAX_LIMIT = 100;
+    private const DEFAULT_LIMIT = 20;
+
     public function __construct(
         private ListAuditEventsUseCaseInterface $useCase,
         private JsonResponseFactory $json,
@@ -37,13 +42,19 @@ final readonly class ListAuditEventsHandler implements RequestHandlerInterface
             return $this->problemDetails->create($request, 'forbidden', 'Forbidden', 403, 'Organization management is required.');
         }
 
-        $output = $this->useCase->execute($organizationId, AuditEventListRequest::toFilter($request->getQueryParams()));
+        $pagination = PaginationQueryParser::parse($request, self::DEFAULT_LIMIT, self::MAX_LIMIT);
+        $output = $this->useCase->execute(
+            $organizationId,
+            AuditEventListRequest::toFilter($request->getQueryParams(), $pagination->limit, $pagination->offset),
+        );
 
-        return $this->json->create([
-            'items' => array_map(static fn (AuditEvent $e): array => AuditEventResponse::toArray($e), $output->items),
-            'limit' => $output->limit,
-            'offset' => $output->offset,
-            'total' => $output->total,
-        ]);
+        return $this->json->create(
+            (new PaginationResponse(
+                items: array_map(static fn (AuditEvent $e): array => AuditEventResponse::toArray($e), $output->items),
+                limit: $output->limit,
+                offset: $output->offset,
+                total: $output->total,
+            ))->toArray(),
+        );
     }
 }
