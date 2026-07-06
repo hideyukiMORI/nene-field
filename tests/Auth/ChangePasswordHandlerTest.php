@@ -48,12 +48,14 @@ final class ChangePasswordHandlerTest extends TestCase
         self::assertFalse($useCase->called);
     }
 
-    public function test_wrong_current_password_is_unauthorized(): void
+    public function test_wrong_current_password_propagates_to_error_middleware(): void
     {
+        // The 401 mapping now lives in InvalidCredentialsExceptionHandler (wired
+        // via the error middleware); the handler itself no longer catches it.
         $useCase = new SpyChangePasswordUseCase(throw: true);
-        $response = $this->dispatch($useCase, ['current_password' => 'wrong', 'new_password' => 'brandnewpass']);
 
-        self::assertSame(401, $response->getStatusCode());
+        $this->expectException(InvalidCredentialsException::class);
+        $this->dispatch($useCase, ['current_password' => 'wrong', 'new_password' => 'brandnewpass']);
     }
 
     public function test_unauthenticated_is_rejected(): void

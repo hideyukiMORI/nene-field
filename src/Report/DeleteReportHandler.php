@@ -36,13 +36,7 @@ final readonly class DeleteReportHandler implements RequestHandlerInterface
         $params = $request->getAttribute(Router::PARAMETERS_ATTRIBUTE, []);
         $reportId = is_array($params) && is_string($params['report_id'] ?? null) ? $params['report_id'] : '';
 
-        try {
-            $this->useCase->execute($organizationId, $actorId, $reportId);
-        } catch (ReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotEditableException) {
-            return $this->problemDetails->create($request, 'report-not-editable', 'Report Not Editable', 409, 'Only a draft report can be deleted.');
-        }
+        $this->useCase->execute($organizationId, $actorId, $reportId);
 
         return $this->json->createEmpty(204);
     }

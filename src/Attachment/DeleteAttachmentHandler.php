@@ -38,15 +38,7 @@ final readonly class DeleteAttachmentHandler implements RequestHandlerInterface
         $reportId = is_array($params) && is_string($params['report_id'] ?? null) ? $params['report_id'] : '';
         $attachmentId = is_array($params) && is_string($params['attachment_id'] ?? null) ? $params['attachment_id'] : '';
 
-        try {
-            $this->useCase->execute($organizationId, $actorId, $reportId, $attachmentId);
-        } catch (AttachmentReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotAcceptingAttachmentsException) {
-            return $this->problemDetails->create($request, 'report-not-accepting-attachments', 'Report Not Accepting Attachments', 409, 'Attachments can only be changed while the report is a draft or rejected.');
-        } catch (AttachmentNotFoundException) {
-            return $this->problemDetails->create($request, 'attachment-not-found', 'Attachment Not Found', 404, 'The attachment was not found.');
-        }
+        $this->useCase->execute($organizationId, $actorId, $reportId, $attachmentId);
 
         return $this->json->createEmpty(204);
     }

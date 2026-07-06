@@ -57,20 +57,16 @@ final readonly class UpdateTemplateHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $template = $this->useCase->execute(new UpdateTemplateInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                templateId: $templateId,
-                name: $fields->name,
-                descriptionProvided: $fields->descriptionProvided,
-                description: $fields->description,
-                fields: $fields->fields,
-                isDefault: $fields->isDefault,
-            ));
-        } catch (TemplateNotFoundException) {
-            return $this->problemDetails->create($request, 'template-not-found', 'Template Not Found', 404, 'The template was not found.');
-        }
+        $template = $this->useCase->execute(new UpdateTemplateInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            templateId: $templateId,
+            name: $fields->name,
+            descriptionProvided: $fields->descriptionProvided,
+            description: $fields->description,
+            fields: $fields->fields,
+            isDefault: $fields->isDefault,
+        ));
 
         return $this->json->create(TemplateResponse::toArray($template));
     }

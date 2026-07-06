@@ -40,15 +40,7 @@ final readonly class DownloadAttachmentHandler implements RequestHandlerInterfac
         $reportId = is_array($params) && is_string($params['report_id'] ?? null) ? $params['report_id'] : '';
         $attachmentId = is_array($params) && is_string($params['attachment_id'] ?? null) ? $params['attachment_id'] : '';
 
-        try {
-            $download = $this->useCase->execute($organizationId, $reportId, $attachmentId, $actorId, $role);
-        } catch (AttachmentNotFoundException) {
-            return $this->problemDetails->create($request, 'attachment-not-found', 'Attachment Not Found', 404, 'The attachment was not found.');
-        } catch (AttachmentIntegrityException) {
-            return $this->problemDetails->create($request, 'attachment-integrity-failed', 'Attachment Integrity Check Failed', 500, 'The attachment could not be served.');
-        } catch (AttachmentStorageException) {
-            return $this->problemDetails->create($request, 'attachment-unavailable', 'Attachment Unavailable', 500, 'The attachment could not be served.');
-        }
+        $download = $this->useCase->execute($organizationId, $reportId, $attachmentId, $actorId, $role);
 
         $attachment = $download->attachment;
 

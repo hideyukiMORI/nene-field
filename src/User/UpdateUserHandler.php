@@ -57,27 +57,14 @@ final readonly class UpdateUserHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $user = $this->useCase->execute(new UpdateUserInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                userId: $userId,
-                name: $fields->name,
-                role: $fields->role,
-                isActive: $fields->isActive,
-            ));
-        } catch (UserNotFoundException) {
-            return $this->problemDetails->create($request, 'user-not-found', 'User Not Found', 404, 'The user was not found.');
-        } catch (RoleNotAssignableException $e) {
-            return $this->problemDetails->create(
-                $request,
-                'validation-failed',
-                'Validation Failed',
-                422,
-                $e->getMessage(),
-                ['errors' => [['field' => 'role', 'message' => $e->getMessage(), 'code' => 'invalid_value']]],
-            );
-        }
+        $user = $this->useCase->execute(new UpdateUserInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            userId: $userId,
+            name: $fields->name,
+            role: $fields->role,
+            isActive: $fields->isActive,
+        ));
 
         return $this->json->create(UserResponse::toArray($user));
     }

@@ -32,7 +32,7 @@ final readonly class SubmitReportUseCase implements SubmitReportUseCaseInterface
         }
 
         if (!$existing->status->isSubmittable()) {
-            throw new ReportNotEditableException();
+            throw new ReportNotEditableException('The report cannot be submitted in its current state.');
         }
 
         $submitted = $existing->withSubmitted($this->clock->now()->format('Y-m-d H:i:s'));

@@ -63,11 +63,7 @@ final readonly class LoginHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $output = $this->useCase->execute(new LoginInput($organizationId, $email, $password));
-        } catch (InvalidCredentialsException $e) {
-            return $this->problemDetails->create($request, 'unauthorized', 'Unauthorized', 401, $e->getMessage());
-        }
+        $output = $this->useCase->execute(new LoginInput($organizationId, $email, $password));
 
         return $this->json->create([
             'token' => $output->token,

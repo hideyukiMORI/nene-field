@@ -65,27 +65,21 @@ final readonly class UpdateOrganizationHandler implements RequestHandlerInterfac
             );
         }
 
-        try {
-            $organization = $this->useCase->execute(new UpdateOrganizationInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                isSuperadmin: $isSuperadmin,
-                name: $fields->name,
-                aiSummaryEnabled: $fields->aiSummaryEnabled,
-                notificationEmailProvided: $fields->notificationEmailProvided,
-                notificationEmail: $fields->notificationEmail,
-                webhookUrlProvided: $fields->webhookUrlProvided,
-                webhookUrl: $fields->webhookUrl,
-                slug: $fields->slug,
-                customDomainProvided: $fields->customDomainProvided,
-                customDomain: $fields->customDomain,
-                isActive: $fields->isActive,
-            ));
-        } catch (OrganizationNotFoundException) {
-            return $this->problemDetails->create($request, 'organization-not-found', 'Organization Not Found', 404, 'The organization was not found.');
-        } catch (OrganizationSlugConflictException) {
-            return $this->problemDetails->create($request, 'organization-slug-conflict', 'Slug Already Used', 409, 'An organization with this slug or custom domain already exists.');
-        }
+        $organization = $this->useCase->execute(new UpdateOrganizationInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            isSuperadmin: $isSuperadmin,
+            name: $fields->name,
+            aiSummaryEnabled: $fields->aiSummaryEnabled,
+            notificationEmailProvided: $fields->notificationEmailProvided,
+            notificationEmail: $fields->notificationEmail,
+            webhookUrlProvided: $fields->webhookUrlProvided,
+            webhookUrl: $fields->webhookUrl,
+            slug: $fields->slug,
+            customDomainProvided: $fields->customDomainProvided,
+            customDomain: $fields->customDomain,
+            isActive: $fields->isActive,
+        ));
 
         return $this->json->create(OrganizationResponse::toArray($organization));
     }

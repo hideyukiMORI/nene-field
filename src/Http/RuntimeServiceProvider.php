@@ -16,6 +16,7 @@ use Nene2\Database\PdoDatabaseQueryExecutor;
 use Nene2\Database\PdoDatabaseTransactionManager;
 use Nene2\DependencyInjection\ContainerBuilder;
 use Nene2\DependencyInjection\ServiceProviderInterface;
+use Nene2\Error\DomainExceptionHandlerInterface;
 use Nene2\Error\ProblemDetailsResponseFactory;
 use Nene2\Http\ClockInterface;
 use Nene2\Http\JsonResponseFactory;
@@ -24,27 +25,46 @@ use Nene2\Http\ResponseEmitter;
 use Nene2\Http\RuntimeApplicationFactory;
 use Nene2\Http\UtcClock;
 use Nene2\Log\RequestIdHolder;
+use NeneField\Attachment\AttachmentIntegrityExceptionHandler;
+use NeneField\Attachment\AttachmentNotFoundExceptionHandler;
+use NeneField\Attachment\AttachmentReportNotFoundExceptionHandler;
 use NeneField\Attachment\AttachmentRouteRegistrar;
 use NeneField\Attachment\AttachmentServiceProvider;
+use NeneField\Attachment\AttachmentStorageExceptionHandler;
+use NeneField\Attachment\AttachmentTooLargeExceptionHandler;
+use NeneField\Attachment\ReportNotAcceptingAttachmentsExceptionHandler;
+use NeneField\Attachment\TooManyAttachmentsExceptionHandler;
+use NeneField\Attachment\UnsupportedAttachmentTypeExceptionHandler;
 use NeneField\AuditEvent\AuditEventRouteRegistrar;
 use NeneField\AuditEvent\AuditServiceProvider;
 use NeneField\Auth\AuthRouteRegistrar;
 use NeneField\Auth\AuthServiceProvider;
+use NeneField\Auth\InvalidCredentialsExceptionHandler;
 use NeneField\Auth\OrgGuardMiddleware;
 use NeneField\Export\ExportRouteRegistrar;
 use NeneField\Export\ExportServiceProvider;
+use NeneField\Organization\OrganizationNotFoundExceptionHandler;
 use NeneField\Organization\OrganizationRepositoryInterface;
 use NeneField\Organization\OrganizationRouteRegistrar;
 use NeneField\Organization\OrganizationServiceProvider;
+use NeneField\Organization\OrganizationSlugConflictExceptionHandler;
 use NeneField\Organization\Resolution\EnvResolutionStrategy;
 use NeneField\Organization\Resolution\OrgResolutionStrategyInterface;
 use NeneField\Organization\Resolution\OrgResolverMiddleware;
 use NeneField\Organization\Resolution\PathPrefixResolutionStrategy;
 use NeneField\Organization\Resolution\SubdomainResolutionStrategy;
+use NeneField\Report\ReportNotEditableExceptionHandler;
+use NeneField\Report\ReportNotFoundExceptionHandler;
+use NeneField\Report\ReportNotInSubmittedStateExceptionHandler;
 use NeneField\Report\ReportRouteRegistrar;
 use NeneField\Report\ReportServiceProvider;
+use NeneField\Template\TemplateNotFoundExceptionHandler;
 use NeneField\Template\TemplateRouteRegistrar;
 use NeneField\Template\TemplateServiceProvider;
+use NeneField\User\CannotDeleteSelfExceptionHandler;
+use NeneField\User\RoleNotAssignableExceptionHandler;
+use NeneField\User\UserEmailConflictExceptionHandler;
+use NeneField\User\UserNotFoundExceptionHandler;
 use NeneField\User\UserRouteRegistrar;
 use NeneField\User\UserServiceProvider;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -69,6 +89,9 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
 
     /** Problem Details `type` namespace (docs/terms.md §7). */
     public const PROBLEM_DETAILS_BASE_URL = 'https://nene-field.dev/problems/';
+
+    /** Registered domain exception handlers (`list<DomainExceptionHandlerInterface>`). */
+    public const EXCEPTION_HANDLERS = 'nene_field.exception_handlers';
 
     public function register(ContainerBuilder $builder): void
     {
@@ -149,6 +172,37 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                 static fn (ContainerInterface $container): RequestIdHolder => new RequestIdHolder(),
             )
             ->set(
+                self::EXCEPTION_HANDLERS,
+                static function (ContainerInterface $container): array {
+                    $problemDetails = self::problemDetails($container);
+
+                    /** @var list<DomainExceptionHandlerInterface> $handlers */
+                    $handlers = [
+                        new OrganizationNotFoundExceptionHandler($problemDetails),
+                        new OrganizationSlugConflictExceptionHandler($problemDetails),
+                        new InvalidCredentialsExceptionHandler($problemDetails),
+                        new AttachmentReportNotFoundExceptionHandler($problemDetails),
+                        new ReportNotAcceptingAttachmentsExceptionHandler($problemDetails),
+                        new TooManyAttachmentsExceptionHandler($problemDetails),
+                        new AttachmentTooLargeExceptionHandler($problemDetails),
+                        new UnsupportedAttachmentTypeExceptionHandler($problemDetails),
+                        new AttachmentNotFoundExceptionHandler($problemDetails),
+                        new AttachmentIntegrityExceptionHandler($problemDetails),
+                        new AttachmentStorageExceptionHandler($problemDetails),
+                        new ReportNotFoundExceptionHandler($problemDetails),
+                        new ReportNotInSubmittedStateExceptionHandler($problemDetails),
+                        new ReportNotEditableExceptionHandler($problemDetails),
+                        new RoleNotAssignableExceptionHandler($problemDetails),
+                        new UserEmailConflictExceptionHandler($problemDetails),
+                        new UserNotFoundExceptionHandler($problemDetails),
+                        new CannotDeleteSelfExceptionHandler($problemDetails),
+                        new TemplateNotFoundExceptionHandler($problemDetails),
+                    ];
+
+                    return $handlers;
+                },
+            )
+            ->set(
                 DatabaseHealthCheck::class,
                 static fn (ContainerInterface $container): DatabaseHealthCheck
                     => new DatabaseHealthCheck(self::connectionFactory($container)),
@@ -207,6 +261,14 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     $auditRoutes = $container->get(AuditEventRouteRegistrar::class);
                     $requestIdHolder = $container->get(RequestIdHolder::class);
 
+                    $exceptionHandlers = $container->get(self::EXCEPTION_HANDLERS);
+
+                    if (!is_array($exceptionHandlers)) {
+                        throw new LogicException('Exception handlers service is invalid.');
+                    }
+
+                    /** @var list<DomainExceptionHandlerInterface> $exceptionHandlers */
+
                     if (
                         !$orgResolver instanceof OrgResolverMiddleware
                         || !$bearer instanceof BearerTokenMiddleware
@@ -227,6 +289,7 @@ final readonly class RuntimeServiceProvider implements ServiceProviderInterface
                     return new RuntimeApplicationFactory(
                         responseFactory: $psr17,
                         streamFactory: $psr17,
+                        domainExceptionHandlers: $exceptionHandlers,
                         requestIdHolder: $requestIdHolder,
                         routeRegistrars: [$authRoutes, $reportRoutes, $userRoutes, $orgRoutes, $templateRoutes, $attachmentRoutes, $exportRoutes, $auditRoutes],
                         authMiddleware: [$orgResolver, $bearer, $orgGuard],
