@@ -42,11 +42,7 @@ final readonly class DeleteTemplateHandler implements RequestHandlerInterface
         $params = $request->getAttribute(Router::PARAMETERS_ATTRIBUTE, []);
         $templateId = is_array($params) && is_string($params['template_id'] ?? null) ? $params['template_id'] : '';
 
-        try {
-            $this->useCase->execute($organizationId, $actorId, $templateId);
-        } catch (TemplateNotFoundException) {
-            return $this->problemDetails->create($request, 'template-not-found', 'Template Not Found', 404, 'The template was not found.');
-        }
+        $this->useCase->execute($organizationId, $actorId, $templateId);
 
         return $this->json->createEmpty(204);
     }

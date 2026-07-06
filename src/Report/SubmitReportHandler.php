@@ -36,13 +36,7 @@ final readonly class SubmitReportHandler implements RequestHandlerInterface
         $params = $request->getAttribute(Router::PARAMETERS_ATTRIBUTE, []);
         $reportId = is_array($params) && is_string($params['report_id'] ?? null) ? $params['report_id'] : '';
 
-        try {
-            $report = $this->useCase->execute($organizationId, $actorId, $reportId);
-        } catch (ReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotEditableException) {
-            return $this->problemDetails->create($request, 'report-not-editable', 'Report Not Editable', 409, 'The report cannot be submitted in its current state.');
-        }
+        $report = $this->useCase->execute($organizationId, $actorId, $reportId);
 
         return $this->json->create(ReportResponse::toArray($report));
     }

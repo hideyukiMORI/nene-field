@@ -54,27 +54,14 @@ final readonly class CreateUserHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $user = $this->useCase->execute(new CreateUserInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                name: $fields->name,
-                email: $fields->email,
-                role: $fields->role,
-                password: $fields->password,
-            ));
-        } catch (RoleNotAssignableException $e) {
-            return $this->problemDetails->create(
-                $request,
-                'validation-failed',
-                'Validation Failed',
-                422,
-                $e->getMessage(),
-                ['errors' => [['field' => 'role', 'message' => $e->getMessage(), 'code' => 'invalid_value']]],
-            );
-        } catch (UserEmailConflictException) {
-            return $this->problemDetails->create($request, 'user-email-conflict', 'Email Already Used', 409, 'A user with this email already exists.');
-        }
+        $user = $this->useCase->execute(new CreateUserInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            name: $fields->name,
+            email: $fields->email,
+            role: $fields->role,
+            password: $fields->password,
+        ));
 
         return $this->json->create(UserResponse::toArray($user), 201);
     }

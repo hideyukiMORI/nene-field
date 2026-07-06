@@ -51,25 +51,19 @@ final readonly class UpdateReportHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $report = $this->useCase->execute(new UpdateReportInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                reportId: $reportId,
-                title: $fields->title,
-                body: $fields->body,
-                workDate: $fields->workDate,
-                tags: $fields->tags,
-                templateId: $fields->templateId,
-                projectCode: $fields->projectCode,
-                invoiceWorkOrderId: $fields->invoiceWorkOrderId,
-                recordsEntityId: $fields->recordsEntityId,
-            ));
-        } catch (ReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotEditableException) {
-            return $this->problemDetails->create($request, 'report-not-editable', 'Report Not Editable', 409, 'The report cannot be modified in its current state.');
-        }
+        $report = $this->useCase->execute(new UpdateReportInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            reportId: $reportId,
+            title: $fields->title,
+            body: $fields->body,
+            workDate: $fields->workDate,
+            tags: $fields->tags,
+            templateId: $fields->templateId,
+            projectCode: $fields->projectCode,
+            invoiceWorkOrderId: $fields->invoiceWorkOrderId,
+            recordsEntityId: $fields->recordsEntityId,
+        ));
 
         return $this->json->create(ReportResponse::toArray($report));
     }

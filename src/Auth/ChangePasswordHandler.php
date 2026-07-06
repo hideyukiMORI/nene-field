@@ -53,11 +53,7 @@ final readonly class ChangePasswordHandler implements RequestHandlerInterface
             );
         }
 
-        try {
-            $this->useCase->execute(new ChangePasswordInput($organizationId, $userId, $current, $new));
-        } catch (InvalidCredentialsException $e) {
-            return $this->problemDetails->create($request, 'unauthorized', 'Unauthorized', 401, $e->getMessage());
-        }
+        $this->useCase->execute(new ChangePasswordInput($organizationId, $userId, $current, $new));
 
         return $this->json->createEmpty(204);
     }

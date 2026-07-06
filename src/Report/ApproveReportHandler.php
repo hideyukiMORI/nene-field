@@ -45,13 +45,7 @@ final readonly class ApproveReportHandler implements RequestHandlerInterface
         $body = (array) json_decode((string) $request->getBody(), true);
         $comment = is_string($body['comment'] ?? null) && $body['comment'] !== '' ? $body['comment'] : null;
 
-        try {
-            $report = $this->useCase->execute(new ApproveReportInput($organizationId, $actorId, $reportId, $comment));
-        } catch (ReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotInSubmittedStateException) {
-            return $this->problemDetails->create($request, 'report-not-in-submitted-state', 'Report Not In Submitted State', 409, 'The report is not awaiting approval.');
-        }
+        $report = $this->useCase->execute(new ApproveReportInput($organizationId, $actorId, $reportId, $comment));
 
         return $this->json->create(ReportResponse::toArray($report));
     }

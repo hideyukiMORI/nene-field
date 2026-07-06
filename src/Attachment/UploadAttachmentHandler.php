@@ -56,25 +56,13 @@ final readonly class UploadAttachmentHandler implements RequestHandlerInterface
         $contents = (string) $file->getStream();
         $filename = is_string($file->getClientFilename()) ? $file->getClientFilename() : 'attachment';
 
-        try {
-            $attachment = $this->useCase->execute(new UploadAttachmentInput(
-                organizationId: $organizationId,
-                actorId: $actorId,
-                reportId: $reportId,
-                filename: $filename,
-                contents: $contents,
-            ));
-        } catch (AttachmentReportNotFoundException) {
-            return $this->problemDetails->create($request, 'report-not-found', 'Report Not Found', 404, 'The report was not found.');
-        } catch (ReportNotAcceptingAttachmentsException) {
-            return $this->problemDetails->create($request, 'report-not-accepting-attachments', 'Report Not Accepting Attachments', 409, 'Attachments can only be changed while the report is a draft or rejected.');
-        } catch (TooManyAttachmentsException) {
-            return $this->problemDetails->create($request, 'payload-too-large', 'Payload Too Large', 413, 'The report already has the maximum number of attachments.');
-        } catch (AttachmentTooLargeException) {
-            return $this->problemDetails->create($request, 'payload-too-large', 'Payload Too Large', 413, 'The attachment exceeds the maximum file size.');
-        } catch (UnsupportedAttachmentTypeException $e) {
-            return $this->validationFailed($request, 'file', sprintf('Unsupported media type "%s". Allowed: image/jpeg, image/png, application/pdf.', $e->detectedMimeType), 'unsupported_media_type');
-        }
+        $attachment = $this->useCase->execute(new UploadAttachmentInput(
+            organizationId: $organizationId,
+            actorId: $actorId,
+            reportId: $reportId,
+            filename: $filename,
+            contents: $contents,
+        ));
 
         return $this->json->create(AttachmentSummaryResponse::toArray($attachment), 201);
     }

@@ -31,7 +31,7 @@ final readonly class DeleteReportUseCase implements DeleteReportUseCaseInterface
 
         // Only a draft can be deleted; submitted/approved/rejected are retained.
         if ($existing->status !== ReportStatus::Draft) {
-            throw new ReportNotEditableException();
+            throw new ReportNotEditableException('Only a draft report can be deleted.');
         }
 
         $this->tx->transactional(function (DatabaseQueryExecutorInterface $exec) use ($existing, $organizationId, $actorId, $reportId): void {

@@ -42,13 +42,7 @@ final readonly class DeleteUserHandler implements RequestHandlerInterface
         $params = $request->getAttribute(Router::PARAMETERS_ATTRIBUTE, []);
         $userId = is_array($params) && is_string($params['user_id'] ?? null) ? $params['user_id'] : '';
 
-        try {
-            $this->useCase->execute($organizationId, $actorId, $userId);
-        } catch (UserNotFoundException) {
-            return $this->problemDetails->create($request, 'user-not-found', 'User Not Found', 404, 'The user was not found.');
-        } catch (CannotDeleteSelfException) {
-            return $this->problemDetails->create($request, 'cannot-delete-self', 'Cannot Delete Self', 409, 'You cannot delete your own account.');
-        }
+        $this->useCase->execute($organizationId, $actorId, $userId);
 
         return $this->json->createEmpty(204);
     }

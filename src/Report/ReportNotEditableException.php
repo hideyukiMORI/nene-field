@@ -12,8 +12,8 @@ use RuntimeException;
  */
 final class ReportNotEditableException extends RuntimeException
 {
-    public function __construct()
+    public function __construct(string $message = 'The report cannot be modified in its current state.')
     {
-        parent::__construct('The report cannot be modified in its current state.');
+        parent::__construct($message);
     }
 }

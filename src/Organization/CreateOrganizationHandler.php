@@ -53,17 +53,13 @@ final readonly class CreateOrganizationHandler implements RequestHandlerInterfac
             );
         }
 
-        try {
-            $organization = $this->useCase->execute(new CreateOrganizationInput(
-                actorId: $actorId,
-                name: $fields->name,
-                slug: $fields->slug,
-                customDomain: $fields->customDomain,
-                isActive: $fields->isActive,
-            ));
-        } catch (OrganizationSlugConflictException) {
-            return $this->problemDetails->create($request, 'organization-slug-conflict', 'Slug Already Used', 409, 'An organization with this slug or custom domain already exists.');
-        }
+        $organization = $this->useCase->execute(new CreateOrganizationInput(
+            actorId: $actorId,
+            name: $fields->name,
+            slug: $fields->slug,
+            customDomain: $fields->customDomain,
+            isActive: $fields->isActive,
+        ));
 
         return $this->json->create(OrganizationResponse::toArray($organization), 201);
     }
