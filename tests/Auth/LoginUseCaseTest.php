@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeneField\Tests\Auth;
 
 use DateTimeImmutable;
+use DateTimeZone;
 use Nene2\Auth\LocalBearerTokenVerifier;
 use NeneField\Auth\InvalidCredentialsException;
 use NeneField\Auth\LoginInput;
@@ -41,6 +42,9 @@ final class LoginUseCaseTest extends TestCase
         self::assertSame('admin', $claims['role']);
         self::assertSame(self::ORG, $claims['org']);
         self::assertIsInt($claims['exp']);
+        // The token must not be already expired at verification time; this guards
+        // against regressing to a fixed past issuance clock (#19).
+        self::assertGreaterThan(time(), $claims['exp']);
     }
 
     public function test_wrong_password_is_rejected(): void
@@ -73,10 +77,16 @@ final class LoginUseCaseTest extends TestCase
      */
     private function useCase(array $users): LoginUseCase
     {
+        // The issued token's `exp` is verified by LocalBearerTokenVerifier against
+        // the real system clock (time()), which cannot be injected. Anchoring
+        // issuance to a hard-coded past instant made the 24h TTL window expire as
+        // wall-clock time advanced, so the exp check failed non-deterministically
+        // (#19). Seed the FixedClock from real "now" (UTC) so the validity window
+        // always straddles the verification instant, independent of the calendar.
         return new LoginUseCase(
             new InMemoryUserRepository($users),
             $this->verifier,
-            new FixedClock(new DateTimeImmutable('2026-06-11T00:00:00Z')),
+            new FixedClock(new DateTimeImmutable('now', new DateTimeZone('UTC'))),
         );
     }
 
