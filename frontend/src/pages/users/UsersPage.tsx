@@ -11,14 +11,14 @@ export function UsersPage() {
   const allowed = user !== null && canManageOrganization(user.role)
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
 
-  // Full-bleed: cancel the AdminShell <main> padding so the white header bar and
-  // table area span the content edge-to-edge (design handoff layout).
-  return (
-    <div className="-m-6">
-      <UserList />
-    </div>
-  )
+  // Pinned-toolbar (作業卓) screen: full-height, unpadded pane from AdminShell;
+  // UserList fills it and scrolls only its table body.
+  return <UserList />
 }

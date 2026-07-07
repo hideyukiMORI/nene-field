@@ -13,8 +13,6 @@ import {
   InlineAlert,
   Input,
   Select,
-  Stack,
-  Text,
   Toggle,
   useToast,
 } from '@/shared/ui'
@@ -109,21 +107,32 @@ export function OrganizationSettingsForm({
   }
 
   return (
-    <Stack gap="md">
-      <div className="flex items-end justify-between gap-4">
-        <Stack gap="sm">
-          <Text variant="title" as="h2">
+    <div className="mx-auto w-full max-w-3xl">
+      {/* document header (書類): kicker · 23px title · top-right save */}
+      <div className="mb-4.5 flex flex-wrap items-end gap-4.5 border-b border-border-hairline pb-4.5">
+        <div className="min-w-0">
+          <p className="text-xs font-bold tracking-wide text-accent-ink">{t('settings.kicker')}</p>
+          <h2 className="mt-2 text-doc-title font-bold tracking-tight text-fg">
             {t('settings.title')}
-          </Text>
-          <Text variant="subtitle">{t('settings.subtitle')}</Text>
-        </Stack>
-        <Button type="submit" form="org-settings-form" disabled={isPending}>
+          </h2>
+          <p className="mt-1.5 text-sm text-fg-muted-2">{t('settings.subtitle')}</p>
+        </div>
+        <div className="flex-1" />
+        <Button type="submit" form="org-settings-form" disabled={isPending} className="flex-none">
           {t('common.actions.save')}
         </Button>
       </div>
 
-      {isSaved && <InlineAlert variant="success">{t('settings.saved')}</InlineAlert>}
-      {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
+      {isSaved && (
+        <InlineAlert variant="success" className="mb-4">
+          {t('settings.saved')}
+        </InlineAlert>
+      )}
+      {errorKey !== null && (
+        <InlineAlert variant="error" className="mb-4">
+          {t(errorKey)}
+        </InlineAlert>
+      )}
 
       <form
         id="org-settings-form"
@@ -131,7 +140,7 @@ export function OrganizationSettingsForm({
           void handleSubmit(onSubmit)(event)
         }}
         noValidate
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4.5"
       >
         <SectionCard title={t('settings.section.basic')}>
           <div className="flex flex-col gap-4">
@@ -206,6 +215,7 @@ export function OrganizationSettingsForm({
                     <Button
                       variant="ghost"
                       disabled={!aiEnabled}
+                      className="flex-none whitespace-nowrap"
                       onClick={() => {
                         toast.show(t('settings.ai.tested'))
                       }}
@@ -237,6 +247,7 @@ export function OrganizationSettingsForm({
                 <Input id="org-webhook-url" {...register('webhookUrl')} />
                 <Button
                   variant="ghost"
+                  className="flex-none whitespace-nowrap"
                   onClick={() => {
                     toast.show(t('settings.notify.tested'))
                   }}
@@ -329,6 +340,6 @@ export function OrganizationSettingsForm({
           </Button>
         </Card>
       </form>
-    </Stack>
+    </div>
   )
 }

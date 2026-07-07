@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from '@/shared/i18n'
-import { ApprovalPulse, BarChart, Button, Card, Donut, useToast } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
+import { ApprovalPulse, BarChart, Button, Donut, useToast } from '@/shared/ui'
 import type { BarDatum, DonutSegment } from '@/shared/ui'
 
 interface QueueRow {
@@ -45,17 +46,19 @@ const INITIAL_QUEUE: QueueRow[] = [
 ]
 
 const DAILY: BarDatum[] = [
-  { label: '月', value: 7 },
-  { label: '火', value: 9 },
-  { label: '水', value: 6 },
-  { label: '木', value: 11 },
-  { label: '金', value: 8 },
-  { label: '土', value: 10 },
-  { label: '日', value: 4, today: true },
+  { label: '6/6', value: 7 },
+  { label: '6/7', value: 9 },
+  { label: '6/8', value: 6 },
+  { label: '6/9', value: 11 },
+  { label: '6/10', value: 8 },
+  { label: '6/11', value: 10 },
+  { label: '6/12', value: 4, today: true },
 ]
 
-const AVATAR_BG = ['bg-submitted-soft', 'bg-approved-soft', 'bg-warn-soft', 'bg-ai-soft']
-const AVATAR_FG = ['text-submitted', 'text-approved', 'text-warn', 'text-ai']
+const KPI_TODAY = 12
+const KPI_WEEK = 48
+const KPI_APPROVED = 41
+const KPI_REJECTED = 2
 
 function todayLabel(): string {
   const d = new Date()
@@ -70,10 +73,9 @@ export function DashboardPage() {
   const [pulse, setPulse] = useState(0)
 
   const statusSegments: DonutSegment[] = [
-    { tone: 'approved', value: 41, label: t('report.status.approved') },
+    { tone: 'approved', value: KPI_APPROVED, label: t('report.status.approved') },
     { tone: 'submitted', value: queue.length, label: t('report.status.submitted') },
-    { tone: 'rejected', value: 2, label: t('report.status.rejected') },
-    { tone: 'draft', value: 5, label: t('report.status.draft') },
+    { tone: 'rejected', value: KPI_REJECTED, label: t('report.status.rejected') },
   ]
 
   const approve = (id: string): void => {
@@ -87,123 +89,152 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-5">
-      {/* page header */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold text-fg">{t('common.nav.dashboard')}</h2>
-          <p className="mt-1 text-sm text-fg-muted">
-            {t('dashboard.view')} · <span className="tabular-nums">{todayLabel()}</span>
+    // Plain workspace screen: this page owns the 26/30/40 content padding.
+    <div className="flex flex-col gap-5.5 px-7.5 pt-6.5 pb-10">
+      {/* ── header ───────────────────────────────────────────────── */}
+      <div className="flex flex-wrap items-end gap-3.5">
+        <div className="min-w-0">
+          <h2 className="text-screen-title font-bold text-fg">{t('common.nav.dashboard')}</h2>
+          <p className="mt-0.5 text-ui text-fg-muted-2">
+            {t('dashboard.view')} ・ <span className="tabular-nums">{todayLabel()}</span>
           </p>
         </div>
+        <div className="flex-1" />
         <Link to="/reports">
           <Button>{t('dashboard.reviewCta')} →</Button>
         </Link>
       </div>
 
-      {/* KPI row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label={t('dashboard.kpi.pending')} value={queue.length} tone="warn" delta="要対応" />
-        <Kpi label={t('dashboard.kpi.today')} value={12} delta="前日比 +3" deltaUp />
-        <Kpi label={t('dashboard.kpi.week')} value={48} delta="うち承認 41" />
-        <Kpi label={t('dashboard.kpi.rejectRate')} value="4.1%" tone="rejected" delta="2 / 48 件" />
+      {/* ── KPI row (4) ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Kpi
+          label={t('dashboard.kpi.pending')}
+          value={queue.length}
+          tone="accent"
+          sub={t('dashboard.kpi.pendingSub')}
+        />
+        <Kpi
+          label={t('dashboard.kpi.today')}
+          value={KPI_TODAY}
+          sub={t('dashboard.kpi.todaySub')}
+          subTone="approved"
+        />
+        <Kpi
+          label={t('dashboard.kpi.week')}
+          value={KPI_WEEK}
+          sub={t('dashboard.kpi.weekSub', { count: KPI_APPROVED })}
+        />
+        <Kpi
+          label={t('dashboard.kpi.reject')}
+          value={KPI_REJECTED}
+          tone="rejected"
+          sub={`${t('dashboard.kpi.rejectRate')} 4.1%`}
+        />
       </div>
 
-      {/* charts */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <h3 className="mb-4 text-sm font-bold text-fg">{t('dashboard.chart.daily')}</h3>
+      {/* ── charts: trend (≈1.55fr) + status (1fr) ───────────────── */}
+      <div className="grid gap-4.5 lg:grid-cols-5">
+        <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5 lg:col-span-3">
+          <h3 className="text-sm font-bold text-fg">{t('dashboard.chart.daily')}</h3>
+          <p className="mb-4.5 text-caption text-fg-faint-2">{t('dashboard.chart.dailySub')}</p>
           <BarChart data={DAILY} />
-        </Card>
-        <Card>
-          <h3 className="mb-4 text-sm font-bold text-fg">{t('dashboard.chart.status')}</h3>
+        </div>
+        <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5 lg:col-span-2">
+          <h3 className="mb-4.5 text-sm font-bold text-fg">{t('dashboard.chart.status')}</h3>
           <Donut segments={statusSegments} />
-        </Card>
+        </div>
       </div>
 
-      {/* queue + quick filters */}
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card padded={false} className="lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
-            <h3 className="text-sm font-bold text-fg">{t('dashboard.queue.title')}</h3>
-            <Link to="/reports">
-              <Button variant="ghost" size="sm">
-                {t('dashboard.queue.viewAll')}
-              </Button>
+      {/* ── pending queue + side column (320px) ──────────────────── */}
+      <div className="flex flex-col gap-4.5 lg:flex-row">
+        <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-border bg-surface-raised">
+          <div className="flex items-center gap-2 border-b border-border-2 px-4.5 py-3.5">
+            <h3 className="flex-1 text-sm font-bold text-fg">{t('dashboard.queue.title')}</h3>
+            <Link
+              to="/reports"
+              className="text-label font-semibold text-accent-ink hover:text-accent"
+            >
+              {t('dashboard.queue.viewAll')} ›
             </Link>
           </div>
           {queue.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-fg-faint">
-              {t('dashboard.queue.empty')}
-            </p>
+            <div className="px-5 py-11 text-center">
+              <div className="mb-2 text-3xl text-btn-success">✓</div>
+              <p className="text-ui font-semibold text-fg-muted-2">{t('dashboard.queue.empty')}</p>
+            </div>
           ) : (
             <ul>
-              {queue.map((r, i) => (
+              {queue.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center gap-3 border-b border-border-2 px-5 py-3 last:border-b-0"
+                  className="flex items-center gap-3.5 border-b border-border-2 px-4.5 py-3 last:border-b-0"
                 >
-                  <span
-                    className={`grid h-9 w-9 flex-none place-items-center rounded-pill text-sm font-bold ${AVATAR_BG[i % 4]} ${AVATAR_FG[i % 4]}`}
-                  >
+                  <span className="grid h-8.5 w-8.5 flex-none place-items-center rounded-pill bg-accent-soft text-label font-bold text-accent-ink">
                     {r.submitter.slice(0, 1)}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="truncate font-semibold text-fg">{r.title}</span>
-                      <span className="flex-none text-xs text-fg-faint tabular-nums">{r.date}</span>
+                      <span className="whitespace-nowrap text-ui font-semibold text-fg">
+                        {r.submitter}
+                      </span>
+                      <span className="text-caption text-fg-faint-2 tabular-nums">{r.date}</span>
                     </div>
-                    <p className="truncate text-xs text-fg-faint">{r.summary}</p>
+                    <p className="truncate text-label text-fg-muted-2">
+                      {r.title} ・ {r.summary}
+                    </p>
                   </div>
-                  <div className="flex flex-none gap-2">
-                    <Button
-                      variant="danger-ghost"
-                      size="sm"
-                      onClick={() => {
-                        reject(r.id)
-                      }}
-                    >
-                      {t('report.review.reject')}
-                    </Button>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => {
-                        approve(r.id)
-                      }}
-                    >
-                      {t('report.review.approve')}
-                    </Button>
-                  </div>
+                  <Button
+                    variant="danger-ghost"
+                    size="sm"
+                    onClick={() => {
+                      reject(r.id)
+                    }}
+                  >
+                    {t('report.review.reject')}
+                  </Button>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => {
+                      approve(r.id)
+                    }}
+                  >
+                    {t('report.review.approve')}
+                  </Button>
                 </li>
               ))}
             </ul>
           )}
-        </Card>
+        </div>
 
-        <div className="flex flex-col gap-4">
-          <Card padded={false}>
-            <h3 className="border-b border-border px-5 py-3.5 text-sm font-bold text-fg">
-              {t('dashboard.quick.title')}
-            </h3>
-            <ul className="p-2">
-              <QuickItem icon="⏳" label={t('dashboard.quick.pending')} count={queue.length} />
-              <QuickItem icon="📅" label={t('dashboard.quick.today')} count={12} />
-              <QuickItem icon="🗓" label={t('dashboard.quick.week')} count={48} />
-            </ul>
-            <div className="px-3 pb-3">
-              <Link to="/export">
-                <Button className="w-full">⬇ {t('dashboard.quick.toExport')}</Button>
-              </Link>
-            </div>
-          </Card>
+        <div className="flex flex-col gap-4.5 lg:w-80 lg:flex-none">
+          {/* quick filters */}
+          <div className="rounded-2xl border border-border bg-surface-raised px-4.5 py-4">
+            <h3 className="mb-3 text-ui font-bold text-fg">{t('dashboard.quick.title')}</h3>
+            <QuickRow icon="⏳" to="/reports" label={t('dashboard.quick.pending')}>
+              <span className="text-label font-bold text-accent-ink tabular-nums">
+                {queue.length}
+              </span>
+            </QuickRow>
+            <QuickRow icon="▤" to="/reports" label={t('dashboard.quick.today')}>
+              <span className="text-label font-bold text-fg-muted-2 tabular-nums">{KPI_TODAY}</span>
+            </QuickRow>
+            <QuickRow icon="⬇" to="/export" label={t('dashboard.quick.toExport')}>
+              <span className="text-base text-fg-faint-2">›</span>
+            </QuickRow>
+          </div>
 
-          <Card>
-            <h3 className="mb-2 text-sm font-bold text-fg">{t('dashboard.summary.title')}</h3>
-            <p className="text-sm leading-relaxed text-fg-muted">
-              {t('dashboard.summary.body', { total: 48, approved: 41, pending: queue.length })}
+          {/* weekly summary (dark brand card) */}
+          <div className="rounded-2xl bg-gradient-to-b from-accent-deep to-accent-deep-2 px-4.5 py-4.5 text-fg-inverse">
+            <h3 className="mb-1.5 text-ui font-bold">{t('dashboard.summary.title')}</h3>
+            <p className="text-xs leading-relaxed text-accent-soft">
+              {t('dashboard.summary.body', {
+                total: KPI_WEEK,
+                approved: KPI_APPROVED,
+                pending: queue.length,
+              })}
             </p>
-          </Card>
+          </div>
         </div>
       </div>
 
@@ -221,39 +252,48 @@ function Kpi({
   label,
   value,
   tone,
-  delta,
-  deltaUp = false,
+  sub,
+  subTone,
 }: {
   label: string
   value: number | string
-  tone?: 'warn' | 'rejected'
-  delta?: string
-  deltaUp?: boolean
+  tone?: 'accent' | 'rejected'
+  sub?: string
+  subTone?: 'approved'
 }) {
   const valueColor =
-    tone === 'warn' ? 'text-warn' : tone === 'rejected' ? 'text-rejected' : 'text-fg'
+    tone === 'accent' ? 'text-accent-ink' : tone === 'rejected' ? 'text-rejected' : 'text-fg'
+  const subColor = subTone === 'approved' ? 'text-btn-success' : 'text-fg-faint-2'
   return (
-    <Card>
-      <p className="text-xs text-fg-muted">{label}</p>
-      <p className={`mt-1 text-3xl font-extrabold tabular-nums ${valueColor}`}>{value}</p>
-      {delta !== undefined && (
-        <p className={`mt-1 text-xs ${deltaUp ? 'text-approved' : 'text-fg-faint'}`}>{delta}</p>
-      )}
-    </Card>
+    <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5">
+      <p className="text-label text-fg-muted-2">{label}</p>
+      <p className={cn('mt-1 text-kpi font-bold tabular-nums', valueColor)}>{value}</p>
+      {sub !== undefined && <p className={cn('mt-0.5 text-caption', subColor)}>{sub}</p>}
+    </div>
   )
 }
 
-function QuickItem({ icon, label, count }: { icon: string; label: string; count: number }) {
+function QuickRow({
+  icon,
+  to,
+  label,
+  children,
+}: {
+  icon: string
+  to: string
+  label: string
+  children: ReactNode
+}) {
   return (
-    <li>
-      <Link
-        to="/reports"
-        className="flex items-center gap-2.5 rounded-input px-3 py-2.5 hover:bg-surface-overlay"
-      >
-        <span className="text-base">{icon}</span>
-        <span className="flex-1 text-sm text-fg">{label}</span>
-        <span className="text-sm font-bold text-fg tabular-nums">{count}</span>
-      </Link>
-    </li>
+    <Link
+      to={to}
+      className="mb-2 flex items-center gap-2.5 rounded-xl bg-surface-soft px-3 py-2.75 last:mb-0 hover:bg-surface-overlay"
+    >
+      <span aria-hidden className="text-base">
+        {icon}
+      </span>
+      <span className="flex-1 text-ui font-semibold text-fg">{label}</span>
+      {children}
+    </Link>
   )
 }

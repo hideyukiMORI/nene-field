@@ -11,12 +11,14 @@ export function AuditLogsPage() {
   const allowed = user !== null && canManageOrganization(user.role)
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
 
-  return (
-    <div className="-m-6">
-      <AuditLog />
-    </div>
-  )
+  // Pinned-toolbar (作業卓) screen: full-height, unpadded pane from AdminShell;
+  // AuditLog fills it and scrolls only its table body.
+  return <AuditLog />
 }

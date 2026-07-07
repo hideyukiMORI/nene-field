@@ -12,9 +12,9 @@ describe('TemplateForm', () => {
       <TemplateForm mode="create" onSave={onSave} isPending={false} errorKey={null} />,
     )
 
-    await user.type(screen.getByLabelText('名前'), '新テンプレ')
-    await user.type(screen.getByLabelText('項目名'), 'memo')
-    await user.type(screen.getByLabelText('ラベル'), 'メモ')
+    await user.type(screen.getByLabelText('テンプレート名'), '新テンプレ')
+    // Machine name is derived from the label (ASCII slug); no separate name input.
+    await user.type(screen.getByLabelText('ラベル'), 'memo')
     await user.click(screen.getByRole('button', { name: '保存' }))
 
     await waitFor(() => {
@@ -22,6 +22,7 @@ describe('TemplateForm', () => {
     })
     const input = onSave.mock.calls[0]?.[0]
     expect(input.name).toBe('新テンプレ')
+    expect(input.fields[0].label).toBe('memo')
     expect(input.fields[0].name).toBe('memo')
     expect(input.fields[0].type).toBe('text')
   })
@@ -33,11 +34,11 @@ describe('TemplateForm', () => {
     )
 
     await user.click(screen.getByRole('button', { name: /項目を追加/ }))
-    expect(screen.getAllByLabelText('項目名')).toHaveLength(2)
+    expect(screen.getAllByLabelText('ラベル')).toHaveLength(2)
 
     const [firstRemove] = screen.getAllByRole('button', { name: '削除' })
     await user.click(firstRemove as HTMLElement)
-    expect(screen.getAllByLabelText('項目名')).toHaveLength(1)
+    expect(screen.getAllByLabelText('ラベル')).toHaveLength(1)
   })
 
   it('requires options for a select field', async () => {
@@ -47,8 +48,7 @@ describe('TemplateForm', () => {
       <TemplateForm mode="create" onSave={onSave} isPending={false} errorKey={null} />,
     )
 
-    await user.type(screen.getByLabelText('名前'), 'T')
-    await user.type(screen.getByLabelText('項目名'), 'weather')
+    await user.type(screen.getByLabelText('テンプレート名'), 'T')
     await user.type(screen.getByLabelText('ラベル'), '天候')
     // Type is a cycling pill (text→textarea→number→checkbox→date→select); 5 clicks
     // from the default 'text' lands on 'select'.
@@ -82,6 +82,7 @@ describe('TemplateForm', () => {
     )
 
     expect(screen.getByDisplayValue('既存テンプレ')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('summary')).toBeInTheDocument()
+    // Machine name 'summary' is no longer shown; the field label is.
+    expect(screen.getByDisplayValue('作業内容')).toBeInTheDocument()
   })
 })

@@ -19,17 +19,45 @@ interface NavItem {
 }
 
 const MAIN_NAV: NavItem[] = [
-  { to: '/', labelKey: 'common.nav.dashboard', icon: '⌂', end: true },
+  { to: '/', labelKey: 'common.nav.dashboard', icon: '◫', end: true },
   { to: '/reports', labelKey: 'common.nav.reportList', icon: '▤' },
 ]
 
 const ADMIN_NAV: NavItem[] = [
-  { to: '/templates', labelKey: 'common.nav.templates', icon: '◫' },
-  { to: '/users', labelKey: 'common.nav.users', icon: '⚇' },
-  { to: '/audit-logs', labelKey: 'common.nav.audit', icon: '◳' },
+  { to: '/templates', labelKey: 'common.nav.templates', icon: '◳' },
+  { to: '/users', labelKey: 'common.nav.users', icon: '◑' },
+  { to: '/audit-logs', labelKey: 'common.nav.audit', icon: '◔' },
   { to: '/export', labelKey: 'common.nav.export', icon: '⬇' },
   { to: '/settings', labelKey: 'common.nav.settings', icon: '⚙' },
 ]
+
+/**
+ * Per-route layout for <main>, matching the two intentional page-header types
+ * (design handoff `part-page-headers.html`):
+ *  - 'toolbar' (作業卓): pane is full-height, no padding; the page pins its own
+ *    white toolbar (`flex-none`) and scrolls only its body.
+ *  - 'document' (書類): the pane scrolls as one document; the page owns its
+ *    centered column and 30px padding.
+ *  - 'default': ordinary scrolling content with shell padding (dashboard, etc.).
+ */
+type MainMode = 'toolbar' | 'document' | 'plain' | 'default'
+
+const TOOLBAR_PATHS = new Set(['/reports', '/users', '/audit-logs', '/templates', '/templates/new'])
+
+function mainMode(path: string): MainMode {
+  if (TOOLBAR_PATHS.has(path) || /^\/templates\/[^/]+\/edit$/.test(path)) return 'toolbar'
+  if (path === '/export' || path === '/settings') return 'document'
+  if (path === '/') return 'plain'
+  return 'default'
+}
+
+const MAIN_CLASS: Record<MainMode, string> = {
+  toolbar: 'flex min-h-0 flex-1 flex-col overflow-hidden',
+  document: 'min-h-0 flex-1 overflow-y-auto',
+  // 'plain' lets the page own its padding (dashboard 26/30/40); 'default' keeps p-6.
+  plain: 'min-h-0 flex-1 overflow-y-auto',
+  default: 'min-h-0 flex-1 overflow-y-auto p-6',
+}
 
 const TITLE_BY_PATH: Record<string, MessageKey> = {
   '/': 'common.nav.dashboard',
@@ -39,6 +67,34 @@ const TITLE_BY_PATH: Record<string, MessageKey> = {
   '/audit-logs': 'common.nav.audit',
   '/export': 'common.nav.export',
   '/settings': 'common.nav.settings',
+}
+
+// Breadcrumb shown under the topbar title (design handoff topbar spec).
+const CRUMB_BY_PATH: Record<string, MessageKey> = {
+  '/': 'shell.crumb.dashboard',
+  '/reports': 'shell.crumb.reports',
+  '/templates': 'shell.crumb.templates',
+  '/users': 'shell.crumb.users',
+  '/audit-logs': 'shell.crumb.audit',
+  '/export': 'shell.crumb.export',
+  '/settings': 'shell.crumb.settings',
+}
+
+interface PageMeta {
+  title: MessageKey
+  crumb?: MessageKey
+}
+
+/** Resolve the topbar title + crumb, including sub-routes (new / edit pages). */
+function resolveMeta(path: string): PageMeta {
+  const exact = TITLE_BY_PATH[path]
+  if (exact !== undefined) return { title: exact, crumb: CRUMB_BY_PATH[path] }
+  if (path.startsWith('/templates'))
+    return { title: 'template.editor.title', crumb: 'shell.crumb.templates' }
+  if (path.startsWith('/users')) return { title: 'common.nav.users', crumb: 'shell.crumb.users' }
+  if (path.startsWith('/reports'))
+    return { title: 'common.nav.reportList', crumb: 'shell.crumb.reports' }
+  return { title: 'common.app.name' }
 }
 
 // Seed notifications (dummy data per design handoff §0; wire to an entity later).
@@ -90,7 +146,8 @@ export function AdminShell() {
   const pendingCount = (reports.data?.items ?? []).filter((r) => r.status === 'submitted').length
 
   const canManage = user !== null && canManageOrganization(user.role)
-  const titleKey = TITLE_BY_PATH[location.pathname] ?? 'common.app.name'
+  const { title: titleKey, crumb: crumbKey } = resolveMeta(location.pathname)
+  const mode = mainMode(location.pathname)
   const unread = notifications.filter((n) => n.unread).length
 
   const markAllRead = (): void => {
@@ -174,72 +231,73 @@ export function AdminShell() {
 
       {/* ── main column ─────────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-15 flex-none items-center gap-4 border-b border-border bg-surface-raised px-6">
-          <h1 className="text-base font-bold text-fg">{t(titleKey)}</h1>
+        <header className="flex h-15 flex-none items-center gap-3.5 border-b border-border-hairline bg-surface-raised px-6.5">
+          <div className="min-w-0">
+            <h1 className="text-base font-bold leading-tight text-fg">{t(titleKey)}</h1>
+            {crumbKey !== undefined && <p className="text-caption text-fg-faint">{t(crumbKey)}</p>}
+          </div>
 
-          <div className="mx-auto hidden w-full max-w-sm items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2 md:flex">
-            <span className="text-fg-faint">⌕</span>
+          <div className="flex-1" />
+
+          <div className="hidden w-57.5 items-center gap-2 rounded-pill border border-border-hairline bg-surface-overlay px-3.5 py-2 text-ui text-fg-faint-2 md:flex">
+            <span aria-hidden>⌕</span>
             <input
               type="search"
               placeholder={t('shell.search.placeholder')}
-              className="w-full bg-transparent text-sm text-fg outline-none placeholder:text-fg-faint"
+              className="w-full bg-transparent text-ui text-fg outline-none placeholder:text-fg-faint-2"
             />
           </div>
 
-          <div className="relative ml-auto flex items-center gap-2">
-            <div className="flex items-center rounded-pill bg-surface-overlay p-0.5 text-xs font-semibold">
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale('ja')
-                }}
-                className={cn(
-                  'rounded-pill px-2.5 py-1',
-                  locale === 'ja'
-                    ? 'bg-surface-raised text-accent-ink shadow-card'
-                    : 'text-fg-muted',
-                )}
-              >
-                日本語
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setLocale('en')
-                }}
-                className={cn(
-                  'rounded-pill px-2.5 py-1',
-                  locale === 'en'
-                    ? 'bg-surface-raised text-accent-ink shadow-card'
-                    : 'text-fg-muted',
-                )}
-              >
-                EN
-              </button>
-            </div>
+          <div className="flex items-center rounded-pill bg-surface p-0.75 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => {
+                setLocale('ja')
+              }}
+              className={cn(
+                'rounded-input px-2.75 py-1.25',
+                locale === 'ja'
+                  ? 'bg-surface-raised text-accent-ink shadow-card'
+                  : 'text-fg-faint-2',
+              )}
+            >
+              日本語
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLocale('en')
+              }}
+              className={cn(
+                'rounded-input px-2.75 py-1.25',
+                locale === 'en'
+                  ? 'bg-surface-raised text-accent-ink shadow-card'
+                  : 'text-fg-faint-2',
+              )}
+            >
+              EN
+            </button>
+          </div>
 
+          <div className="relative">
             <button
               type="button"
               aria-label={t('shell.notifications.title')}
               onClick={() => {
                 setBellOpen((v) => !v)
               }}
-              className="relative grid h-9 w-9 place-items-center rounded-pill text-fg-muted hover:bg-surface-overlay"
+              className="relative grid h-9 w-9 place-items-center rounded-pill bg-surface-overlay text-base text-fg-muted hover:bg-surface-soft"
             >
               <span aria-hidden>◔</span>
               {unread > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-pill border-2 border-surface-raised bg-rejected px-1 text-xs font-bold text-fg-inverse">
+                <span className="absolute -right-0.5 -top-0.5 grid h-4.25 min-w-4.25 place-items-center rounded-pill border-2 border-surface-raised bg-rejected px-1 text-micro font-bold text-fg-inverse">
                   {unread}
                 </span>
               )}
             </button>
 
-            <span className="grid h-8 w-8 place-items-center rounded-pill bg-accent-soft text-xs font-bold text-accent-ink">
-              {user?.name.slice(0, 2) ?? '??'}
-            </span>
-
             {bellOpen && (
-              <div className="absolute right-0 top-12 w-80 overflow-hidden rounded-card border border-border bg-surface-raised shadow-modal animate-nfpop">
+              <div className="absolute right-0 top-12 w-86 overflow-hidden rounded-card border border-border-hairline bg-surface-raised shadow-modal animate-nfpop">
                 <NotificationList
                   items={notifications}
                   markAllLabel={t('shell.notifications.markAll')}
@@ -250,9 +308,13 @@ export function AdminShell() {
               </div>
             )}
           </div>
+
+          <span className="grid h-9 w-9 place-items-center rounded-pill bg-accent-soft text-ui font-bold text-accent-ink">
+            {user?.name.slice(0, 1) ?? '?'}
+          </span>
         </header>
 
-        <main className="min-h-0 flex-1 overflow-auto p-6">
+        <main className={MAIN_CLASS[mode]}>
           <Outlet />
         </main>
       </div>

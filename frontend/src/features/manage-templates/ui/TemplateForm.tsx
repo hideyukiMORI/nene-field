@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import {
   useFieldArray,
   useForm,
@@ -17,11 +18,14 @@ import {
 } from '@/entities/report-template'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
-import { Button, Field, InlineAlert, Input, Select, Textarea, Toggle } from '@/shared/ui'
+import { cn } from '@/shared/lib/cn'
+import { Button, InlineAlert, Toggle } from '@/shared/ui'
 
 const fieldSchema = z
   .object({
-    name: z.string().min(1),
+    // Machine name is derived from the label at save (not shown in the editor),
+    // so it may be blank in the form.
+    name: z.string(),
     label: z.string().min(1),
     type: z.enum(['text', 'textarea', 'number', 'checkbox', 'date', 'select']),
     required: z.boolean(),
@@ -63,6 +67,17 @@ function splitOptions(raw: string): string[] {
     .filter((o) => o !== '')
 }
 
+/** Machine name from the label (ASCII slug), with a positional fallback. */
+function deriveName(label: string, index: number, existing: string): string {
+  if (existing.trim() !== '') return existing
+  const slug = label
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+  return slug !== '' ? slug : `field_${String(index + 1)}`
+}
+
 function toFormValues(template: Template | undefined): FormValues {
   if (template === undefined) {
     return {
@@ -96,6 +111,13 @@ interface FieldEditorProps {
   isPending: boolean
   onMove: (dir: -1 | 1) => void
   onRemove: () => void
+  /** Native drag-and-drop reordering via the grip handle (⠿). */
+  isDragging: boolean
+  isOver: boolean
+  onDragStart: () => void
+  onDragEnter: () => void
+  onDrop: () => void
+  onDragEnd: () => void
 }
 
 function FieldEditor({
@@ -108,24 +130,67 @@ function FieldEditor({
   isPending,
   onMove,
   onRemove,
+  isDragging,
+  isOver,
+  onDragStart,
+  onDragEnter,
+  onDrop,
+  onDragEnd,
 }: FieldEditorProps) {
   const { t } = useTranslation()
   const type = useWatch({ control, name: `fields.${index}.type` })
   const required = useWatch({ control, name: `fields.${index}.required` })
   const rowErrors = errors.fields?.[index]
+  // Native HTML5 DnD is enabled only while the grip (⠿) is held, so text inside
+  // the row's inputs stays selectable. The ▲▼ buttons remain for keyboard users.
+  const [grabbed, setGrabbed] = useState(false)
 
   return (
-    <div className="rounded-card border border-border bg-surface-raised p-4 shadow-card">
+    <div
+      draggable={grabbed}
+      onDragStart={(event) => {
+        event.dataTransfer.effectAllowed = 'move'
+        onDragStart()
+      }}
+      onDragEnter={onDragEnter}
+      onDragOver={(event) => {
+        event.preventDefault()
+      }}
+      onDrop={(event) => {
+        event.preventDefault()
+        setGrabbed(false)
+        onDrop()
+      }}
+      onDragEnd={() => {
+        setGrabbed(false)
+        onDragEnd()
+      }}
+      className={cn(
+        'rounded-xl border bg-surface-raised px-3.5 py-3 transition-colors',
+        isDragging && 'opacity-50',
+        isOver && !isDragging ? 'border-accent ring-2 ring-accent-soft' : 'border-border',
+      )}
+    >
       {/* label + reorder */}
-      <div className="flex items-center gap-2.5">
-        <span aria-hidden className="cursor-grab text-base text-border-strong">
+      <div className="flex items-center gap-2.75">
+        <span
+          aria-hidden
+          title={t('template.form.reorderHint')}
+          onPointerDown={() => {
+            setGrabbed(true)
+          }}
+          onPointerUp={() => {
+            setGrabbed(false)
+          }}
+          className="cursor-grab touch-none text-base text-border-strong active:cursor-grabbing"
+        >
           ⠿
         </span>
         <input
           aria-label={t('template.field.label')}
           placeholder={t('template.field.label')}
           {...register(`fields.${index}.label`)}
-          className="min-w-0 flex-1 rounded-input border border-border bg-surface-raised px-3 py-2 text-sm font-semibold text-fg outline-none focus:border-accent focus:ring-2 focus:ring-accent-soft"
+          className="min-w-0 flex-1 rounded-lg border border-border-hairline bg-surface-raised px-2.75 py-2.25 text-sm font-semibold text-fg outline-none focus:border-accent"
         />
         <div className="flex flex-none flex-col">
           <button
@@ -135,7 +200,7 @@ function FieldEditor({
             onClick={() => {
               onMove(-1)
             }}
-            className="grid h-5 w-6 place-items-center text-fg-faint hover:text-fg disabled:opacity-30"
+            className="grid h-5 w-6 place-items-center text-micro text-fg-faint hover:text-fg disabled:opacity-30"
           >
             ▲
           </button>
@@ -146,28 +211,28 @@ function FieldEditor({
             onClick={() => {
               onMove(1)
             }}
-            className="grid h-5 w-6 place-items-center text-fg-faint hover:text-fg disabled:opacity-30"
+            className="grid h-5 w-6 place-items-center text-micro text-fg-faint hover:text-fg disabled:opacity-30"
           >
             ▼
           </button>
         </div>
       </div>
 
-      {/* type box + required + delete */}
-      <div className="mt-2.5 flex flex-wrap items-center gap-3 pl-7">
+      {/* type pill + required + delete */}
+      <div className="mt-2.75 flex flex-wrap items-center gap-3 pl-6.75">
         <button
           type="button"
           onClick={() => {
             setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
           }}
           title={t('template.field.type')}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-soft px-3 py-1.5 text-xs"
+          className="inline-flex items-center gap-2 rounded-lg border border-border-hairline bg-surface-soft px-3 py-1.75 text-label text-fg-muted active:bg-surface-overlay"
         >
-          <span className="text-fg-faint">{t('template.field.type')}</span>
+          <span className="text-micro text-fg-faint-2">{t('template.field.type')}</span>
           <span className="font-semibold text-fg">{t(TYPE_LABEL_KEY[type])}</span>
-          <span className="text-fg-faint">⇄</span>
+          <span className="text-fg-faint-2">⇄</span>
         </button>
-        <label className="flex items-center gap-1.5 text-sm text-fg-muted">
+        <label className="flex items-center gap-2 text-label text-fg-muted">
           <Toggle
             size="sm"
             checked={required}
@@ -178,35 +243,34 @@ function FieldEditor({
           />
           {t('template.field.required')}
         </label>
+        <div className="flex-1" />
         <button
           type="button"
           disabled={isPending}
           onClick={onRemove}
-          className="ml-auto rounded-lg px-2 py-1 text-xs font-semibold text-rejected hover:bg-rejected-soft"
+          className="rounded-lg px-2.25 py-1.25 text-label font-semibold text-rejected hover:bg-rejected-soft disabled:opacity-40"
         >
           {t('template.form.removeField')}
         </button>
       </div>
 
-      {/* name + select options (secondary) */}
-      <div className="mt-2.5 grid gap-2 pl-7 sm:grid-cols-2">
-        <Field label={t('template.field.name')} htmlFor={`field-${String(index)}-name`}>
-          <Input id={`field-${String(index)}-name`} {...register(`fields.${index}.name`)} />
-        </Field>
-        {type === 'select' && (
-          <Field
-            label={t('template.field.options')}
-            htmlFor={`field-${String(index)}-options`}
-            error={rowErrors?.options !== undefined ? t('error.validation.required') : undefined}
-          >
-            <Input
-              id={`field-${String(index)}-options`}
-              placeholder={t('template.field.optionsHint')}
-              {...register(`fields.${index}.options`)}
-            />
-          </Field>
-        )}
-      </div>
+      {/* select options (only when relevant) */}
+      {type === 'select' && (
+        <div className="mt-2.75 pl-6.75">
+          <input
+            aria-label={t('template.field.options')}
+            placeholder={t('template.field.optionsHint')}
+            {...register(`fields.${index}.options`)}
+            className={cn(
+              'w-full rounded-lg border bg-surface-raised px-2.75 py-2.25 text-ui text-fg outline-none focus:border-accent',
+              rowErrors?.options !== undefined ? 'border-rejected' : 'border-border-hairline',
+            )}
+          />
+          {rowErrors?.options !== undefined && (
+            <p className="mt-1 text-caption text-rejected">{t('error.validation.required')}</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -217,59 +281,56 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
   const name = useWatch({ control, name: 'name' })
 
   return (
-    <div className="overflow-hidden rounded-card border border-border bg-surface-raised shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-border-hairline bg-surface-raised shadow-card">
       <div
-        className="px-4 py-3.5 font-bold text-fg-inverse"
+        className="px-4 py-3.5 text-base font-bold text-fg-inverse"
         style={{ background: 'linear-gradient(155deg, #1488ad, #0e4a5e)' }}
       >
         {name.trim() === '' ? t('template.form.preview') : name}
       </div>
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-3.5 p-4">
         {fields.map((f, i) => {
           const label = f.label.trim() === '' ? t('template.field.label') : f.label
           return (
             <div key={i}>
               {f.type === 'checkbox' ? (
-                <label className="flex items-center gap-2 text-sm text-fg">
-                  <input type="checkbox" disabled className="accent-accent" />
+                <label className="flex items-center gap-2.5 text-ui text-fg-muted">
+                  <span className="h-4.5 w-4.5 flex-none rounded border-2 border-border-strong" />
                   {label}
-                  {f.required && <span className="text-rejected">*</span>}
+                  {f.required && <span className="text-rejected">＊</span>}
                 </label>
               ) : (
                 <>
-                  <span className="mb-1.5 block text-xs font-semibold text-fg">
+                  <span className="mb-1.5 block text-label font-semibold text-fg-muted">
                     {label}
-                    {f.required && <span className="ml-0.5 text-rejected">*</span>}
+                    {f.required && <span className="ml-0.5 text-rejected">＊</span>}
                   </span>
-                  {f.type === 'textarea' && (
-                    <Textarea
-                      disabled
-                      rows={2}
-                      placeholder={t('template.form.previewPlaceholder')}
-                    />
-                  )}
-                  {f.type === 'select' && (
-                    <Select disabled>
-                      {splitOptions(f.options).map((o) => (
-                        <option key={o}>{o}</option>
-                      ))}
-                    </Select>
-                  )}
-                  {(f.type === 'text' || f.type === 'number' || f.type === 'date') && (
-                    <Input
-                      disabled
-                      type={f.type === 'text' ? 'text' : f.type}
-                      placeholder={t('template.form.previewPlaceholder')}
-                    />
+                  {f.type === 'select' ? (
+                    <div className="flex items-center rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-muted">
+                      <span className="flex-1">
+                        {splitOptions(f.options)[0] ?? t('template.form.previewPlaceholder')}
+                      </span>
+                      <span aria-hidden className="text-border-strong">
+                        ▾
+                      </span>
+                    </div>
+                  ) : f.type === 'textarea' ? (
+                    <div className="min-h-15 rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-faint-2">
+                      {t('template.form.previewPlaceholder')}
+                    </div>
+                  ) : (
+                    <div className="rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-faint-2">
+                      {t('template.form.previewPlaceholder')}
+                    </div>
                   )}
                 </>
               )}
             </div>
           )
         })}
-        <Button disabled className="w-full">
+        <div className="mt-1.5 rounded-pill bg-accent py-3 text-center text-sm font-bold text-fg-inverse">
           {t('report.submit.submit')}
-        </Button>
+        </div>
       </div>
     </div>
   )
@@ -296,15 +357,27 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
     defaultValues: toFormValues(initialTemplate),
   })
   const { fields, append, remove, move } = useFieldArray({ control, name: 'fields' })
-  const isDefault = useWatch({ control, name: 'isDefault' })
+
+  // Drag-and-drop reorder state (grip handle ⠿). `dragIndex` = row being dragged,
+  // `overIndex` = row currently hovered as the drop target.
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
+  const resetDrag = (): void => {
+    setDragIndex(null)
+    setOverIndex(null)
+  }
+  const dropOn = (target: number): void => {
+    if (dragIndex !== null && dragIndex !== target) move(dragIndex, target)
+    resetDrag()
+  }
 
   const onSubmit = (values: FormValues): void => {
     onSave({
       name: values.name,
       description: values.description.trim() === '' ? null : values.description,
       isDefault: values.isDefault,
-      fields: values.fields.map((f) => ({
-        name: f.name,
+      fields: values.fields.map((f, i) => ({
+        name: deriveName(f.label, i, f.name),
         label: f.label,
         type: f.type,
         required: f.required,
@@ -319,47 +392,39 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
         void handleSubmit(onSubmit)(event)
       }}
       noValidate
-      className="flex w-full flex-col gap-5"
+      className="flex h-full flex-col"
     >
-      {/* header: name + default + save */}
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="min-w-3xs flex-1">
-          <label htmlFor="template-name" className="mb-0.5 block text-xs text-fg-faint">
+      {/* pinned toolbar (作業卓): template name + save (design handoff) */}
+      <div className="relative z-10 flex flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5 py-3.5 shadow-toolbar">
+        <div className="min-w-0">
+          <label htmlFor="template-name" className="block text-caption text-fg-faint-2">
             {t('template.form.name')}
           </label>
           <input
             id="template-name"
             {...register('name')}
-            className="w-full border-0 border-b-2 border-transparent bg-transparent py-1 text-lg font-bold text-fg outline-none focus:border-accent"
+            className="w-85 max-w-full border-0 border-b-2 border-transparent bg-transparent py-0.5 text-lg font-bold text-fg outline-none focus:border-accent"
           />
-          {errors.name !== undefined && (
-            <p className="mt-1 text-xs text-rejected">{t('error.validation.required')}</p>
-          )}
         </div>
-        <label className="flex items-center gap-2 pb-2.5 text-sm text-fg">
-          <Toggle
-            checked={isDefault}
-            onChange={(next) => {
-              setValue('isDefault', next, { shouldDirty: true })
-            }}
-            label={t('template.form.isDefault')}
-          />
-          {t('template.form.isDefault')}
-        </label>
+        <div className="flex-1" />
         <Button type="submit" disabled={isPending}>
           {t('common.actions.save')}
         </Button>
       </div>
 
-      {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
+      {/* two panes: editor (scrolls) + live preview (scrolls) */}
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        {/* editor pane */}
+        <div className="flex min-w-0 flex-1 flex-col gap-2.75 overflow-y-auto border-border px-6.5 py-5.5 lg:border-r">
+          {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
+          {errors.name !== undefined && (
+            <InlineAlert variant="warn">{t('error.validation.required')}</InlineAlert>
+          )}
 
-      {/* two columns: flexible editor + fixed-width preview (1fr / 384px) */}
-      <div className="flex flex-col gap-6 lg:flex-row">
-        {/* editor (flexible) */}
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
-          <p className="text-xs font-semibold text-fg-faint">
-            {t('template.form.fieldsLabel')} · {t('template.form.reorderHint')}
+          <p className="mb-0.5 text-label font-bold tracking-wide text-fg-faint-2">
+            {t('template.form.fieldsLabel')} ・ {t('template.form.reorderHint')}
           </p>
+
           {fields.map((field, index) => (
             <FieldEditor
               key={field.id}
@@ -376,6 +441,18 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
               onRemove={() => {
                 remove(index)
               }}
+              isDragging={dragIndex === index}
+              isOver={overIndex === index}
+              onDragStart={() => {
+                setDragIndex(index)
+              }}
+              onDragEnter={() => {
+                setOverIndex(index)
+              }}
+              onDrop={() => {
+                dropOn(index)
+              }}
+              onDragEnd={resetDrag}
             />
           ))}
           {fields.length === 0 && (
@@ -387,22 +464,20 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
             onClick={() => {
               append({ name: '', label: '', type: 'text', required: false, options: '' })
             }}
-            className="rounded-card border-2 border-dashed border-border-strong bg-surface-raised py-3 text-sm font-semibold text-accent-ink hover:bg-surface-overlay disabled:opacity-50"
+            className="rounded-xl border-2 border-dashed border-border-strong py-3.5 text-center text-ui font-semibold text-accent-ink hover:bg-surface-soft disabled:opacity-50"
           >
             ＋ {t('template.form.addField')}
           </button>
         </div>
 
-        {/* preview (fixed 384px) */}
-        <div className="flex flex-col gap-3 lg:w-96 lg:flex-none">
-          <p className="text-xs font-semibold text-fg-faint">{t('template.form.preview')}</p>
+        {/* preview pane (提出者の見え方) */}
+        <div className="overflow-y-auto bg-surface-sunken px-5.5 py-5.5 lg:w-96 lg:flex-none">
+          <p className="mb-3.25 text-label font-bold tracking-wide text-fg-faint-2">
+            {t('template.form.preview')}
+          </p>
           <PreviewPanel control={control} />
         </div>
       </div>
-
-      <Field label={t('template.form.description')} htmlFor="template-description">
-        <Textarea id="template-description" rows={2} {...register('description')} />
-      </Field>
     </form>
   )
 }

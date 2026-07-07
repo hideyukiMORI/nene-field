@@ -22,7 +22,7 @@ describe('ListReports', () => {
     )
     renderWithProviders(<ListReports />)
 
-    expect(await screen.findByText('日報がまだありません。')).toBeInTheDocument()
+    expect(await screen.findByText('条件に一致する日報はありません')).toBeInTheDocument()
   })
 
   it('renders the error state on a server error', async () => {

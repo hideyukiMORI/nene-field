@@ -34,6 +34,35 @@ function eventTone(eventName: string): BadgeTone {
   return 'neutral'
 }
 
+/**
+ * Natural-language labels for raw audit event names (`<entity>.<action>`), so the
+ * log reads for general users rather than developers. Unknown events fall back to
+ * the raw name. Keep in sync with the backend use cases that emit these names.
+ */
+const EVENT_LABEL_KEY: Record<string, MessageKey> = {
+  'report.created': 'audit.event.report.created',
+  'report.submitted': 'audit.event.report.submitted',
+  'report.approved': 'audit.event.report.approved',
+  'report.rejected': 'audit.event.report.rejected',
+  'report.deleted': 'audit.event.report.deleted',
+  'report.exported': 'audit.event.report.exported',
+  'user.created': 'audit.event.user.created',
+  'user.updated': 'audit.event.user.updated',
+  'user.deleted': 'audit.event.user.deleted',
+  'template.created': 'audit.event.template.created',
+  'template.updated': 'audit.event.template.updated',
+  'template.deleted': 'audit.event.template.deleted',
+  'organization.created': 'audit.event.organization.created',
+  'organization.updated': 'audit.event.organization.updated',
+  'attachment.deleted': 'audit.event.attachment.deleted',
+  'audit.exported': 'audit.event.audit.exported',
+}
+
+function eventLabel(t: (key: MessageKey) => string, eventName: string): string {
+  const key = EVENT_LABEL_KEY[eventName]
+  return key !== undefined ? t(key) : eventName
+}
+
 function FilterBar({
   initial,
   onApply,
@@ -80,29 +109,35 @@ function FilterBar({
           {t(c.labelKey)}
         </Chip>
       ))}
-      <div className="ml-auto flex items-center gap-2">
-        <Input
-          type="date"
-          aria-label={t('audit.filter.occurredFrom')}
-          value={values.occurredFrom}
-          onChange={(event) => {
-            set({ occurredFrom: event.target.value })
-          }}
-        />
-        <Input
-          type="date"
-          aria-label={t('audit.filter.occurredTo')}
-          value={values.occurredTo}
-          onChange={(event) => {
-            set({ occurredTo: event.target.value })
-          }}
-        />
+      <div className="ml-auto flex flex-wrap items-center gap-2">
+        <div className="w-40 flex-none">
+          <Input
+            type="date"
+            aria-label={t('audit.filter.occurredFrom')}
+            value={values.occurredFrom}
+            onChange={(event) => {
+              set({ occurredFrom: event.target.value })
+            }}
+          />
+        </div>
+        <div className="w-40 flex-none">
+          <Input
+            type="date"
+            aria-label={t('audit.filter.occurredTo')}
+            value={values.occurredTo}
+            onChange={(event) => {
+              set({ occurredTo: event.target.value })
+            }}
+          />
+        </div>
         <Button
           variant="ghost"
+          size="sm"
           disabled={!canExport || isExporting}
           onClick={() => {
             onExport(values)
           }}
+          className="flex-none whitespace-nowrap"
         >
           ⬇ {t('audit.export.action')}
         </Button>
@@ -129,7 +164,7 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
     <Modal open onClose={onClose} title={t('audit.diff.title')} size="lg">
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
-          <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
+          <Badge tone={eventTone(event.eventName)}>{eventLabel(t, event.eventName)}</Badge>
           <span className="text-xs text-fg-faint">
             {event.entityType} · {formatJstDateTime(event.occurredAt)}
           </span>
@@ -190,9 +225,9 @@ export function AuditLog() {
   const to = Math.min(audit.offset + audit.limit, audit.total)
 
   return (
-    <div className="flex flex-col">
-      {/* white header bar (full-bleed) */}
-      <div className="flex flex-col gap-3 border-b border-border bg-surface-raised px-6 py-4">
+    <div className="flex h-full flex-col">
+      {/* pinned toolbar (作業卓): flex-none white bar, table below scrolls */}
+      <div className="relative z-10 flex flex-none flex-col gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
         <div className="flex flex-wrap items-center gap-2.5">
           <h2 className="text-lg font-bold text-fg">{t('audit.list.title')}</h2>
           <span className="text-sm text-fg-faint">{t('audit.list.subtitle')}</span>
@@ -207,7 +242,7 @@ export function AuditLog() {
         />
       </div>
 
-      <div className="flex flex-col gap-4 px-6 py-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-6.5 py-4">
         {exportErrorKey !== null && <InlineAlert variant="error">{t(exportErrorKey)}</InlineAlert>}
 
         {audit.isLoading ? (
@@ -222,51 +257,57 @@ export function AuditLog() {
           <EmptyState message={t('audit.list.empty')} />
         ) : (
           <Stack gap="sm">
-            <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
-              <TableWrap>
-                <Table className="min-w-160">
-                  <thead>
-                    <Tr>
-                      <Th className="w-44">{t('audit.col.occurredAt')}</Th>
-                      <Th className="w-40">{t('audit.col.event')}</Th>
-                      <Th className="w-32">{t('audit.col.actor')}</Th>
-                      <Th>{t('audit.col.entityType')}</Th>
-                      <Th className="w-20" />
+            <TableWrap>
+              <Table className="min-w-170">
+                <thead>
+                  <Tr>
+                    <Th className="w-40">{t('audit.col.occurredAt')}</Th>
+                    <Th className="w-40">{t('audit.col.event')}</Th>
+                    <Th className="w-40">{t('audit.col.actor')}</Th>
+                    <Th>{t('audit.col.entityType')}</Th>
+                    <Th className="w-20 text-right">{t('audit.col.diff')}</Th>
+                  </Tr>
+                </thead>
+                <tbody>
+                  {audit.events.map((event) => (
+                    <Tr
+                      key={event.id}
+                      interactive
+                      onClick={() => {
+                        setSelected(event)
+                      }}
+                    >
+                      <Td className="whitespace-nowrap text-fg-muted tabular-nums">
+                        {formatJstDateTime(event.occurredAt)}
+                      </Td>
+                      <Td>
+                        <Badge tone={eventTone(event.eventName)}>
+                          {eventLabel(t, event.eventName)}
+                        </Badge>
+                      </Td>
+                      <Td>
+                        <div className="flex items-center gap-2">
+                          <span className="grid h-6.5 w-6.5 flex-none place-items-center rounded-pill bg-accent-soft text-caption font-bold text-accent-ink">
+                            {(event.actorName ?? event.actorId ?? '—').slice(0, 1)}
+                          </span>
+                          <span className="whitespace-nowrap font-semibold text-fg">
+                            {event.actorName ?? event.actorId ?? '—'}
+                          </span>
+                        </div>
+                      </Td>
+                      <Td className="truncate font-mono text-label text-fg-muted">
+                        {event.entityType} · {event.entityId}
+                      </Td>
+                      <Td className="text-right">
+                        <span className="text-label font-bold text-accent-ink">
+                          {t('audit.col.diff')} ›
+                        </span>
+                      </Td>
                     </Tr>
-                  </thead>
-                  <tbody>
-                    {audit.events.map((event) => (
-                      <Tr
-                        key={event.id}
-                        interactive
-                        onClick={() => {
-                          setSelected(event)
-                        }}
-                      >
-                        <Td className="whitespace-nowrap text-fg-muted tabular-nums">
-                          {formatJstDateTime(event.occurredAt)}
-                        </Td>
-                        <Td>
-                          <Badge tone={eventTone(event.eventName)}>{event.eventName}</Badge>
-                        </Td>
-                        <Td className="text-fg-muted">{event.actorName ?? event.actorId ?? '—'}</Td>
-                        <Td className="text-fg-muted">
-                          {event.entityType}
-                          <span className="block truncate font-mono text-xs text-fg-faint">
-                            {event.entityId}
-                          </span>
-                        </Td>
-                        <Td className="text-right">
-                          <span className="text-sm font-semibold text-accent">
-                            {t('audit.col.diff')} ›
-                          </span>
-                        </Td>
-                      </Tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableWrap>
-            </div>
+                  ))}
+                </tbody>
+              </Table>
+            </TableWrap>
             <div className="flex items-center justify-between gap-3">
               <Text variant="muted">
                 {t('audit.pagination.range', { from, to, total: audit.total })}
