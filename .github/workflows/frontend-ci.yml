@@ -1,21 +1,21 @@
 name: Frontend CI
 
+# paths フィルタは意図的に置かない: この check を required にするため、
+# backend のみの PR でも必ず実行されて緑になる必要がある（#87）。
+# ジョブは約50秒と軽量なので常時実行のコストは許容。
 on:
   push:
     branches:
       - main
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend-ci.yml'
   pull_request:
     branches:
       - main
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend-ci.yml'
 
 jobs:
   check:
+    # required checks のコンテキスト名。backend-ci.yml の backend-check と
+    # 区別するため一意な名前を明示する（job id のままだと両方 "check" で衝突）。
+    name: frontend-check
     runs-on: ubuntu-latest
     defaults:
       run:

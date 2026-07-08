@@ -10,6 +10,9 @@ on:
 
 jobs:
   check:
+    # required checks のコンテキスト名。frontend-ci.yml の frontend-check と
+    # 区別するため一意な名前を明示する（job id のままだと両方 "check" で衝突）。
+    name: backend-check
     runs-on: ubuntu-latest
 
     steps:
