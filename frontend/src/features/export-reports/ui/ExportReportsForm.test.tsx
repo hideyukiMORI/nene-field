@@ -9,7 +9,7 @@ import { ExportReportsForm } from './ExportReportsForm'
 describe('ExportReportsForm', () => {
   it('disables download until a work-date range is set', () => {
     renderWithProviders(<ExportReportsForm />)
-    expect(screen.getByRole('button', { name: /CSVダウンロード/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /CSVをダウンロード/ })).toBeDisabled()
   })
 
   it('downloads with the chosen filters', async () => {
@@ -26,9 +26,9 @@ describe('ExportReportsForm', () => {
     const user = userEvent.setup()
     renderWithProviders(<ExportReportsForm />)
 
-    fireEvent.change(screen.getByLabelText('作業日（開始）'), { target: { value: '2026-06-01' } })
-    fireEvent.change(screen.getByLabelText('作業日（終了）'), { target: { value: '2026-06-30' } })
-    await user.click(screen.getByRole('button', { name: /CSVダウンロード/ }))
+    fireEvent.change(screen.getByLabelText('開始日'), { target: { value: '2026-06-01' } })
+    fireEvent.change(screen.getByLabelText('終了日'), { target: { value: '2026-06-30' } })
+    await user.click(screen.getByRole('button', { name: /CSVをダウンロード/ }))
 
     await waitFor(() => {
       expect(createObjectURL).toHaveBeenCalled()

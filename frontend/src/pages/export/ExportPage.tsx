@@ -11,11 +11,17 @@ export function ExportPage() {
   const allowed = user !== null && canManageOrganization(user.role)
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
 
+  // Setup-document (書類) screen: the AdminShell scrolls the whole pane; this
+  // page owns the 30px document padding and ExportReportsForm centers its column.
   return (
-    <div className="mx-auto w-full max-w-5xl">
+    <div className="px-7.5 pt-7.5 pb-11">
       <ExportReportsForm />
     </div>
   )

@@ -12,11 +12,17 @@ export function SettingsPage() {
   const settings = useOrganizationSettings(user?.organizationId ?? '')
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
 
+  // Setup-document (書類) screen: the AdminShell scrolls the whole pane; this page
+  // owns the 30px document padding and the form centers its 760px column.
   return (
-    <div className="mx-auto w-full max-w-4xl">
+    <div className="px-7.5 pt-7.5 pb-11">
       {settings.isLoading ? (
         <LoadingState label={t('common.state.loading')} />
       ) : settings.organization === undefined ? (

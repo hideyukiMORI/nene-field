@@ -113,9 +113,9 @@ export function UserList() {
   const activeCount = users.filter((u) => u.isActive).length
 
   return (
-    <div className="flex flex-col">
-      {/* white header bar (full-bleed) */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6 py-4">
+    <div className="flex h-full flex-col">
+      {/* pinned toolbar (作業卓): flex-none white bar, table below scrolls */}
+      <div className="relative z-10 flex flex-none flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
         <h2 className="text-lg font-bold text-fg">{t('user.list.title')}</h2>
         <span className="text-sm text-fg-faint tabular-nums">
           {t('user.list.count', { active: activeCount, total: users.length })}
@@ -130,7 +130,7 @@ export function UserList() {
         </Button>
       </div>
 
-      <div className="px-6 pt-2 pb-6">
+      <div className="min-h-0 flex-1 overflow-y-auto px-6.5 pt-2 pb-6">
         {users.length === 0 ? (
           <EmptyState message={t('user.list.empty')} />
         ) : (

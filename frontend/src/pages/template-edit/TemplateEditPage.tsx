@@ -1,11 +1,14 @@
 import { useSyncExternalStore } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { canManageOrganization, getCurrentUser, subscribeCurrentUser } from '@/entities/auth'
 import { TemplateForm, useTemplateEditor } from '@/features/manage-templates'
 import { useTranslation } from '@/shared/i18n'
-import { InlineAlert, LoadingState, Stack, Text } from '@/shared/ui'
+import { InlineAlert, LoadingState } from '@/shared/ui'
 
-/** Edit template (admin). Chrome from AdminShell; content only. */
+/**
+ * Edit template (admin). Pinned-toolbar (作業卓) editor: the AdminShell gives
+ * this route a full-height, unpadded pane and TemplateForm owns the toolbar.
+ */
 export function TemplateEditPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -17,32 +20,34 @@ export function TemplateEditPage() {
   })
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
   if (editor.isLoading) {
-    return <LoadingState label={t('common.state.loading')} />
+    return (
+      <div className="p-6">
+        <LoadingState label={t('common.state.loading')} />
+      </div>
+    )
   }
   if (editor.initial === undefined) {
-    return <InlineAlert variant="error">{t('template.list.error')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('template.list.error')}</InlineAlert>
+      </div>
+    )
   }
 
   return (
-    <Stack gap="md" className="w-full">
-      <Stack gap="sm">
-        <Link to="/templates" className="text-sm font-medium text-accent">
-          ← {t('common.actions.back')}
-        </Link>
-        <Text variant="title" as="h2">
-          {t('template.form.editTitle')}
-        </Text>
-      </Stack>
-      <TemplateForm
-        mode="edit"
-        initialTemplate={editor.initial}
-        onSave={editor.save}
-        isPending={editor.isPending}
-        errorKey={editor.errorKey}
-      />
-    </Stack>
+    <TemplateForm
+      mode="edit"
+      initialTemplate={editor.initial}
+      onSave={editor.save}
+      isPending={editor.isPending}
+      errorKey={editor.errorKey}
+    />
   )
 }

@@ -1,11 +1,14 @@
 import { useSyncExternalStore } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { canManageOrganization, getCurrentUser, subscribeCurrentUser } from '@/entities/auth'
 import { TemplateForm, useTemplateEditor } from '@/features/manage-templates'
 import { useTranslation } from '@/shared/i18n'
-import { InlineAlert, Stack, Text } from '@/shared/ui'
+import { InlineAlert } from '@/shared/ui'
 
-/** Create template (admin). Chrome from AdminShell; content only. */
+/**
+ * Create template (admin). Pinned-toolbar (作業卓) editor: the AdminShell gives
+ * this route a full-height, unpadded pane and TemplateForm owns the toolbar.
+ */
 export function TemplateCreatePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -16,25 +19,19 @@ export function TemplateCreatePage() {
   })
 
   if (!allowed) {
-    return <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+    return (
+      <div className="p-6">
+        <InlineAlert variant="error">{t('common.forbidden')}</InlineAlert>
+      </div>
+    )
   }
 
   return (
-    <Stack gap="md" className="w-full">
-      <Stack gap="sm">
-        <Link to="/templates" className="text-sm font-medium text-accent">
-          ← {t('common.actions.back')}
-        </Link>
-        <Text variant="title" as="h2">
-          {t('template.form.createTitle')}
-        </Text>
-      </Stack>
-      <TemplateForm
-        mode="create"
-        onSave={editor.save}
-        isPending={editor.isPending}
-        errorKey={editor.errorKey}
-      />
-    </Stack>
+    <TemplateForm
+      mode="create"
+      onSave={editor.save}
+      isPending={editor.isPending}
+      errorKey={editor.errorKey}
+    />
   )
 }

@@ -61,7 +61,7 @@ describe('OrganizationSettingsForm', () => {
     const onSave = render()
     const user = userEvent.setup()
 
-    const email = screen.getByLabelText('通知メールアドレス（任意）')
+    const email = screen.getByLabelText('通知メール')
     await user.clear(email)
     await user.type(email, 'not-an-email')
     await user.click(screen.getByRole('button', { name: '保存' }))

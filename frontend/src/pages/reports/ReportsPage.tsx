@@ -6,9 +6,7 @@ import { ListReports } from '@/features/list-reports'
  * continuous-review drawer.
  */
 export function ReportsPage() {
-  return (
-    <div className="mx-auto w-full max-w-6xl">
-      <ListReports />
-    </div>
-  )
+  // Pinned-toolbar (作業卓) screen: the AdminShell gives this route a full-height,
+  // unpadded pane; ListReports fills it and scrolls only its table body.
+  return <ListReports />
 }

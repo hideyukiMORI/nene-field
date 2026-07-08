@@ -8,8 +8,9 @@ describe('AuditLog', () => {
   it('renders audit events', async () => {
     renderWithProviders(<AuditLog />)
 
-    expect(await screen.findByText('report.approved')).toBeInTheDocument()
-    expect(screen.getByText('user.created')).toBeInTheDocument()
+    // Raw event names render as natural-language labels (ja locale in tests).
+    expect(await screen.findByText('日報を承認')).toBeInTheDocument()
+    expect(screen.getByText('ユーザーを追加')).toBeInTheDocument()
     expect(screen.getAllByText('管理者').length).toBeGreaterThan(0)
   })
 
@@ -18,7 +19,7 @@ describe('AuditLog', () => {
     const user = userEvent.setup()
     renderWithProviders(<AuditLog />)
 
-    await screen.findByText('report.approved')
+    await screen.findByText('日報を承認')
     expect(screen.getByRole('button', { name: /CSVダウンロード/ })).toBeDisabled()
 
     fireEvent.change(screen.getByLabelText('開始日'), { target: { value: '2026-06-01' } })

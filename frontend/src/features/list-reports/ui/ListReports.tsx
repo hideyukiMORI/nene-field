@@ -19,7 +19,6 @@ import {
   Drawer,
   EmptyState,
   ErrorState,
-  Input,
   LoadingState,
   Modal,
   Select,
@@ -35,7 +34,9 @@ import { useListReports } from '../hooks/use-list-reports'
 
 type StatusFilter = ReportStatus | 'all'
 
-const STATUS_FILTERS: StatusFilter[] = ['all', 'submitted', 'approved', 'rejected', 'draft']
+// Filter chips match the design (no draft chip; drafts aren't reviewed here).
+const STATUS_FILTERS: StatusFilter[] = ['all', 'submitted', 'approved', 'rejected']
+const PAGE_SIZE = 8
 
 const statusKey: Record<ReportStatus, MessageKey> = {
   draft: 'report.status.draft',
@@ -51,6 +52,9 @@ const statusTone = {
   rejected: 'rejected',
 } as const
 
+// Reject is comment-required; target is either the whole selection or one row.
+type RejectTarget = 'bulk' | { id: string } | null
+
 export function ListReports() {
   const { t } = useTranslation()
   const toast = useToast()
@@ -62,10 +66,11 @@ export function ListReports() {
   const [submitter, setSubmitter] = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set())
+  const [page, setPage] = useState(0)
   const [drawerIndex, setDrawerIndex] = useState<number | null>(null)
   const [reviewMode, setReviewMode] = useState<ReviewMode>(null)
-  const [bulkReject, setBulkReject] = useState(false)
-  const [bulkComment, setBulkComment] = useState('')
+  const [rejectTarget, setRejectTarget] = useState<RejectTarget>(null)
+  const [rejectComment, setRejectComment] = useState('')
   const [pulse, setPulse] = useState(0)
 
   const submitters = useMemo(
@@ -82,6 +87,11 @@ export function ListReports() {
       return true
     })
   }, [reports, search, submitter, status])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages - 1)
+  const pageStart = safePage * PAGE_SIZE
+  const paged = filtered.slice(pageStart, pageStart + PAGE_SIZE)
 
   const selectableIds = useMemo(
     () => filtered.filter((r) => r.status === 'submitted').map((r) => r.id),
@@ -107,7 +117,16 @@ export function ListReports() {
   const firePulse = (): void => {
     setPulse((n) => n + 1)
   }
+  const resetFilters = (next: () => void): void => {
+    next()
+    setPage(0)
+  }
 
+  const approveOne = (id: string): void => {
+    approveMutation.mutate({ reportId: id })
+    firePulse()
+    toast.show(t('report.review.approved'))
+  }
   const bulkApprove = (): void => {
     for (const id of selected) approveMutation.mutate({ reportId: id })
     clearSelection()
@@ -115,21 +134,22 @@ export function ListReports() {
     toast.show(t('report.review.approved'))
   }
 
-  const submitBulkReject = (): void => {
-    const comment = bulkComment.trim()
-    if (comment === '') return
-    for (const id of selected) rejectMutation.mutate({ reportId: id, comment })
-    setBulkReject(false)
-    setBulkComment('')
-    clearSelection()
+  const submitReject = (): void => {
+    const comment = rejectComment.trim()
+    if (comment === '' || rejectTarget === null) return
+    const ids = rejectTarget === 'bulk' ? [...selected] : [rejectTarget.id]
+    for (const id of ids) rejectMutation.mutate({ reportId: id, comment })
+    setRejectTarget(null)
+    setRejectComment('')
+    if (rejectTarget === 'bulk') clearSelection()
     toast.show(t('report.review.rejected'))
   }
 
   const moveDrawer = (delta: number): void => {
     setDrawerIndex((idx) => {
       if (idx === null) return null
-      const next = idx + delta
-      return next >= 0 && next < filtered.length ? next : idx
+      const nextIdx = idx + delta
+      return nextIdx >= 0 && nextIdx < filtered.length ? nextIdx : idx
     })
   }
   const onReviewed = (mode: 'approve' | 'reject'): void => {
@@ -151,65 +171,119 @@ export function ListReports() {
   }
 
   const current = drawerIndex !== null ? filtered[drawerIndex] : undefined
+  const rangeFrom = filtered.length === 0 ? 0 : pageStart + 1
+  const rangeTo = Math.min(pageStart + PAGE_SIZE, filtered.length)
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* header row: title + search + submitter + CSV */}
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-xl font-bold text-fg">{t('report.list.title')}</h2>
-        <div className="min-w-3xs max-w-xs flex-1">
-          <Input
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value)
-            }}
-            placeholder={t('report.list.search')}
-          />
+    <div className="flex h-full flex-col">
+      {/* pinned toolbar (作業卓): flex-none white bar, body below scrolls */}
+      <div className="relative z-10 flex flex-none flex-col gap-3.5 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
+        {/* row: title + search + submitter + CSV */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h2 className="mr-1 text-lg font-bold text-fg">{t('report.list.title')}</h2>
+          <div className="flex w-70 items-center gap-2 rounded-pill border border-border-hairline bg-surface-soft px-3.5 py-2">
+            <span aria-hidden className="text-ui text-fg-faint-2">
+              ⌕
+            </span>
+            <input
+              value={search}
+              onChange={(e) => {
+                resetFilters(() => {
+                  setSearch(e.target.value)
+                })
+              }}
+              placeholder={t('report.list.search')}
+              className="w-full border-0 bg-transparent text-ui text-fg outline-none placeholder:text-fg-faint-2"
+            />
+          </div>
+          <div className="w-44">
+            <Select
+              value={submitter}
+              onChange={(e) => {
+                resetFilters(() => {
+                  setSubmitter(e.target.value)
+                })
+              }}
+              className="rounded-pill"
+            >
+              <option value="">{t('report.list.submitterAll')}</option>
+              {submitters.map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex-1" />
+          <Link to="/export">
+            <Button variant="ghost" size="sm">
+              ⬇ {t('report.list.csvExport')}
+            </Button>
+          </Link>
         </div>
-        <div className="w-44">
-          <Select
-            value={submitter}
-            onChange={(e) => {
-              setSubmitter(e.target.value)
-            }}
-          >
-            <option value="">{t('report.list.submitterAll')}</option>
-            {submitters.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </Select>
+
+        {/* status chips + count */}
+        <div className="flex flex-wrap items-center gap-2">
+          {STATUS_FILTERS.map((s) => (
+            <Chip
+              key={s}
+              active={status === s}
+              onClick={() => {
+                resetFilters(() => {
+                  setStatus(s)
+                })
+              }}
+            >
+              {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
+            </Chip>
+          ))}
+          <div className="flex-1" />
+          <span className="text-label text-fg-faint tabular-nums">
+            {t('report.list.count', { count: filtered.length })}
+          </span>
         </div>
-        <Link to="/export" className="ml-auto">
-          <Button variant="ghost">⬇ {t('report.list.csvExport')}</Button>
-        </Link>
       </div>
 
-      {/* status chips + count */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {STATUS_FILTERS.map((s) => (
-          <Chip
-            key={s}
-            active={status === s}
+      {/* full-width bulk action bar (accent), shown when rows are selected */}
+      {selected.size > 0 && (
+        <div className="flex flex-none items-center gap-3 bg-accent px-6.5 py-2.75 text-fg-inverse">
+          <span className="text-ui font-semibold">
+            {t('report.list.bulk.selected', { count: selected.size })}
+          </span>
+          <div className="flex-1" />
+          <button
+            type="button"
+            onClick={bulkApprove}
+            className="rounded-pill bg-surface-raised px-4.5 py-2 text-ui font-bold text-accent-ink"
+          >
+            {t('report.list.bulk.approve')}
+          </button>
+          <button
+            type="button"
             onClick={() => {
-              setStatus(s)
+              setRejectTarget('bulk')
             }}
+            className="rounded-pill border border-fg-inverse/55 px-4.5 py-2 text-ui font-bold text-fg-inverse active:bg-fg-inverse/10"
           >
-            {s === 'all' ? t('report.list.filter.all') : t(statusKey[s])}
-          </Chip>
-        ))}
-        <span className="ml-auto text-sm text-fg-muted tabular-nums">
-          {t('report.list.count', { count: filtered.length })}
-        </span>
-      </div>
+            {t('report.list.bulk.reject')}
+          </button>
+          <button
+            type="button"
+            onClick={clearSelection}
+            className="px-1.5 py-2 text-ui font-semibold text-fg-inverse/80"
+          >
+            {t('report.list.bulk.clear')}
+          </button>
+        </div>
+      )}
 
-      {filtered.length === 0 ? (
-        <EmptyState message={t('report.list.empty')} />
-      ) : (
-        <div className="overflow-hidden rounded-card border border-border bg-surface-raised">
+      {/* body — the only scrolling region under the pinned toolbar */}
+      <div className="min-h-0 flex-1 overflow-y-auto px-6.5 pt-1.5 pb-6">
+        {filtered.length === 0 ? (
+          <EmptyState message={t('report.list.emptyFiltered')} />
+        ) : (
           <TableWrap>
-            <Table className="min-w-160">
+            <Table className="min-w-180">
               <thead>
                 <Tr>
                   <Th className="w-10">
@@ -220,20 +294,21 @@ export function ListReports() {
                       label="select all"
                     />
                   </Th>
-                  <Th className="w-28">{t('report.col.user')}</Th>
+                  <Th className="w-36">{t('report.col.user')}</Th>
                   <Th className="w-24">{t('report.col.workDate')}</Th>
-                  <Th>{t('report.col.title')}</Th>
+                  <Th>{t('report.col.titleAi')}</Th>
                   <Th className="w-24">{t('report.col.status')}</Th>
+                  <Th className="w-36 text-right">{t('report.list.colActions')}</Th>
                 </Tr>
               </thead>
               <tbody>
-                {filtered.map((r, index) => (
+                {paged.map((r, i) => (
                   <Tr
                     key={r.id}
                     interactive
                     selected={selected.has(r.id)}
                     onClick={() => {
-                      setDrawerIndex(index)
+                      setDrawerIndex(pageStart + i)
                     }}
                   >
                     <Td
@@ -251,48 +326,100 @@ export function ListReports() {
                         />
                       )}
                     </Td>
-                    <Td className="text-fg">{r.userName}</Td>
-                    <Td className="text-fg-muted tnum">{formatCalendarDate(r.workDate)}</Td>
                     <Td>
-                      <span className="block truncate font-medium text-fg">{r.title}</span>
-                      <span className="block truncate text-xs text-fg-faint">
+                      <div className="flex items-center gap-2.5">
+                        <span className="grid h-7.5 w-7.5 flex-none place-items-center rounded-pill bg-accent-soft text-caption font-bold text-accent-ink">
+                          {r.userName.slice(0, 1)}
+                        </span>
+                        <span className="whitespace-nowrap font-semibold text-fg">
+                          {r.userName}
+                        </span>
+                      </div>
+                    </Td>
+                    <Td className="whitespace-nowrap text-fg-muted tabular-nums">
+                      {formatCalendarDate(r.workDate)}
+                    </Td>
+                    <Td>
+                      <span className="block truncate font-semibold text-fg">{r.title}</span>
+                      <span className="block truncate text-caption text-fg-faint">
                         {r.aiSummary ?? t('report.list.aiSummaryNone')}
                       </span>
                     </Td>
                     <Td>
                       <Badge tone={statusTone[r.status]}>{t(statusKey[r.status])}</Badge>
                     </Td>
+                    <Td
+                      onClick={(e) => {
+                        e.stopPropagation()
+                      }}
+                    >
+                      {r.status === 'submitted' ? (
+                        <div className="flex justify-end gap-1.5">
+                          <Button
+                            variant="danger-ghost"
+                            size="sm"
+                            onClick={() => {
+                              setRejectTarget({ id: r.id })
+                            }}
+                          >
+                            {t('report.review.reject')}
+                          </Button>
+                          <Button
+                            variant="success"
+                            size="sm"
+                            onClick={() => {
+                              approveOne(r.id)
+                            }}
+                          >
+                            {t('report.review.approve')}
+                          </Button>
+                        </div>
+                      ) : (
+                        <span className="block text-right text-label text-fg-faint-2">
+                          {t('report.list.processed')}
+                        </span>
+                      )}
+                    </Td>
                   </Tr>
                 ))}
               </tbody>
             </Table>
           </TableWrap>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* bulk action bar */}
-      {selected.size > 0 && (
-        <div className="sticky bottom-4 z-10 flex items-center gap-2 rounded-pill border border-border bg-surface-raised px-4 py-2.5 shadow-card">
-          <span className="text-sm font-semibold text-fg">
-            {t('report.list.bulk.selected', { count: selected.size })}
+      {/* pagination footer */}
+      {filtered.length > 0 && (
+        <div className="flex flex-none items-center gap-3 border-t border-border bg-surface-raised px-6.5 py-3">
+          <span className="text-label text-fg-muted-2 tabular-nums">
+            {t('report.list.pageInfo', { from: rangeFrom, to: rangeTo, total: filtered.length })}
           </span>
-          <div className="ml-auto flex gap-2">
-            <Button variant="ghost" size="sm" onClick={clearSelection}>
-              {t('report.list.bulk.clear')}
-            </Button>
-            <Button
-              variant="danger-ghost"
-              size="sm"
-              onClick={() => {
-                setBulkReject(true)
-              }}
-            >
-              {t('report.list.bulk.reject')}
-            </Button>
-            <Button variant="success" size="sm" onClick={bulkApprove}>
-              {t('report.list.bulk.approve')}
-            </Button>
-          </div>
+          <div className="flex-1" />
+          <button
+            type="button"
+            aria-label={t('common.actions.previous')}
+            disabled={safePage === 0}
+            onClick={() => {
+              setPage((p) => Math.max(0, p - 1))
+            }}
+            className="grid h-8 w-8 place-items-center rounded-pill border border-border-strong text-fg-muted disabled:opacity-40 hover:bg-surface-overlay"
+          >
+            ‹
+          </button>
+          <span className="min-w-13 text-center text-ui font-semibold text-fg-muted tabular-nums">
+            {safePage + 1} / {totalPages}
+          </span>
+          <button
+            type="button"
+            aria-label={t('common.actions.next')}
+            disabled={safePage >= totalPages - 1}
+            onClick={() => {
+              setPage((p) => Math.min(totalPages - 1, p + 1))
+            }}
+            className="grid h-8 w-8 place-items-center rounded-pill border border-border-strong text-fg-muted disabled:opacity-40 hover:bg-surface-overlay"
+          >
+            ›
+          </button>
         </div>
       )}
 
@@ -324,7 +451,7 @@ export function ListReports() {
             >
               ›
             </button>
-            <span className="ml-1 text-xs text-fg-faint tnum">
+            <span className="ml-1 text-caption text-fg-faint tabular-nums">
               {t('report.drawer.position', {
                 current: (drawerIndex ?? 0) + 1,
                 total: filtered.length,
@@ -375,11 +502,12 @@ export function ListReports() {
         />
       )}
 
-      {/* bulk reject modal */}
+      {/* reject modal (row or bulk) — comment required */}
       <Modal
-        open={bulkReject}
+        open={rejectTarget !== null}
         onClose={() => {
-          setBulkReject(false)
+          setRejectTarget(null)
+          setRejectComment('')
         }}
         title={t('report.review.rejectTitle')}
         footer={
@@ -387,25 +515,22 @@ export function ListReports() {
             <Button
               variant="ghost"
               onClick={() => {
-                setBulkReject(false)
+                setRejectTarget(null)
+                setRejectComment('')
               }}
             >
               {t('common.actions.cancel')}
             </Button>
-            <Button
-              variant="danger"
-              onClick={submitBulkReject}
-              disabled={bulkComment.trim() === ''}
-            >
-              {t('report.list.bulk.reject')}
+            <Button variant="danger" onClick={submitReject} disabled={rejectComment.trim() === ''}>
+              {t('report.review.reject')}
             </Button>
           </>
         }
       >
         <Textarea
-          value={bulkComment}
+          value={rejectComment}
           onChange={(e) => {
-            setBulkComment(e.target.value)
+            setRejectComment(e.target.value)
           }}
           placeholder={t('report.review.commentPlaceholder')}
         />
