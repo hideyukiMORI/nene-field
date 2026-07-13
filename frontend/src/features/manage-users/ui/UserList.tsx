@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { getCurrentUser } from '@/entities/auth'
 import {
   ASSIGNABLE_USER_ROLES,
+  toUserId,
   useCreateUserMutation,
   useUpdateUserMutation,
   type AssignableUserRole,
@@ -38,7 +39,9 @@ const roleLabelKey: Record<UserRole, MessageKey> = {
 
 function nextRole(role: AssignableUserRole): AssignableUserRole {
   const i = ASSIGNABLE_USER_ROLES.indexOf(role)
-  return ASSIGNABLE_USER_ROLES[(i + 1) % ASSIGNABLE_USER_ROLES.length]
+  // (i + 1) % length is always a valid index into the non-empty tuple; the
+  // fallback only exists to satisfy noUncheckedIndexedAccess and is never hit.
+  return ASSIGNABLE_USER_ROLES[(i + 1) % ASSIGNABLE_USER_ROLES.length] ?? role
 }
 
 function isAssignable(role: UserRole): role is AssignableUserRole {
@@ -55,7 +58,13 @@ export function UserList() {
   const { users, isLoading, isError, refetch, remove, isDeleting } = useUserList()
   const updateMutation = useUpdateUserMutation()
   const createMutation = useCreateUserMutation()
-  const currentUserId = getCurrentUser()?.id ?? null
+  // entities/auth and entities/user each brand their own UserId (§7: no bare
+  // string ids across slice boundaries), so the session's id — despite being
+  // the same backend user_id value — isn't nominally comparable to a
+  // entities/user User.id without an explicit re-brand via the canonical
+  // entities/user constructor.
+  const authUser = getCurrentUser()
+  const currentUserId = authUser ? toUserId(authUser.id) : null
 
   const [inviteOpen, setInviteOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', role: 'submitter' as AssignableUserRole })

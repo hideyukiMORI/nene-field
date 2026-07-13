@@ -58,13 +58,17 @@ async function request<T>(method: string, path: string, body?: Json): Promise<T>
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (authToken !== null) headers['Authorization'] = `Bearer ${authToken}`
 
+  // Built via a mutable RequestInit (rather than a `body: cond ? x : undefined`
+  // literal) so the `body` key is omitted entirely when there is none —
+  // exactOptionalPropertyTypes forbids assigning `undefined` to `RequestInit.body`
+  // (`BodyInit | null`, no `undefined` in the union), and omitting the key is
+  // behaviorally identical to passing `body: undefined` for `fetch`.
+  const init: RequestInit = { method, headers }
+  if (body !== undefined) init.body = JSON.stringify(body)
+
   let response: Response
   try {
-    response = await fetch(path, {
-      method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-    })
+    response = await fetch(path, init)
   } catch {
     throw AppError.transport('Network request failed')
   }

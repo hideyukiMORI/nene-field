@@ -88,7 +88,12 @@ interface PageMeta {
 /** Resolve the topbar title + crumb, including sub-routes (new / edit pages). */
 function resolveMeta(path: string): PageMeta {
   const exact = TITLE_BY_PATH[path]
-  if (exact !== undefined) return { title: exact, crumb: CRUMB_BY_PATH[path] }
+  if (exact !== undefined) {
+    // `crumb` is omitted (not set to `undefined`) when there's no entry, since
+    // PageMeta.crumb has no `| undefined` in its type (exactOptionalPropertyTypes).
+    const crumb = CRUMB_BY_PATH[path]
+    return crumb !== undefined ? { title: exact, crumb } : { title: exact }
+  }
   if (path.startsWith('/templates'))
     return { title: 'template.editor.title', crumb: 'shell.crumb.templates' }
   if (path.startsWith('/users')) return { title: 'common.nav.users', crumb: 'shell.crumb.users' }
@@ -178,8 +183,11 @@ export function AdminShell() {
         <p className="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-widest text-fg-inverse/55">
           {t('shell.group.main')}
         </p>
+        {/* end defaults to false in react-router; `?? false` keeps that behavior
+            while satisfying exactOptionalPropertyTypes (NavLinkProps.end has no
+            `| undefined` in its type). */}
         {MAIN_NAV.map((item) => (
-          <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
+          <NavLink key={item.to} to={item.to} end={item.end ?? false} className={navLinkClass}>
             <span className="w-5 text-center opacity-90">{item.icon}</span>
             <span className="flex-1">{t(item.labelKey)}</span>
             {item.to === '/reports' && pendingCount > 0 && (
