@@ -68,7 +68,15 @@ describe('toReportDetail', () => {
   })
 
   it('defaults missing optional collections', () => {
-    const detail = toReportDetail({ ...detailDto, attachments: undefined, tags: undefined })
+    // exactOptionalPropertyTypes forbids assigning `undefined` to an optional
+    // (non-`| undefined`) DTO field, so the "missing" case is expressed by
+    // deleting the keys entirely (the sanctioned way to unset an optional
+    // property under exactOptionalPropertyTypes) rather than setting them to
+    // undefined.
+    const withoutCollections: ReportResponseDto = { ...detailDto }
+    delete withoutCollections.attachments
+    delete withoutCollections.tags
+    const detail = toReportDetail(withoutCollections)
     expect(detail.attachments).toStrictEqual([])
     expect(detail.tags).toStrictEqual([])
   })

@@ -53,7 +53,10 @@ export function MobileShell() {
 
       <nav className="flex border-t border-border bg-surface-raised/95 backdrop-blur">
         {TABS.map((tab) => (
-          <NavLink key={tab.to} to={tab.to} end={tab.end} className={tabClass}>
+          // end defaults to false in react-router; `?? false` keeps that behavior
+          // while satisfying exactOptionalPropertyTypes (NavLinkProps.end has no
+          // `| undefined` in its type).
+          <NavLink key={tab.to} to={tab.to} end={tab.end ?? false} className={tabClass}>
             <span className="text-lg leading-none">{tab.icon}</span>
             {t(tab.labelKey)}
           </NavLink>

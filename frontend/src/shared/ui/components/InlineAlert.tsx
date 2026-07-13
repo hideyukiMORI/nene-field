@@ -5,6 +5,7 @@ type AlertVariant = 'error' | 'success' | 'info' | 'warn'
 
 interface InlineAlertProps {
   variant?: AlertVariant
+  className?: string
   children: ReactNode
 }
 
@@ -15,9 +16,9 @@ const variantClass: Record<AlertVariant, string> = {
   warn: 'bg-warn-soft text-warn border-warn',
 }
 
-export function InlineAlert({ variant = 'info', children }: InlineAlertProps) {
+export function InlineAlert({ variant = 'info', className, children }: InlineAlertProps) {
   return (
-    <div role="alert" className={cn('border px-3 py-2 text-sm', variantClass[variant])}>
+    <div role="alert" className={cn('border px-3 py-2 text-sm', variantClass[variant], className)}>
       {children}
     </div>
   )

@@ -57,7 +57,9 @@ const TYPE_LABEL_KEY: Record<TemplateFieldType, MessageKey> = {
 
 function nextType(type: TemplateFieldType): TemplateFieldType {
   const i = TEMPLATE_FIELD_TYPES.indexOf(type)
-  return TEMPLATE_FIELD_TYPES[(i + 1) % TEMPLATE_FIELD_TYPES.length]
+  // (i + 1) % length is always a valid index into the non-empty tuple; the
+  // fallback only exists to satisfy noUncheckedIndexedAccess and is never hit.
+  return TEMPLATE_FIELD_TYPES[(i + 1) % TEMPLATE_FIELD_TYPES.length] ?? type
 }
 
 function splitOptions(raw: string): string[] {

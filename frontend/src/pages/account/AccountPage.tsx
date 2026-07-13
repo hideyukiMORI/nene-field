@@ -4,12 +4,15 @@ import {
   getCurrentUser,
   signOut,
   subscribeCurrentUser,
+  type Role,
 } from '@/entities/auth'
 import { LOCALES, resolveLocale, useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import { Badge, Button, Card, Select } from '@/shared/ui'
 
-const roleLabelKey: Record<string, MessageKey> = {
+// Keyed by the closed Role union (not `string`) so indexing with `user.role`
+// is total and doesn't need an `undefined` fallback under noUncheckedIndexedAccess.
+const roleLabelKey: Record<Role, MessageKey> = {
   submitter: 'user.role.submitter',
   approver: 'user.role.approver',
   admin: 'user.role.admin',
