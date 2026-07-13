@@ -68,43 +68,30 @@ The backend defaults to **MySQL** inside Docker (`DB_HOST=mysql`); the Vite dev
 server proxies API paths to the `app` container. The repository's `.env` default
 stays SQLite (Tier A) for non-Docker runs. Stop with `docker compose down`.
 
-## Local port allocation (binding)
+## Local ports
 
-NeNe Field runs alongside sibling products on the same developer machine.
-Its host-published ports are **fixed in the "92 lane"** to avoid collisions:
+NeNe Field runs alongside sibling products on the same developer machine; its
+host-published ports are fixed in the **"92" lane** so several apps can run
+locally side by side (full policy: [`CLAUDE.md`](./CLAUDE.md#local-stack)).
+Override via `NENE_FIELD_*` in `.env`.
 
-| Service | Host port | Env var |
+| Service | Port |
+| --- | --- |
+| PHP backend (Apache) | 9200 |
+| Vite dev server (frontend HMR) | 5192 |
+| MySQL (Docker) | 3309 |
+| phpMyAdmin | 9201 |
+
+## Status
+
+| Phase | Scope | Status |
 | --- | --- | --- |
-| PHP backend (Apache) | **9200** | `NENE_FIELD_PORT` |
-| Vite dev server | **5192** | `NENE_FIELD_FRONTEND_PORT` |
-| MySQL | **3309** | `NENE_FIELD_MYSQL_PORT` |
-| phpMyAdmin | **9201** | `NENE_FIELD_PHPMYADMIN_PORT` |
+| 1 | Core Report API — multi-tenancy, audit logging, report CRUD/submission lifecycle, org/user management, templates, attachments (#21–#37) | ✅ |
+| 2 | Manager UI + Export — backend API (CSV export, audit log API) done; admin UI (auth, report list/detail/review/submit, templates, users, audit viewer, export, settings, hi-fi redesign) done; Docker Compose dev env done | 🔄 In progress — Storybook + Playwright e2e outstanding |
+| 3 | AI Summary + Notifications | ⏳ Planned |
+| 4 | Ecosystem Links | ⏳ Planned |
 
-> The `90xx` HTTP lane and frontend port `5190` were vacated — they belong to
-> **NeNe Payout** (`90xx` / `5190`), which is the registered owner in the port
-> authority (`nene-origin/docs/development/local-ports.md`). NeNe Field moved to the
-> new **`92xx`** block (HTTP `9200`, phpMyAdmin `9201`, Vite `5192`). MySQL stays on
-> `3309` — it has no collision and remains off any sibling's reserved `33xx` port.
-
-### Portfolio-wide port registry
-
-Authoritative reservation map for the NeNe portfolio. **Never reuse another app's
-lane or reserved ports.** `xx` denotes the whole HTTP lane (e.g. `90xx` = 9000–9099).
-
-| App | HTTP lane | Frontend (Vite) | MySQL | Other reserved |
-| --- | --- | --- | --- | --- |
-| NeNe Serve | 80xx | 5180 | 3380 | 1080, 3308, 6107 |
-| NeNe Deal | 81xx | 5187 | 3310 | 6106 |
-| NENE2 | 82xx | — | 3316 | — |
-| NeNe Clear | 83xx | 5173 | — | — |
-| NeNe Profile | 84xx | — | 3409 | — |
-| NeNe Invoice | 85xx | 5185 | — | — |
-| NeNe Vault | 86xx | 5186 | — | — |
-| NeNe Concierge | 87xx | — | 3790 | — |
-| NeNe Suite | 88xx | 5188 | 3390 | — |
-| NeNe Coropus | 89xx | 5271 | 3389 | — |
-| **NeNe Field** (this) | **92xx** | **5192** | **3309** | — |
-| NeNe Records | 180xx | — | — | — |
+Kept in sync with [`docs/todo/current.md`](./docs/todo/current.md).
 
 ## NeNe ecosystem
 
