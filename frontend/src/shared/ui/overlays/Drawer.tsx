@@ -4,6 +4,8 @@ import type { ReactNode } from 'react'
 interface DrawerProps {
   open: boolean
   onClose: () => void
+  /** aria-label for the scrim. I18N-18: pass t('common.actions.close'). */
+  closeLabel: string
   /** Header content (e.g. prev/next nav + position counter for continuous review). */
   header: ReactNode
   footer?: ReactNode
@@ -11,7 +13,7 @@ interface DrawerProps {
 }
 
 /** Right-sliding drawer (design handoff §3.8): scrim + 464px panel, slide-in. */
-export function Drawer({ open, onClose, header, footer, children }: DrawerProps) {
+export function Drawer({ open, onClose, closeLabel, header, footer, children }: DrawerProps) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -29,7 +31,7 @@ export function Drawer({ open, onClose, header, footer, children }: DrawerProps)
     <div className="fixed inset-0 z-50 flex justify-end">
       <button
         type="button"
-        aria-label="閉じる"
+        aria-label={closeLabel}
         className="absolute inset-0 bg-fg/45"
         onClick={onClose}
       />

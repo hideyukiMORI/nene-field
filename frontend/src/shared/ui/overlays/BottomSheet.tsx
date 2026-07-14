@@ -4,13 +4,22 @@ import type { ReactNode } from 'react'
 interface BottomSheetProps {
   open: boolean
   onClose: () => void
+  /** aria-label for the scrim. I18N-18: pass t('common.actions.close'). */
+  closeLabel: string
   title?: ReactNode
   footer?: ReactNode
   children: ReactNode
 }
 
 /** Mobile bottom sheet (design handoff §3.9): slides up from the bottom with a grab handle. */
-export function BottomSheet({ open, onClose, title, footer, children }: BottomSheetProps) {
+export function BottomSheet({
+  open,
+  onClose,
+  closeLabel,
+  title,
+  footer,
+  children,
+}: BottomSheetProps) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -28,7 +37,7 @@ export function BottomSheet({ open, onClose, title, footer, children }: BottomSh
     <div className="absolute inset-0 z-50 flex items-end">
       <button
         type="button"
-        aria-label="閉じる"
+        aria-label={closeLabel}
         className="absolute inset-0 bg-fg/50"
         onClick={onClose}
       />

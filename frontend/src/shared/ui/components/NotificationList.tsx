@@ -22,6 +22,8 @@ interface NotificationListProps {
   items: NotificationItem[]
   markAllLabel: string
   emptyLabel: string
+  /** aria-label for the unread dot. I18N-18: pass t('shell.notifications.unread'). */
+  unreadLabel: string
   onSelect: (id: string) => void
   onMarkAllRead: () => void
 }
@@ -35,6 +37,7 @@ export function NotificationList({
   items,
   markAllLabel,
   emptyLabel,
+  unreadLabel,
   onSelect,
   onMarkAllRead,
 }: NotificationListProps) {
@@ -84,7 +87,7 @@ export function NotificationList({
                   {n.unread && (
                     <span
                       className="mt-1 h-2 w-2 flex-none rounded-full bg-accent"
-                      aria-label="未読"
+                      aria-label={unreadLabel}
                     />
                   )}
                 </button>

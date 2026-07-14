@@ -161,7 +161,13 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
   const deleted = after === null
 
   return (
-    <Modal open onClose={onClose} title={t('audit.diff.title')} size="lg">
+    <Modal
+      open
+      onClose={onClose}
+      title={t('audit.diff.title')}
+      closeLabel={t('common.actions.close')}
+      size="lg"
+    >
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <Badge tone={eventTone(event.eventName)}>{eventLabel(t, event.eventName)}</Badge>

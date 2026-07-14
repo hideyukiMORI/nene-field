@@ -309,6 +309,7 @@ export function AdminShell() {
                 <NotificationList
                   items={notifications}
                   markAllLabel={t('shell.notifications.markAll')}
+                  unreadLabel={t('shell.notifications.unread')}
                   emptyLabel={t('shell.notifications.empty')}
                   onSelect={selectNotification}
                   onMarkAllRead={markAllRead}

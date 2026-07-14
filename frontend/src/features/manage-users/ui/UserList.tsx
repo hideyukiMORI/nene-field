@@ -239,6 +239,7 @@ export function UserList() {
           setInviteOpen(false)
         }}
         title={t('user.invite.title')}
+        closeLabel={t('common.actions.close')}
         footer={
           <>
             <Button

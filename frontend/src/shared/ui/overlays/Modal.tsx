@@ -7,6 +7,8 @@ type ModalSize = 'sm' | 'md' | 'lg'
 interface ModalProps {
   open: boolean
   onClose: () => void
+  /** aria-label for the scrim / close button. I18N-18: pass t('common.actions.close'). */
+  closeLabel: string
   title: ReactNode
   footer?: ReactNode
   size?: ModalSize
@@ -20,7 +22,15 @@ const sizeClass: Record<ModalSize, string> = {
 }
 
 /** Centered modal (design handoff §3.7): scrim, pop-in panel, header / body / footer. */
-export function Modal({ open, onClose, title, footer, size = 'sm', children }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  closeLabel,
+  title,
+  footer,
+  size = 'sm',
+  children,
+}: ModalProps) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
@@ -38,7 +48,7 @@ export function Modal({ open, onClose, title, footer, size = 'sm', children }: M
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
       <button
         type="button"
-        aria-label="閉じる"
+        aria-label={closeLabel}
         className="absolute inset-0 bg-fg/45"
         onClick={onClose}
       />
@@ -55,7 +65,7 @@ export function Modal({ open, onClose, title, footer, size = 'sm', children }: M
           <button
             type="button"
             onClick={onClose}
-            aria-label="閉じる"
+            aria-label={closeLabel}
             className="ml-auto text-lg leading-none text-fg-faint hover:text-fg"
           >
             ✕

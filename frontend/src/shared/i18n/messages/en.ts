@@ -25,6 +25,7 @@ export const enMessages: MessageCatalog = {
   'common.actions.clear': 'Clear',
   'common.actions.previous': 'Previous',
   'common.actions.next': 'Next',
+  'common.actions.close': 'Close',
   'common.state.loading': 'Loading…',
   'common.forbidden': 'You are not allowed to view this screen.',
   'common.nav.reports': 'Reports',
@@ -44,6 +45,7 @@ export const enMessages: MessageCatalog = {
   'shell.notifications.title': 'Notifications',
   'shell.notifications.markAll': 'Mark all read',
   'shell.notifications.empty': 'No notifications.',
+  'shell.notifications.unread': 'Unread',
   // topbar breadcrumb (small crumb under the title)
   'shell.crumb.dashboard': 'Home',
   'shell.crumb.reports': 'Reports / List',

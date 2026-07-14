@@ -24,6 +24,7 @@ export const jaMessages = {
   'common.actions.clear': 'クリア',
   'common.actions.previous': '前へ',
   'common.actions.next': '次へ',
+  'common.actions.close': '閉じる',
   'common.state.loading': '読み込み中…',
   'common.forbidden': 'この画面を表示する権限がありません。',
   'common.nav.reports': '日報',
@@ -43,6 +44,7 @@ export const jaMessages = {
   'shell.notifications.title': '通知',
   'shell.notifications.markAll': 'すべて既読',
   'shell.notifications.empty': '通知はありません。',
+  'shell.notifications.unread': '未読',
   // topbar breadcrumb (タイトル下の小さなパンくず)
   'shell.crumb.dashboard': 'ホーム',
   'shell.crumb.reports': '日報 / 一覧',

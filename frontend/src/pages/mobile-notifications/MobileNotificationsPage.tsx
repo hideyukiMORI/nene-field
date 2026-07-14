@@ -47,6 +47,7 @@ export function MobileNotificationsPage() {
       <NotificationList
         items={items}
         markAllLabel={t('shell.notifications.markAll')}
+        unreadLabel={t('shell.notifications.unread')}
         emptyLabel={t('shell.notifications.empty')}
         onMarkAllRead={() => {
           setItems((prev) => prev.map((n) => ({ ...n, unread: false })))

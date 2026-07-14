@@ -426,6 +426,7 @@ export function ListReports() {
       {/* continuous-review drawer */}
       <Drawer
         open={current !== undefined}
+        closeLabel={t('common.actions.close')}
         onClose={() => {
           setDrawerIndex(null)
         }}
@@ -505,6 +506,7 @@ export function ListReports() {
       {/* reject modal (row or bulk) — comment required */}
       <Modal
         open={rejectTarget !== null}
+        closeLabel={t('common.actions.close')}
         onClose={() => {
           setRejectTarget(null)
           setRejectComment('')
