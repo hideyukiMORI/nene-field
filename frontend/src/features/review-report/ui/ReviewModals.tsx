@@ -58,6 +58,7 @@ export function ReviewModals({ reportId, context, mode, onClose, onReviewed }: R
       open
       onClose={onClose}
       title={t(isReject ? 'report.review.rejectTitle' : 'report.review.approveTitle')}
+      closeLabel={t('common.actions.close')}
       footer={
         <>
           <Button variant="ghost" onClick={onClose} disabled={isPending}>
