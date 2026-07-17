@@ -30,6 +30,7 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 - **Commits**: Conventional Commits; type/scope English, description/body Japanese, include `(#issue)`.
 - **PR**: purpose, changes, verification, checklist name, `Closes #n`.
 - **Secrets**: never commit `.env`, tokens, or credentials.
+- **日報**: `docs/daily/<YYYY-MM-DD>.md`。置き場・書式・運用は `_work/daily-report-convention.md` が正。
 - **Framework**: NENE2 via Composer — read `vendor/hideyukimori/nene2/docs/` for runtime patterns. NENE2 is the authoritative coding baseline; deviate only via a local ADR.
 - **Coding rules (binding)**: backend layering/placement/shared-objects in `docs/development/backend-standards.md`; frontend FSD in `docs/development/frontend-standards.md`. Run `docs/review/backend.md` / `docs/review/frontend.md`. Placement/dependency/naming violations block merge.
 - **Terms**: every identifier must match `docs/terms.md` exactly. Check before writing any name.
