@@ -28,7 +28,7 @@ import {
   Tr,
   useToast,
 } from '@/shared/ui'
-import { useUserList } from '../hooks/use-user-list'
+import { useUserList } from '../model/use-user-list'
 
 const roleLabelKey: Record<UserRole, MessageKey> = {
   submitter: 'user.role.submitter',

@@ -8,7 +8,7 @@ import { useTemplateListQuery } from '@/entities/report-template'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import { Button, Field, InlineAlert, Input, Select, Textarea } from '@/shared/ui'
-import { useSubmitReport } from '../hooks/use-submit-report'
+import { useSubmitReport } from '../model/use-submit-report'
 
 const schema = z.object({
   title: z.string().min(1).max(200),

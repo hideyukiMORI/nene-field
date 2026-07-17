@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from '@/shared/i18n'
 import { Button, Field, InlineAlert, Stack, Textarea } from '@/shared/ui'
-import { useReviewReport } from '../hooks/use-review-report'
+import { useReviewReport } from '../model/use-review-report'
 
 const MAX_COMMENT = 1000
 

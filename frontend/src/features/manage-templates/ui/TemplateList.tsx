@@ -12,7 +12,7 @@ import {
   Th,
   Tr,
 } from '@/shared/ui'
-import { useTemplateList } from '../hooks/use-template-list'
+import { useTemplateList } from '../model/use-template-list'
 
 /**
  * Template list (admin). Pinned-toolbar (作業卓) screen consistent with the user

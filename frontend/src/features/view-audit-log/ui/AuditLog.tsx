@@ -21,8 +21,8 @@ import {
   Th,
   Tr,
 } from '@/shared/ui'
-import { useAuditLog, type AuditFilterValues } from '../hooks/use-audit-log'
-import { useExportAudit } from '../hooks/use-export-audit'
+import { useAuditLog, type AuditFilterValues } from '../model/use-audit-log'
+import { useExportAudit } from '../model/use-export-audit'
 
 type BadgeTone = 'approved' | 'rejected' | 'submitted' | 'info' | 'neutral'
 

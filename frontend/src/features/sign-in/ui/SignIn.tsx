@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { sessionExpired } from '@/entities/auth'
 import { useTranslation } from '@/shared/i18n'
 import { Field, InlineAlert, Input } from '@/shared/ui'
-import { useSignIn } from '../hooks/use-sign-in'
+import { useSignIn } from '../model/use-sign-in'
 
 const schema = z.object({
   email: z.string().min(1),
