@@ -4,7 +4,7 @@ import { useUserListQuery } from '@/entities/user'
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import { Button, Field, InlineAlert, Input, Select, useToast } from '@/shared/ui'
-import { useExportReports } from '../hooks/use-export-reports'
+import { useExportReports } from '../model/use-export-reports'
 
 // Status presets match the design's single select (not free multi-select).
 type StatusPreset = 'approved' | 'submitted_approved' | 'all'

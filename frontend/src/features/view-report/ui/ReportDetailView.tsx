@@ -13,8 +13,8 @@ import {
   Stack,
   Text,
 } from '@/shared/ui'
-import { useDownloadAttachment } from '../hooks/use-download-attachment'
-import { useReportDetail } from '../hooks/use-report-detail'
+import { useDownloadAttachment } from '../model/use-download-attachment'
+import { useReportDetail } from '../model/use-report-detail'
 
 const statusKey: Record<ReportStatus, MessageKey> = {
   draft: 'report.status.draft',

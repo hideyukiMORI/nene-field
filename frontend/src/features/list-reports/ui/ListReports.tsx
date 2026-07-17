@@ -30,7 +30,7 @@ import {
   Tr,
   useToast,
 } from '@/shared/ui'
-import { useListReports } from '../hooks/use-list-reports'
+import { useListReports } from '../model/use-list-reports'
 
 type StatusFilter = ReportStatus | 'all'
 

@@ -16,7 +16,7 @@ import {
   Toggle,
   useToast,
 } from '@/shared/ui'
-import type { OrganizationSettingsValues } from '../hooks/use-organization-settings'
+import type { OrganizationSettingsValues } from '../model/use-organization-settings'
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 

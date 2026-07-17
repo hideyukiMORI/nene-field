@@ -10,7 +10,7 @@ import {
 import { useTranslation } from '@/shared/i18n'
 import type { MessageKey } from '@/shared/i18n'
 import { Button, Field, InlineAlert, Input, Select, Stack, Text } from '@/shared/ui'
-import type { EditUserPayload } from '../hooks/use-edit-user'
+import type { EditUserPayload } from '../model/use-edit-user'
 
 const schema = z.object({
   name: z.string().min(1).max(100),
