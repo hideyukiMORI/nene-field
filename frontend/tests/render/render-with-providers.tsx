@@ -1,5 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, type RenderResult } from '@testing-library/react'
+import {
+  render,
+  renderHook,
+  type RenderHookResult,
+  type RenderResult,
+} from '@testing-library/react'
 import { useState, type ReactElement, type ReactNode } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nProvider } from '@/shared/i18n'
@@ -29,4 +34,9 @@ function Providers({ children }: { children: ReactNode }) {
 
 export function renderWithProviders(ui: ReactElement): RenderResult {
   return render(ui, { wrapper: Providers })
+}
+
+/** renderHook with the same provider stack, for testing model-layer hooks directly. */
+export function renderHookWithProviders<T>(hook: () => T): RenderHookResult<T, undefined> {
+  return renderHook(hook, { wrapper: Providers })
 }
