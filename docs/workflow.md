@@ -8,10 +8,10 @@ See also: `docs/inheritance-from-nene2.md`.
 ## Standard Flow
 
 1. Create or reuse a focused GitHub Issue.
-2. Confirm context in `docs/roadmap.md`, `docs/milestones/`, and `docs/todo/current.md`.
+2. Confirm context in `docs/roadmap.md`, `docs/milestones/`, and the private operation log (`nene-origin/internal-docs/field/todo/current.md`).
 3. Create a branch from `main` named like `type/issue-number-summary`.
 4. Implement the smallest useful change.
-5. Update docs, roadmap, milestone, or TODO files when the decision or state changes.
+5. Update docs, roadmap, or milestone files (public) and the private operation log when the decision or state changes.
 6. Review the relevant self-review checklist in `docs/review/`.
 7. Run the narrowest meaningful verification available.
 8. Commit with Conventional Commits and include the Issue number.
