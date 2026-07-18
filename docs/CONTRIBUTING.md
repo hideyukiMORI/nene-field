@@ -7,7 +7,7 @@ NeNe Field is an open-source project. Contributions are welcome under the [MIT L
 - Read [`AGENTS.md`](../AGENTS.md) for the full operating rules.
 - Read [`docs/explanation/scope-contract.md`](./explanation/scope-contract.md) to understand what is in and out of scope.
 - Read [`docs/terms.md`](./terms.md) for canonical identifier spellings — violations block merge.
-- Check [`docs/todo/current.md`](./todo/current.md) and open Issues before starting new work.
+- Check the private operation log (`nene-origin/internal-docs/field/todo/current.md`) and open Issues before starting new work.
 
 ## Issue-driven workflow
 

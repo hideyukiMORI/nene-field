@@ -91,7 +91,7 @@ Override via `NENE_FIELD_*` in `.env`.
 | 3 | AI Summary + Notifications | ⏳ Planned |
 | 4 | Ecosystem Links | ⏳ Planned |
 
-Kept in sync with [`docs/todo/current.md`](./docs/todo/current.md).
+Kept in sync with the private operation log (`nene-origin/internal-docs/field/todo/current.md`).
 
 ## NeNe ecosystem
 
