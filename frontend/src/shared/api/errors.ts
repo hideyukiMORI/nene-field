@@ -38,9 +38,9 @@ export class AppError extends Error {
     this.fieldErrors = params.fieldErrors ?? []
   }
 
-  /** 5xx and 408/429 are worth retrying; 4xx generally are not. */
+  /** Network failures (status 0), 5xx, and 408/429 are worth retrying; other 4xx are not. */
   get isRetryable(): boolean {
-    return this.status >= 500 || this.status === 408 || this.status === 429
+    return this.status === 0 || this.status >= 500 || this.status === 408 || this.status === 429
   }
 
   get isUnauthorized(): boolean {
