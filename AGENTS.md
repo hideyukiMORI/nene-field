@@ -37,7 +37,7 @@ See [ADR 0002](docs/adr/0002-separate-from-sibling-products.md).
 - **NENE2 compliance (binding):** `docs/development/nene2-compliance.md`
 - **Sibling integration:** `docs/integrations/sibling-products.md`
 - **NENE2 inheritance map:** `docs/inheritance-from-nene2.md`
-- **Current work:** `docs/todo/current.md`
+- **Current work:** private `nene-origin/internal-docs/field/todo/current.md` (operation logs — `docs/todo`, `docs/daily` — moved to private `nene-origin/internal-docs/field/`)
 - **Roadmap:** `docs/roadmap.md`
 
 ## Operating Rules

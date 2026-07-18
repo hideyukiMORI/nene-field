@@ -19,7 +19,7 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 | Frontend standards (binding) | `docs/development/frontend-standards.md` |
 | i18n / message catalog (binding) | `docs/development/i18n.md` |
 | NENE2 compliance (binding) | `docs/development/nene2-compliance.md` |
-| Current tasks | `docs/todo/current.md` |
+| Current tasks | private `nene-origin/internal-docs/field/todo/current.md` |
 | Roadmap | `docs/roadmap.md` |
 | Canonical terms | `docs/terms.md` |
 
@@ -30,7 +30,8 @@ Claude Code / AI agent guide for this repository. Cursor summaries live in `.cur
 - **Commits**: Conventional Commits; type/scope English, description/body Japanese, include `(#issue)`.
 - **PR**: purpose, changes, verification, checklist name, `Closes #n`.
 - **Secrets**: never commit `.env`, tokens, or credentials.
-- **日報**: `docs/daily/<YYYY-MM-DD>.md`。置き場・書式・運用は `_work/daily-report-convention.md` が正。
+- **日報**: private `nene-origin/internal-docs/field/daily/<YYYY-MM-DD>.md`。置き場・書式・運用は `_work/daily-report-convention.md` が正。
+- **運用ログ移設済み**: 運用ログ（`docs/todo`・`docs/daily`・field-trials 相当）は private `nene-origin/internal-docs/field/` に移設済み。最新の作業状況・申し送りはそちらを読むこと（公開 docs は Diátaxis＋ADR/milestones のみ）。
 - **Framework**: NENE2 via Composer — read `vendor/hideyukimori/nene2/docs/` for runtime patterns. NENE2 is the authoritative coding baseline; deviate only via a local ADR.
 - **Coding rules (binding)**: backend layering/placement/shared-objects in `docs/development/backend-standards.md`; frontend FSD in `docs/development/frontend-standards.md`. Run `docs/review/backend.md` / `docs/review/frontend.md`. Placement/dependency/naming violations block merge.
 - **Terms**: every identifier must match `docs/terms.md` exactly. Check before writing any name.
