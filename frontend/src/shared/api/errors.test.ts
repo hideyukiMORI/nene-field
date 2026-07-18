@@ -71,15 +71,15 @@ describe('AppError.transport', () => {
 })
 
 describe('AppError classification getters', () => {
-  it('marks 5xx and 408/429 as retryable, other 4xx as not', () => {
+  it('marks network failures, 5xx, and 408/429 as retryable, other 4xx as not', () => {
     expect(AppError.fromProblem(500, {}).isRetryable).toBe(true)
     expect(AppError.fromProblem(503, {}).isRetryable).toBe(true)
     expect(AppError.fromProblem(408, {}).isRetryable).toBe(true)
     expect(AppError.fromProblem(429, {}).isRetryable).toBe(true)
     expect(AppError.fromProblem(400, {}).isRetryable).toBe(false)
     expect(AppError.fromProblem(404, {}).isRetryable).toBe(false)
-    // Pins current behavior: transport failures (status 0) are NOT retryable.
-    expect(AppError.transport('fetch failed').isRetryable).toBe(false)
+    // #111: transient network failures (status 0) are retryable, matching origin.
+    expect(AppError.transport('fetch failed').isRetryable).toBe(true)
   })
 
   it('maps 401 to isUnauthorized and 403 to isForbidden, exclusively', () => {
