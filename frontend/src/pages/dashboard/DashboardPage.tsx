@@ -148,7 +148,7 @@ export function DashboardPage() {
       {/* ── pending queue + side column (320px) ──────────────────── */}
       <div className="flex flex-col gap-4.5 lg:flex-row">
         <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-border bg-surface-raised">
-          <div className="flex items-center gap-2 border-b border-border-2 px-4.5 py-3.5">
+          <div className="flex items-center gap-2 border-b border-border px-4.5 py-3.5">
             <h3 className="flex-1 text-sm font-bold text-fg">{t('dashboard.queue.title')}</h3>
             <Link
               to="/reports"
@@ -167,7 +167,7 @@ export function DashboardPage() {
               {queue.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center gap-3.5 border-b border-border-2 px-4.5 py-3 last:border-b-0"
+                  className="flex items-center gap-3.5 border-b border-border px-4.5 py-3 last:border-b-0"
                 >
                   <span className="grid h-8.5 w-8.5 flex-none place-items-center rounded-pill bg-accent-soft text-label font-bold text-accent-ink">
                     {r.submitter.slice(0, 1)}
@@ -287,7 +287,7 @@ function QuickRow({
   return (
     <Link
       to={to}
-      className="mb-2 flex items-center gap-2.5 rounded-xl bg-surface-soft px-3 py-2.75 last:mb-0 hover:bg-surface-overlay"
+      className="mb-2 flex items-center gap-2.5 rounded-xl bg-surface-overlay px-3 py-2.75 last:mb-0 hover:bg-surface-overlay"
     >
       <span aria-hidden className="text-base">
         {icon}

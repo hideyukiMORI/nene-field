@@ -181,7 +181,7 @@ export function ListReports() {
         {/* row: title + search + submitter + CSV */}
         <div className="flex flex-wrap items-center gap-2.5">
           <h2 className="mr-1 text-lg font-bold text-fg">{t('report.list.title')}</h2>
-          <div className="flex w-70 items-center gap-2 rounded-pill border border-border-hairline bg-surface-soft px-3.5 py-2">
+          <div className="flex w-70 items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2">
             <span aria-hidden className="text-ui text-fg-faint-2">
               ⌕
             </span>

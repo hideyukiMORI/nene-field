@@ -68,7 +68,7 @@ export function ExportReportsForm() {
   return (
     <div className="mx-auto w-full max-w-5xl">
       {/* document header (書類): kicker · 23px title · top-right download w/ count */}
-      <div className="mb-6 flex flex-wrap items-end gap-4.5 border-b border-border-hairline pb-4.5">
+      <div className="mb-6 flex flex-wrap items-end gap-4.5 border-b border-border pb-4.5">
         <div className="min-w-0">
           <p className="text-xs font-bold tracking-wide text-accent-ink">{t('export.kicker')}</p>
           <h2 className="mt-2 text-doc-title font-bold tracking-tight text-fg">

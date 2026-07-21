@@ -43,7 +43,7 @@ export function Drawer({ open, onClose, closeLabel, header, footer, children }: 
         <div className="flex items-center gap-3 border-b border-border px-5 py-4">{header}</div>
         <div className="flex-1 overflow-auto px-5 py-5">{children}</div>
         {footer !== undefined && (
-          <div className="flex items-center gap-2.5 border-t border-border bg-surface-faint px-5 py-3.5">
+          <div className="flex items-center gap-2.5 border-t border-border bg-surface-raised px-5 py-3.5">
             {footer}
           </div>
         )}

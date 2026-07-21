@@ -239,7 +239,7 @@ export function AdminShell() {
 
       {/* ── main column ─────────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-15 flex-none items-center gap-3.5 border-b border-border-hairline bg-surface-raised px-6.5">
+        <header className="flex h-15 flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5">
           <div className="min-w-0">
             <h1 className="text-base font-bold leading-tight text-fg">{t(titleKey)}</h1>
             {crumbKey !== undefined && <p className="text-caption text-fg-faint">{t(crumbKey)}</p>}
@@ -247,7 +247,7 @@ export function AdminShell() {
 
           <div className="flex-1" />
 
-          <div className="hidden w-57.5 items-center gap-2 rounded-pill border border-border-hairline bg-surface-overlay px-3.5 py-2 text-ui text-fg-faint-2 md:flex">
+          <div className="hidden w-57.5 items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2 text-ui text-fg-faint-2 md:flex">
             <span aria-hidden>⌕</span>
             <input
               type="search"
@@ -294,7 +294,7 @@ export function AdminShell() {
               onClick={() => {
                 setBellOpen((v) => !v)
               }}
-              className="relative grid h-9 w-9 place-items-center rounded-pill bg-surface-overlay text-base text-fg-muted hover:bg-surface-soft"
+              className="relative grid h-9 w-9 place-items-center rounded-pill bg-surface-overlay text-base text-fg-muted hover:bg-surface-overlay"
             >
               <span aria-hidden>◔</span>
               {unread > 0 && (
@@ -305,7 +305,7 @@ export function AdminShell() {
             </button>
 
             {bellOpen && (
-              <div className="absolute right-0 top-12 w-86 overflow-hidden rounded-card border border-border-hairline bg-surface-raised shadow-modal animate-nfpop">
+              <div className="absolute right-0 top-12 w-86 overflow-hidden rounded-card border border-border bg-surface-raised shadow-modal animate-nfpop">
                 <NotificationList
                   items={notifications}
                   markAllLabel={t('shell.notifications.markAll')}

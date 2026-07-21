@@ -67,7 +67,7 @@ export function NotificationList({
                     onSelect(n.id)
                   }}
                   className={cn(
-                    'flex w-full items-start gap-3 border-b border-border-2 px-4 py-3 text-left hover:bg-surface-overlay',
+                    'flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left hover:bg-surface-overlay',
                     n.unread && 'bg-row-hover',
                   )}
                 >

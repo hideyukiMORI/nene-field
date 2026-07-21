@@ -14,13 +14,10 @@
   --color-surface: #eef2f3; /* app background (body)            --bg-app */
   --color-surface-raised: #ffffff; /* cards / panels                  --surface */
   --color-surface-overlay: #f1f4f5; /* soft hover / inset              --bg-soft */
-  --color-surface-soft: #f4f7f7; /* --bg-soft-2 */
-  --color-surface-faint: #fafbfb; /* --bg-soft-3 */
   --color-surface-sunken: #eceff0; /* template preview pane (提出者の見え方 背景) */
 
   /* ── ink ────────────────────────────────────────────────────── */
   --color-fg: #16201f;
-  --color-fg-strong: #1f1f1d;
   --color-fg-muted: #5f6b6e;
   --color-fg-muted-2: #6b7679;
   --color-fg-faint: #8a9498;
@@ -29,10 +26,8 @@
 
   /* ── borders ────────────────────────────────────────────────── */
   --color-border: #e7ecec;
-  --color-border-2: #eef2f2;
   --color-border-input: #d3dadb;
   --color-border-strong: #cdd5d6;
-  --color-border-hairline: #e2e8e9; /* document-header closing rule (page-headers ②) */
 
   /* ── brand — blue-teal ──────────────────────────────────────── */
   --color-accent: #1488ad; /* primary action / FAB / active / link */
@@ -68,11 +63,8 @@
 
   /* button fills */
   --color-btn-success: #2f7d57;
-  --color-btn-danger: #c0492f;
-  --color-btn-disabled: #dcc4bd;
 
   /* approval pulse / toast accents */
-  --color-pulse: #1f8a5b;
   --color-toast-check: #5fd6a0;
 
   /* table rows */

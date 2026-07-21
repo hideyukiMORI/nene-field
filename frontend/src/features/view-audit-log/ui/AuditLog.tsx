@@ -185,7 +185,7 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
               <span className="px-3 py-2">{t('audit.diff.before')}</span>
               <span className="border-l border-border px-3 py-2">{t('audit.diff.after')}</span>
             </div>
-            <dl className="divide-y divide-border-2 font-mono text-xs">
+            <dl className="divide-y divide-border font-mono text-xs">
               {keys.map((key) => {
                 const b = before?.[key]
                 const a = after?.[key]

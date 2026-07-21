@@ -109,7 +109,7 @@ export function OrganizationSettingsForm({
   return (
     <div className="mx-auto w-full max-w-3xl">
       {/* document header (書類): kicker · 23px title · top-right save */}
-      <div className="mb-4.5 flex flex-wrap items-end gap-4.5 border-b border-border-hairline pb-4.5">
+      <div className="mb-4.5 flex flex-wrap items-end gap-4.5 border-b border-border pb-4.5">
         <div className="min-w-0">
           <p className="text-xs font-bold tracking-wide text-accent-ink">{t('settings.kicker')}</p>
           <h2 className="mt-2 text-doc-title font-bold tracking-tight text-fg">

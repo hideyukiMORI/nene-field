@@ -73,7 +73,7 @@ export function Modal({
         </div>
         <div className="px-5 py-5">{children}</div>
         {footer !== undefined && (
-          <div className="flex justify-end gap-2.5 border-t border-border bg-surface-faint px-5 py-3.5">
+          <div className="flex justify-end gap-2.5 border-t border-border bg-surface-raised px-5 py-3.5">
             {footer}
           </div>
         )}

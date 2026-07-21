@@ -165,7 +165,7 @@ export function SignIn() {
               />
             </Field>
 
-            <p className="mt-5 mb-2 text-xs font-bold text-fg-strong">
+            <p className="mt-5 mb-2 text-xs font-bold text-fg">
               {t('auth.login.roleLabel')}
             </p>
             <div className="flex gap-1 rounded-pill bg-surface-overlay p-1">
@@ -208,7 +208,7 @@ export function SignIn() {
             </p>
           </form>
 
-          <p className="mt-6 border-t border-border-2 pt-4 text-xs leading-relaxed text-fg-faint-2">
+          <p className="mt-6 border-t border-border pt-4 text-xs leading-relaxed text-fg-faint-2">
             {t('auth.login.demoNote')}
           </p>
         </div>

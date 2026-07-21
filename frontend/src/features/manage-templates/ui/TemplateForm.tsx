@@ -192,7 +192,7 @@ function FieldEditor({
           aria-label={t('template.field.label')}
           placeholder={t('template.field.label')}
           {...register(`fields.${index}.label`)}
-          className="min-w-0 flex-1 rounded-lg border border-border-hairline bg-surface-raised px-2.75 py-2.25 text-sm font-semibold text-fg outline-none focus:border-accent"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-raised px-2.75 py-2.25 text-sm font-semibold text-fg outline-none focus:border-accent"
         />
         <div className="flex flex-none flex-col">
           <button
@@ -228,7 +228,7 @@ function FieldEditor({
             setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
           }}
           title={t('template.field.type')}
-          className="inline-flex items-center gap-2 rounded-lg border border-border-hairline bg-surface-soft px-3 py-1.75 text-label text-fg-muted active:bg-surface-overlay"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-overlay px-3 py-1.75 text-label text-fg-muted active:bg-surface-overlay"
         >
           <span className="text-micro text-fg-faint-2">{t('template.field.type')}</span>
           <span className="font-semibold text-fg">{t(TYPE_LABEL_KEY[type])}</span>
@@ -265,7 +265,7 @@ function FieldEditor({
             {...register(`fields.${index}.options`)}
             className={cn(
               'w-full rounded-lg border bg-surface-raised px-2.75 py-2.25 text-ui text-fg outline-none focus:border-accent',
-              rowErrors?.options !== undefined ? 'border-rejected' : 'border-border-hairline',
+              rowErrors?.options !== undefined ? 'border-rejected' : 'border-border',
             )}
           />
           {rowErrors?.options !== undefined && (
@@ -283,7 +283,7 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
   const name = useWatch({ control, name: 'name' })
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border-hairline bg-surface-raised shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-card">
       <div
         className="px-4 py-3.5 text-base font-bold text-fg-inverse"
         style={{ background: 'linear-gradient(155deg, #1488ad, #0e4a5e)' }}
@@ -466,7 +466,7 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
             onClick={() => {
               append({ name: '', label: '', type: 'text', required: false, options: '' })
             }}
-            className="rounded-xl border-2 border-dashed border-border-strong py-3.5 text-center text-ui font-semibold text-accent-ink hover:bg-surface-soft disabled:opacity-50"
+            className="rounded-xl border-2 border-dashed border-border-strong py-3.5 text-center text-ui font-semibold text-accent-ink hover:bg-surface-overlay disabled:opacity-50"
           >
             ＋ {t('template.form.addField')}
           </button>

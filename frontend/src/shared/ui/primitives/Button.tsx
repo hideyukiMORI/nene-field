@@ -22,7 +22,7 @@ const variantClass: Record<ButtonVariant, string> = {
   primary: 'bg-accent text-fg-inverse border-accent shadow-btn hover:bg-accent-hover',
   success:
     'bg-btn-success text-fg-inverse border-btn-success shadow-btn-success hover:brightness-105',
-  danger: 'bg-btn-danger text-fg-inverse border-btn-danger hover:brightness-105',
+  danger: 'bg-danger text-fg-inverse border-danger hover:brightness-105',
   'danger-ghost': 'bg-surface-raised text-rejected border-rejected/40 hover:bg-rejected-soft',
   secondary: 'bg-surface-raised text-fg border-border-strong hover:bg-surface-overlay',
   ghost: 'bg-surface-raised text-fg border-border-strong hover:bg-surface-overlay',

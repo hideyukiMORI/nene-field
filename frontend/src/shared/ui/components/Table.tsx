@@ -48,7 +48,7 @@ export function Tr({
   return (
     <tr
       className={cn(
-        'border-b border-border-2',
+        'border-b border-border',
         selected && 'bg-row-hover',
         interactive && 'cursor-pointer hover:bg-row-hover active:bg-row-active',
         className,
