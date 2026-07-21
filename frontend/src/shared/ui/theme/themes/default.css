@@ -17,38 +17,38 @@
   --color-surface-sunken: #eceff0; /* template preview pane (提出者の見え方 背景) */
 
   /* ── ink ────────────────────────────────────────────────────── */
-  --color-fg: #16201f;
-  --color-fg-muted: #5f6b6e;
-  --color-fg-muted-2: #6b7679;
-  --color-fg-faint: #8a9498;
-  --color-fg-faint-2: #9aa3a5;
-  --color-fg-inverse: #ffffff;
+  --color-text-primary: #16201f;
+  --color-text-muted: #5f6b6e;
+  --color-x-fg-muted-2: #6b7679;
+  --color-text-faint: #8a9498;
+  --color-x-fg-faint-2: #9aa3a5;
+  --color-text-inverse: #ffffff;
 
   /* ── borders ────────────────────────────────────────────────── */
   --color-border: #e7ecec;
-  --color-border-input: #d3dadb;
+  --color-x-border-input: #d3dadb;
   --color-border-strong: #cdd5d6;
 
   /* ── brand — blue-teal ──────────────────────────────────────── */
   --color-accent: #1488ad; /* primary action / FAB / active / link */
   --color-accent-hover: #0f6f93; /* --ac-ink (darker teal) */
   --color-accent-soft: #e0f0f6; /* chip bg / soft surface */
-  --color-accent-soft-border: #b2dcea;
-  --color-accent-ink: #0f6f93; /* text on soft / headings on light */
-  --color-accent-deep: #0e4a5e; /* sidebar / app bar / brand surface */
-  --color-accent-deep-2: #0a3a4a; /* sidebar gradient end */
+  --color-x-accent-soft-border: #b2dcea;
+  --color-on-accent: #0f6f93; /* text on soft / headings on light */
+  --color-x-accent-deep: #0e4a5e; /* sidebar / app bar / brand surface */
+  --color-x-accent-deep-2: #0a3a4a; /* sidebar gradient end */
 
   /* ── status (semantic, theme-independent) ───────────────────── */
-  --color-submitted: #2a6f9e;
-  --color-submitted-soft: #e6eef6;
-  --color-approved: #1f8a5b;
-  --color-approved-soft: #e3f3ea;
-  --color-rejected: #c0492f;
-  --color-rejected-soft: #fbe9e4;
-  --color-draft: #6b7679;
-  --color-draft-soft: #eef1f2;
-  --color-ai: #6d52a8;
-  --color-ai-soft: #f1ecf7;
+  --color-x-submitted: #2a6f9e;
+  --color-x-submitted-soft: #e6eef6;
+  --color-x-approved: #1f8a5b;
+  --color-x-approved-soft: #e3f3ea;
+  --color-x-rejected: #c0492f;
+  --color-x-rejected-soft: #fbe9e4;
+  --color-x-draft: #6b7679;
+  --color-x-draft-soft: #eef1f2;
+  --color-x-ai: #6d52a8;
+  --color-x-ai-soft: #f1ecf7;
 
   /* general-purpose aliases (kept aligned with the status palette so existing
      Badge/Alert tones re-skin automatically) */
@@ -62,33 +62,33 @@
   --color-warn-soft: #fbf1da;
 
   /* button fills */
-  --color-btn-success: #2f7d57;
+  --color-x-btn-success: #2f7d57;
 
   /* approval pulse / toast accents */
-  --color-toast-check: #5fd6a0;
+  --color-x-toast-check: #5fd6a0;
 
   /* table rows */
-  --color-row-hover: #eef7fa; /* hover / selected (clickable rows) */
-  --color-row-active: #f7fafa; /* :active */
+  --color-x-row-hover: #eef7fa; /* hover / selected (clickable rows) */
+  --color-x-row-active: #f7fafa; /* :active */
 
   /* ── radius ─────────────────────────────────────────────────── */
-  --radius-pill: 999px; /* buttons / chips / badges (committed) */
-  --radius-input: 11px; /* inputs / small cards (10–12) */
-  --radius-card: 16px; /* cards (13–18) */
-  --radius-modal: 18px;
-  --radius-sheet: 26px; /* mobile bottom sheet */
+  --radius-x-pill: 999px; /* buttons / chips / badges (committed) */
+  --radius-x-input: 11px; /* inputs / small cards (10–12) */
+  --radius-x-card: 16px; /* cards (13–18) */
+  --radius-x-modal: 18px;
+  --radius-x-sheet: 26px; /* mobile bottom sheet */
 
   /* ── shadows ────────────────────────────────────────────────── */
-  --shadow-card: 0 1px 2px rgba(16, 32, 36, 0.05), 0 6px 18px -8px rgba(16, 32, 36, 0.12);
-  --shadow-btn: 0 8px 16px -8px rgba(20, 136, 173, 0.6);
-  --shadow-btn-success: 0 8px 16px -8px rgba(31, 138, 91, 0.5);
-  --shadow-modal: 0 30px 70px -20px rgba(0, 0, 0, 0.45);
-  --shadow-drawer: -22px 0 54px -22px rgba(0, 0, 0, 0.4);
-  --shadow-fab: 0 12px 26px -8px rgba(20, 136, 173, 0.75);
-  --shadow-toolbar: 0 9px 18px -16px rgba(16, 32, 36, 0.45); /* pinned toolbar lift (page-headers ①) */
+  --shadow-x-card: 0 1px 2px rgba(16, 32, 36, 0.05), 0 6px 18px -8px rgba(16, 32, 36, 0.12);
+  --shadow-x-btn: 0 8px 16px -8px rgba(20, 136, 173, 0.6);
+  --shadow-x-btn-success: 0 8px 16px -8px rgba(31, 138, 91, 0.5);
+  --shadow-x-modal: 0 30px 70px -20px rgba(0, 0, 0, 0.45);
+  --shadow-x-drawer: -22px 0 54px -22px rgba(0, 0, 0, 0.4);
+  --shadow-x-fab: 0 12px 26px -8px rgba(20, 136, 173, 0.75);
+  --shadow-x-toolbar: 0 9px 18px -16px rgba(16, 32, 36, 0.45); /* pinned toolbar lift (page-headers ①) */
 
   /* ── typography ─────────────────────────────────────────────── */
-  --font-sans: 'IBM Plex Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-x-sans: 'IBM Plex Sans JP', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* design type scale not on Tailwind's default steps (handoff §1.4 確定値) */
   --text-screen-title: 1.375rem; /* 22px — content screen title (dashboard 等) */
