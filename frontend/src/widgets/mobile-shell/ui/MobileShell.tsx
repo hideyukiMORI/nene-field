@@ -22,7 +22,7 @@ const FAB_PATHS = new Set(['/reports'])
 function tabClass({ isActive }: { isActive: boolean }): string {
   return cn(
     'flex flex-1 flex-col items-center gap-0.5 py-2 pb-5 text-xs',
-    isActive ? 'font-bold text-accent' : 'text-fg-faint-2',
+    isActive ? 'font-bold text-accent' : 'text-x-fg-faint-2',
   )
 }
 
@@ -45,7 +45,7 @@ export function MobileShell() {
         <Link
           to="/reports/new"
           aria-label={t('report.submit.newAction')}
-          className="absolute bottom-20 right-4 grid h-14 w-14 place-items-center rounded-pill bg-accent text-2xl text-fg-inverse shadow-fab"
+          className="absolute bottom-20 right-4 grid h-14 w-14 place-items-center rounded-x-pill bg-accent text-2xl text-text-inverse shadow-x-fab"
         >
           ＋
         </Link>

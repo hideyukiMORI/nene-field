@@ -22,11 +22,11 @@ export function ReportDetailPage() {
           onClick={() => {
             void navigate(-1)
           }}
-          className="text-lg text-fg-muted"
+          className="text-lg text-text-muted"
         >
           ‹
         </button>
-        <h1 className="text-base font-bold text-fg">{t('mobile.detail.back')}</h1>
+        <h1 className="text-base font-bold text-text-primary">{t('mobile.detail.back')}</h1>
       </header>
       <div className="p-4 sm:p-6">
         <ReportDetailView

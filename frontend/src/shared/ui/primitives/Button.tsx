@@ -19,13 +19,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClass: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-fg-inverse border-accent shadow-btn hover:bg-accent-hover',
+  primary: 'bg-accent text-text-inverse border-accent shadow-x-btn hover:bg-accent-hover',
   success:
-    'bg-btn-success text-fg-inverse border-btn-success shadow-btn-success hover:brightness-105',
-  danger: 'bg-btn-danger text-fg-inverse border-btn-danger hover:brightness-105',
-  'danger-ghost': 'bg-surface-raised text-rejected border-rejected/40 hover:bg-rejected-soft',
-  secondary: 'bg-surface-raised text-fg border-border-strong hover:bg-surface-overlay',
-  ghost: 'bg-surface-raised text-fg border-border-strong hover:bg-surface-overlay',
+    'bg-x-btn-success text-text-inverse border-x-btn-success shadow-x-btn-success hover:brightness-105',
+  danger: 'bg-danger text-text-inverse border-danger hover:brightness-105',
+  'danger-ghost': 'bg-surface-raised text-x-rejected border-x-rejected/40 hover:bg-x-rejected-soft',
+  secondary: 'bg-surface-raised text-text-primary border-border-strong hover:bg-surface-overlay',
+  ghost: 'bg-surface-raised text-text-primary border-border-strong hover:bg-surface-overlay',
 }
 
 const sizeClass: Record<ButtonSize, string> = {
@@ -46,7 +46,7 @@ export function Button({
     <button
       type={type ?? 'button'}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-pill border font-semibold',
+        'inline-flex items-center justify-center gap-2 rounded-x-pill border font-semibold',
         'transition-transform duration-100 active:scale-95',
         'disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100',
         sizeClass[size],

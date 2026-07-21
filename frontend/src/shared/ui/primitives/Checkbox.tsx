@@ -37,7 +37,7 @@ export function Checkbox({
         'inline-grid h-5 w-5 flex-none place-items-center rounded border text-xs leading-none',
         'transition-colors disabled:cursor-not-allowed disabled:opacity-50',
         active
-          ? 'border-accent bg-accent text-fg-inverse'
+          ? 'border-accent bg-accent text-text-inverse'
           : 'border-border-strong bg-surface-raised text-transparent',
         className,
       )}

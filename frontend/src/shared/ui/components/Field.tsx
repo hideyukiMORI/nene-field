@@ -12,7 +12,7 @@ export function Field({ label, htmlFor, error, children }: FieldProps) {
   const errorId = `${htmlFor}-error`
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={htmlFor} className="text-sm font-medium text-fg">
+      <label htmlFor={htmlFor} className="text-sm font-medium text-text-primary">
         {label}
       </label>
       {children}

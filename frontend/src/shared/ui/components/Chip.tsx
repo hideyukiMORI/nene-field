@@ -15,10 +15,10 @@ interface ChipProps {
  */
 export function Chip({ active = false, onClick, className, children }: ChipProps) {
   const classes = cn(
-    'inline-flex items-center gap-1.5 rounded-pill px-3.5 py-1.5 text-xs font-semibold transition-colors',
+    'inline-flex items-center gap-1.5 rounded-x-pill px-3.5 py-1.5 text-xs font-semibold transition-colors',
     active
-      ? 'bg-accent text-fg-inverse'
-      : 'border border-border-input bg-surface-raised text-fg-muted',
+      ? 'bg-accent text-text-inverse'
+      : 'border border-x-border-input bg-surface-raised text-text-muted',
     onClick !== undefined && 'cursor-pointer',
     className,
   )

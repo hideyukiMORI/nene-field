@@ -94,8 +94,10 @@ export function DashboardPage() {
       {/* ── header ───────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end gap-3.5">
         <div className="min-w-0">
-          <h2 className="text-screen-title font-bold text-fg">{t('common.nav.dashboard')}</h2>
-          <p className="mt-0.5 text-ui text-fg-muted-2">
+          <h2 className="text-screen-title font-bold text-text-primary">
+            {t('common.nav.dashboard')}
+          </h2>
+          <p className="mt-0.5 text-ui text-x-fg-muted-2">
             {t('dashboard.view')} ・ <span className="tabular-nums">{todayLabel()}</span>
           </p>
         </div>
@@ -135,12 +137,14 @@ export function DashboardPage() {
       {/* ── charts: trend (≈1.55fr) + status (1fr) ───────────────── */}
       <div className="grid gap-4.5 lg:grid-cols-5">
         <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5 lg:col-span-3">
-          <h3 className="text-sm font-bold text-fg">{t('dashboard.chart.daily')}</h3>
-          <p className="mb-4.5 text-caption text-fg-faint-2">{t('dashboard.chart.dailySub')}</p>
+          <h3 className="text-sm font-bold text-text-primary">{t('dashboard.chart.daily')}</h3>
+          <p className="mb-4.5 text-caption text-x-fg-faint-2">{t('dashboard.chart.dailySub')}</p>
           <BarChart data={DAILY} />
         </div>
         <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5 lg:col-span-2">
-          <h3 className="mb-4.5 text-sm font-bold text-fg">{t('dashboard.chart.status')}</h3>
+          <h3 className="mb-4.5 text-sm font-bold text-text-primary">
+            {t('dashboard.chart.status')}
+          </h3>
           <Donut segments={statusSegments} />
         </div>
       </div>
@@ -148,38 +152,42 @@ export function DashboardPage() {
       {/* ── pending queue + side column (320px) ──────────────────── */}
       <div className="flex flex-col gap-4.5 lg:flex-row">
         <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-border bg-surface-raised">
-          <div className="flex items-center gap-2 border-b border-border-2 px-4.5 py-3.5">
-            <h3 className="flex-1 text-sm font-bold text-fg">{t('dashboard.queue.title')}</h3>
+          <div className="flex items-center gap-2 border-b border-border px-4.5 py-3.5">
+            <h3 className="flex-1 text-sm font-bold text-text-primary">
+              {t('dashboard.queue.title')}
+            </h3>
             <Link
               to="/reports"
-              className="text-label font-semibold text-accent-ink hover:text-accent"
+              className="text-label font-semibold text-on-accent hover:text-accent"
             >
               {t('dashboard.queue.viewAll')} ›
             </Link>
           </div>
           {queue.length === 0 ? (
             <div className="px-5 py-11 text-center">
-              <div className="mb-2 text-3xl text-btn-success">✓</div>
-              <p className="text-ui font-semibold text-fg-muted-2">{t('dashboard.queue.empty')}</p>
+              <div className="mb-2 text-3xl text-x-btn-success">✓</div>
+              <p className="text-ui font-semibold text-x-fg-muted-2">
+                {t('dashboard.queue.empty')}
+              </p>
             </div>
           ) : (
             <ul>
               {queue.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center gap-3.5 border-b border-border-2 px-4.5 py-3 last:border-b-0"
+                  className="flex items-center gap-3.5 border-b border-border px-4.5 py-3 last:border-b-0"
                 >
-                  <span className="grid h-8.5 w-8.5 flex-none place-items-center rounded-pill bg-accent-soft text-label font-bold text-accent-ink">
+                  <span className="grid h-8.5 w-8.5 flex-none place-items-center rounded-x-pill bg-accent-soft text-label font-bold text-on-accent">
                     {r.submitter.slice(0, 1)}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="whitespace-nowrap text-ui font-semibold text-fg">
+                      <span className="whitespace-nowrap text-ui font-semibold text-text-primary">
                         {r.submitter}
                       </span>
-                      <span className="text-caption text-fg-faint-2 tabular-nums">{r.date}</span>
+                      <span className="text-caption text-x-fg-faint-2 tabular-nums">{r.date}</span>
                     </div>
-                    <p className="truncate text-label text-fg-muted-2">
+                    <p className="truncate text-label text-x-fg-muted-2">
                       {r.title} ・ {r.summary}
                     </p>
                   </div>
@@ -210,22 +218,26 @@ export function DashboardPage() {
         <div className="flex flex-col gap-4.5 lg:w-80 lg:flex-none">
           {/* quick filters */}
           <div className="rounded-2xl border border-border bg-surface-raised px-4.5 py-4">
-            <h3 className="mb-3 text-ui font-bold text-fg">{t('dashboard.quick.title')}</h3>
+            <h3 className="mb-3 text-ui font-bold text-text-primary">
+              {t('dashboard.quick.title')}
+            </h3>
             <QuickRow icon="⏳" to="/reports" label={t('dashboard.quick.pending')}>
-              <span className="text-label font-bold text-accent-ink tabular-nums">
+              <span className="text-label font-bold text-on-accent tabular-nums">
                 {queue.length}
               </span>
             </QuickRow>
             <QuickRow icon="▤" to="/reports" label={t('dashboard.quick.today')}>
-              <span className="text-label font-bold text-fg-muted-2 tabular-nums">{KPI_TODAY}</span>
+              <span className="text-label font-bold text-x-fg-muted-2 tabular-nums">
+                {KPI_TODAY}
+              </span>
             </QuickRow>
             <QuickRow icon="⬇" to="/export" label={t('dashboard.quick.toExport')}>
-              <span className="text-base text-fg-faint-2">›</span>
+              <span className="text-base text-x-fg-faint-2">›</span>
             </QuickRow>
           </div>
 
           {/* weekly summary (dark brand card) */}
-          <div className="rounded-2xl bg-gradient-to-b from-accent-deep to-accent-deep-2 px-4.5 py-4.5 text-fg-inverse">
+          <div className="rounded-2xl bg-gradient-to-b from-x-accent-deep to-x-accent-deep-2 px-4.5 py-4.5 text-text-inverse">
             <h3 className="mb-1.5 text-ui font-bold">{t('dashboard.summary.title')}</h3>
             <p className="text-xs leading-relaxed text-accent-soft">
               {t('dashboard.summary.body', {
@@ -262,11 +274,15 @@ function Kpi({
   subTone?: 'approved'
 }) {
   const valueColor =
-    tone === 'accent' ? 'text-accent-ink' : tone === 'rejected' ? 'text-rejected' : 'text-fg'
-  const subColor = subTone === 'approved' ? 'text-btn-success' : 'text-fg-faint-2'
+    tone === 'accent'
+      ? 'text-on-accent'
+      : tone === 'rejected'
+        ? 'text-x-rejected'
+        : 'text-text-primary'
+  const subColor = subTone === 'approved' ? 'text-x-btn-success' : 'text-x-fg-faint-2'
   return (
     <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5">
-      <p className="text-label text-fg-muted-2">{label}</p>
+      <p className="text-label text-x-fg-muted-2">{label}</p>
       <p className={cn('mt-1 text-kpi font-bold tabular-nums', valueColor)}>{value}</p>
       {sub !== undefined && <p className={cn('mt-0.5 text-caption', subColor)}>{sub}</p>}
     </div>
@@ -287,12 +303,12 @@ function QuickRow({
   return (
     <Link
       to={to}
-      className="mb-2 flex items-center gap-2.5 rounded-xl bg-surface-soft px-3 py-2.75 last:mb-0 hover:bg-surface-overlay"
+      className="mb-2 flex items-center gap-2.5 rounded-xl bg-surface-overlay px-3 py-2.75 last:mb-0 hover:bg-surface-overlay"
     >
       <span aria-hidden className="text-base">
         {icon}
       </span>
-      <span className="flex-1 text-ui font-semibold text-fg">{label}</span>
+      <span className="flex-1 text-ui font-semibold text-text-primary">{label}</span>
       {children}
     </Link>
   )

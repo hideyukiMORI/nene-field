@@ -24,23 +24,23 @@ interface BadgeProps {
 }
 
 const toneClass: Record<BadgeTone, string> = {
-  neutral: 'bg-surface-overlay text-fg-muted',
+  neutral: 'bg-surface-overlay text-text-muted',
   info: 'bg-info-soft text-info',
   success: 'bg-success-soft text-success',
   danger: 'bg-danger-soft text-danger',
   warn: 'bg-warn-soft text-warn',
-  submitted: 'bg-submitted-soft text-submitted',
-  approved: 'bg-approved-soft text-approved',
-  rejected: 'bg-rejected-soft text-rejected',
-  draft: 'bg-draft-soft text-draft',
-  ai: 'bg-ai text-fg-inverse',
+  submitted: 'bg-x-submitted-soft text-x-submitted',
+  approved: 'bg-x-approved-soft text-x-approved',
+  rejected: 'bg-x-rejected-soft text-x-rejected',
+  draft: 'bg-x-draft-soft text-x-draft',
+  ai: 'bg-x-ai text-text-inverse',
 }
 
 export function Badge({ tone = 'neutral', className, children }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-pill px-2.5 py-0.5 text-xs font-semibold leading-tight',
+        'inline-flex items-center gap-1.5 rounded-x-pill px-2.5 py-0.5 text-xs font-semibold leading-tight',
         toneClass[tone],
         className,
       )}

@@ -29,8 +29,8 @@ export function ApprovalPulse({ trigger, onDone }: ApprovalPulseProps) {
       aria-hidden
     >
       <div className="relative grid place-items-center">
-        <span className="absolute h-28 w-28 rounded-full border-4 border-approved animate-nfring" />
-        <span className="grid h-24 w-24 place-items-center rounded-full bg-approved text-5xl text-fg-inverse shadow-card animate-nfcheckpop">
+        <span className="absolute h-28 w-28 rounded-full border-4 border-x-approved animate-nfring" />
+        <span className="grid h-24 w-24 place-items-center rounded-full bg-x-approved text-5xl text-text-inverse shadow-x-card animate-nfcheckpop">
           ✓
         </span>
       </div>

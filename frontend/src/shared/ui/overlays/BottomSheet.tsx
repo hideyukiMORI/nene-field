@@ -38,19 +38,19 @@ export function BottomSheet({
       <button
         type="button"
         aria-label={closeLabel}
-        className="absolute inset-0 bg-fg/50"
+        className="absolute inset-0 bg-text-primary/50"
         onClick={onClose}
       />
       <div
-        className="relative w-full rounded-t-sheet bg-surface-raised pb-6 shadow-modal animate-nfup"
+        className="relative w-full rounded-t-x-sheet bg-surface-raised pb-6 shadow-x-modal animate-nfup"
         role="dialog"
         aria-modal="true"
       >
         <div className="flex justify-center pt-2.5 pb-1">
-          <span className="h-1 w-10 rounded-pill bg-border-strong" />
+          <span className="h-1 w-10 rounded-x-pill bg-border-strong" />
         </div>
         {title !== undefined && (
-          <div className="px-5 pt-1 pb-3 text-base font-bold text-fg">{title}</div>
+          <div className="px-5 pt-1 pb-3 text-base font-bold text-text-primary">{title}</div>
         )}
         <div className="px-5">{children}</div>
         {footer !== undefined && <div className="flex gap-2.5 px-5 pt-4">{footer}</div>}

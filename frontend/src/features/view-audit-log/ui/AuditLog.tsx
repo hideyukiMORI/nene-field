@@ -171,21 +171,21 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <Badge tone={eventTone(event.eventName)}>{eventLabel(t, event.eventName)}</Badge>
-          <span className="text-xs text-fg-faint">
+          <span className="text-xs text-text-faint">
             {event.entityType} · {formatJstDateTime(event.occurredAt)}
           </span>
         </div>
         {created && <InlineAlert variant="success">{t('audit.diff.created')}</InlineAlert>}
         {deleted && <InlineAlert variant="error">{t('audit.diff.deleted')}</InlineAlert>}
         {keys.length === 0 ? (
-          <p className="text-sm text-fg-faint">{t('audit.diff.noChanges')}</p>
+          <p className="text-sm text-text-faint">{t('audit.diff.noChanges')}</p>
         ) : (
-          <div className="overflow-hidden rounded-input border border-border">
-            <div className="grid grid-cols-2 border-b border-border bg-surface-overlay text-xs font-semibold text-fg-muted">
+          <div className="overflow-hidden rounded-x-input border border-border">
+            <div className="grid grid-cols-2 border-b border-border bg-surface-overlay text-xs font-semibold text-text-muted">
               <span className="px-3 py-2">{t('audit.diff.before')}</span>
               <span className="border-l border-border px-3 py-2">{t('audit.diff.after')}</span>
             </div>
-            <dl className="divide-y divide-border-2 font-mono text-xs">
+            <dl className="divide-y divide-border font-mono text-xs">
               {keys.map((key) => {
                 const b = before?.[key]
                 const a = after?.[key]
@@ -194,21 +194,23 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
                   <div key={key} className="grid grid-cols-2">
                     <div
                       className={
-                        changed && b !== undefined ? 'bg-rejected-soft px-3 py-1.5' : 'px-3 py-1.5'
+                        changed && b !== undefined
+                          ? 'bg-x-rejected-soft px-3 py-1.5'
+                          : 'px-3 py-1.5'
                       }
                     >
-                      <span className="text-fg-faint">{key}: </span>
-                      <span className="text-fg">{fmt(b)}</span>
+                      <span className="text-text-faint">{key}: </span>
+                      <span className="text-text-primary">{fmt(b)}</span>
                     </div>
                     <div
                       className={
                         changed && a !== undefined
-                          ? 'border-l border-border bg-approved-soft px-3 py-1.5'
+                          ? 'border-l border-border bg-x-approved-soft px-3 py-1.5'
                           : 'border-l border-border px-3 py-1.5'
                       }
                     >
-                      <span className="text-fg-faint">{key}: </span>
-                      <span className="text-fg">{fmt(a)}</span>
+                      <span className="text-text-faint">{key}: </span>
+                      <span className="text-text-primary">{fmt(a)}</span>
                     </div>
                   </div>
                 )
@@ -233,10 +235,10 @@ export function AuditLog() {
   return (
     <div className="flex h-full flex-col">
       {/* pinned toolbar (作業卓): flex-none white bar, table below scrolls */}
-      <div className="relative z-10 flex flex-none flex-col gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
+      <div className="relative z-10 flex flex-none flex-col gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-x-toolbar">
         <div className="flex flex-wrap items-center gap-2.5">
-          <h2 className="text-lg font-bold text-fg">{t('audit.list.title')}</h2>
-          <span className="text-sm text-fg-faint">{t('audit.list.subtitle')}</span>
+          <h2 className="text-lg font-bold text-text-primary">{t('audit.list.title')}</h2>
+          <span className="text-sm text-text-faint">{t('audit.list.subtitle')}</span>
         </div>
         <FilterBar
           initial={audit.filters}
@@ -283,7 +285,7 @@ export function AuditLog() {
                         setSelected(event)
                       }}
                     >
-                      <Td className="whitespace-nowrap text-fg-muted tabular-nums">
+                      <Td className="whitespace-nowrap text-text-muted tabular-nums">
                         {formatJstDateTime(event.occurredAt)}
                       </Td>
                       <Td>
@@ -293,19 +295,19 @@ export function AuditLog() {
                       </Td>
                       <Td>
                         <div className="flex items-center gap-2">
-                          <span className="grid h-6.5 w-6.5 flex-none place-items-center rounded-pill bg-accent-soft text-caption font-bold text-accent-ink">
+                          <span className="grid h-6.5 w-6.5 flex-none place-items-center rounded-x-pill bg-accent-soft text-caption font-bold text-on-accent">
                             {(event.actorName ?? event.actorId ?? '—').slice(0, 1)}
                           </span>
-                          <span className="whitespace-nowrap font-semibold text-fg">
+                          <span className="whitespace-nowrap font-semibold text-text-primary">
                             {event.actorName ?? event.actorId ?? '—'}
                           </span>
                         </div>
                       </Td>
-                      <Td className="truncate font-mono text-label text-fg-muted">
+                      <Td className="truncate font-mono text-label text-text-muted">
                         {event.entityType} · {event.entityId}
                       </Td>
                       <Td className="text-right">
-                        <span className="text-label font-bold text-accent-ink">
+                        <span className="text-label font-bold text-on-accent">
                           {t('audit.col.diff')} ›
                         </span>
                       </Td>

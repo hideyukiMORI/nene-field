@@ -45,8 +45,8 @@ export function SignIn() {
 
   const pill = (active: boolean): string =>
     [
-      'flex-1 rounded-pill py-2 text-center text-sm font-bold transition-colors',
-      active ? 'bg-surface-raised text-accent-ink shadow-card' : 'text-fg-muted',
+      'flex-1 rounded-x-pill py-2 text-center text-sm font-bold transition-colors',
+      active ? 'bg-surface-raised text-on-accent shadow-x-card' : 'text-text-muted',
     ].join(' ')
 
   return (
@@ -59,23 +59,23 @@ export function SignIn() {
         onClick={() => {
           setLocale(locale === 'ja' ? 'en' : 'ja')
         }}
-        className="fixed right-5 top-5 rounded-pill border border-white/25 px-3 py-1.5 text-xs font-semibold text-fg-inverse/90 hover:bg-white/10"
+        className="fixed right-5 top-5 rounded-x-pill border border-white/25 px-3 py-1.5 text-xs font-semibold text-text-inverse/90 hover:bg-white/10"
       >
         {locale === 'ja' ? 'EN' : '日本語'}
       </button>
 
       <div
-        className="grid w-full overflow-hidden rounded-3xl shadow-modal animate-nfup max-md:grid-cols-1"
+        className="grid w-full overflow-hidden rounded-3xl shadow-x-modal animate-nfup max-md:grid-cols-1"
         style={{ maxWidth: 980, gridTemplateColumns: '1.1fr 1fr' }}
       >
         {/* ── brand panel ─────────────────────────────────────────── */}
         <div
-          className="hidden flex-col justify-between p-9 text-fg-inverse md:flex"
+          className="hidden flex-col justify-between p-9 text-text-inverse md:flex"
           style={{ background: BRAND_BG }}
         >
           <div className="flex items-center gap-3">
             <span
-              className="grid h-11 w-11 place-items-center rounded-xl text-xl font-bold text-fg-inverse"
+              className="grid h-11 w-11 place-items-center rounded-xl text-xl font-bold text-text-inverse"
               style={{ background: 'linear-gradient(150deg, #3fb6c4, #1488ad)' }}
             >
               N
@@ -114,7 +114,7 @@ export function SignIn() {
         <div className="bg-surface-raised p-8 sm:p-10">
           <div className="mb-6 flex items-center gap-2.5 md:hidden">
             <span
-              className="grid h-9 w-9 place-items-center rounded-xl text-base font-bold text-fg-inverse"
+              className="grid h-9 w-9 place-items-center rounded-xl text-base font-bold text-text-inverse"
               style={{ background: 'linear-gradient(150deg, #3fb6c4, #1488ad)' }}
             >
               N
@@ -122,10 +122,10 @@ export function SignIn() {
             <span className="text-lg font-extrabold">{t('common.app.name')}</span>
           </div>
 
-          <h2 className="font-bold text-fg" style={{ fontSize: '22px' }}>
+          <h2 className="font-bold text-text-primary" style={{ fontSize: '22px' }}>
             {t('auth.login.title')}
           </h2>
-          <p className="mt-1 mb-6 text-sm text-fg-muted">{t('auth.login.subtitle')}</p>
+          <p className="mt-1 mb-6 text-sm text-text-muted">{t('auth.login.subtitle')}</p>
 
           {sessionExpired() && (
             <div className="mb-4">
@@ -165,10 +165,10 @@ export function SignIn() {
               />
             </Field>
 
-            <p className="mt-5 mb-2 text-xs font-bold text-fg-strong">
+            <p className="mt-5 mb-2 text-xs font-bold text-text-primary">
               {t('auth.login.roleLabel')}
             </p>
-            <div className="flex gap-1 rounded-pill bg-surface-overlay p-1">
+            <div className="flex gap-1 rounded-x-pill bg-surface-overlay p-1">
               <button
                 type="button"
                 className={pill(role === 'submitter')}
@@ -188,14 +188,14 @@ export function SignIn() {
                 {t('auth.login.roleManager')}
               </button>
             </div>
-            <p className="mt-2 mb-5 text-xs leading-relaxed text-fg-faint-2">
+            <p className="mt-2 mb-5 text-xs leading-relaxed text-x-fg-faint-2">
               {t(role === 'submitter' ? 'auth.login.destSubmitter' : 'auth.login.destManager')}
             </p>
 
             <button
               type="submit"
               disabled={isPending}
-              className="flex w-full items-center justify-center gap-2 rounded-pill bg-accent py-3.5 font-bold text-fg-inverse shadow-btn transition-transform active:scale-95 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-x-pill bg-accent py-3.5 font-bold text-text-inverse shadow-x-btn transition-transform active:scale-95 disabled:opacity-50"
               style={{ fontSize: '15px' }}
             >
               {isPending
@@ -203,12 +203,12 @@ export function SignIn() {
                 : `${t(role === 'submitter' ? 'auth.login.loginAsSubmitter' : 'auth.login.loginAsManager')} →`}
             </button>
 
-            <p className="mt-4 text-center text-xs font-semibold text-accent-ink">
+            <p className="mt-4 text-center text-xs font-semibold text-on-accent">
               {t('auth.login.forgot')}
             </p>
           </form>
 
-          <p className="mt-6 border-t border-border-2 pt-4 text-xs leading-relaxed text-fg-faint-2">
+          <p className="mt-6 border-t border-border pt-4 text-xs leading-relaxed text-x-fg-faint-2">
             {t('auth.login.demoNote')}
           </p>
         </div>

@@ -9,17 +9,17 @@ export interface DonutSegment {
 }
 
 const toneVar: Record<DonutTone, string> = {
-  approved: 'var(--color-approved)',
-  submitted: 'var(--color-submitted)',
-  rejected: 'var(--color-rejected)',
-  draft: 'var(--color-draft)',
+  approved: 'var(--color-x-approved)',
+  submitted: 'var(--color-x-submitted)',
+  rejected: 'var(--color-x-rejected)',
+  draft: 'var(--color-x-draft)',
 }
 
 const toneDot: Record<DonutTone, string> = {
-  approved: 'bg-approved',
-  submitted: 'bg-submitted',
-  rejected: 'bg-rejected',
-  draft: 'bg-draft',
+  approved: 'bg-x-approved',
+  submitted: 'bg-x-submitted',
+  rejected: 'bg-x-rejected',
+  draft: 'bg-x-draft',
 }
 
 /**
@@ -44,15 +44,15 @@ export function Donut({ segments }: { segments: DonutSegment[] }) {
         style={{ background: `conic-gradient(${stops})` }}
       >
         <div className="grid h-20 w-20 place-items-center rounded-full bg-surface-raised">
-          <span className="text-xl font-bold text-fg tnum">{total}</span>
+          <span className="text-xl font-bold text-text-primary tnum">{total}</span>
         </div>
       </div>
       <ul className="flex flex-col gap-2">
         {segments.map((s) => (
           <li key={s.tone} className="flex items-center gap-2 text-sm">
             <span className={cn('h-2.5 w-2.5 rounded-full', toneDot[s.tone])} />
-            <span className="text-fg-muted">{s.label}</span>
-            <span className="font-semibold text-fg tnum">{s.value}</span>
+            <span className="text-text-muted">{s.label}</span>
+            <span className="font-semibold text-text-primary tnum">{s.value}</span>
           </li>
         ))}
       </ul>

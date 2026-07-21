@@ -23,9 +23,9 @@ export function TemplateList() {
   const { templates, isLoading, isError, refetch, remove, isDeleting } = useTemplateList()
 
   const toolbar = (
-    <div className="relative z-10 flex flex-none flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
-      <h2 className="text-lg font-bold text-fg">{t('template.list.title')}</h2>
-      <span className="text-label text-fg-faint tabular-nums">
+    <div className="relative z-10 flex flex-none flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-x-toolbar">
+      <h2 className="text-lg font-bold text-text-primary">{t('template.list.title')}</h2>
+      <span className="text-label text-text-faint tabular-nums">
         {t('template.list.count', { count: templates.length })}
       </span>
       <Link to="/templates/new" className="ml-auto">
@@ -63,16 +63,16 @@ export function TemplateList() {
                   <Tr key={template.id}>
                     <Td>
                       <div className="flex items-center gap-2.5">
-                        <span className="grid h-9 w-9 flex-none place-items-center rounded-pill bg-accent-soft text-base text-accent-ink">
+                        <span className="grid h-9 w-9 flex-none place-items-center rounded-x-pill bg-accent-soft text-base text-on-accent">
                           ◳
                         </span>
-                        <span className="font-semibold text-fg">{template.name}</span>
+                        <span className="font-semibold text-text-primary">{template.name}</span>
                         {template.isDefault && (
                           <Badge tone="approved">{t('template.list.default')}</Badge>
                         )}
                       </div>
                     </Td>
-                    <Td className="text-fg-muted tabular-nums">
+                    <Td className="text-text-muted tabular-nums">
                       {t('template.list.fieldCount', { count: template.fields.length })}
                     </Td>
                     <Td>

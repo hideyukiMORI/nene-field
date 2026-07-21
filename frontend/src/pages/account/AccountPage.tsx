@@ -28,24 +28,26 @@ export function AccountPage() {
   return (
     <div className="flex flex-col">
       <header className="border-b border-border bg-surface-raised px-4 py-3.5">
-        <h1 className="text-base font-bold text-fg">{t('mobile.account.title')}</h1>
+        <h1 className="text-base font-bold text-text-primary">{t('mobile.account.title')}</h1>
       </header>
 
       <div className="flex flex-col gap-4 p-4">
         <Card className="flex items-center gap-3">
-          <span className="grid h-12 w-12 place-items-center rounded-pill bg-accent-soft text-base font-bold text-accent-ink">
+          <span className="grid h-12 w-12 place-items-center rounded-x-pill bg-accent-soft text-base font-bold text-on-accent">
             {user?.name.slice(0, 2) ?? '??'}
           </span>
           <div className="min-w-0">
-            <p className="truncate font-bold text-fg">{user?.name}</p>
-            <p className="truncate text-xs text-fg-muted">{user?.email}</p>
+            <p className="truncate font-bold text-text-primary">{user?.name}</p>
+            <p className="truncate text-xs text-text-muted">{user?.email}</p>
           </div>
           {user !== null && <Badge tone="info">{t(roleLabelKey[user.role])}</Badge>}
         </Card>
 
         <Card padded={false}>
           <label className="flex items-center justify-between gap-3 p-4">
-            <span className="text-sm font-medium text-fg">{t('mobile.account.language')}</span>
+            <span className="text-sm font-medium text-text-primary">
+              {t('mobile.account.language')}
+            </span>
             <div className="w-36">
               <Select
                 value={locale}
@@ -66,7 +68,7 @@ export function AccountPage() {
         {canManage && (
           <a
             href="/"
-            className="rounded-card border border-border bg-surface-raised px-4 py-3.5 text-sm font-semibold text-accent"
+            className="rounded-x-card border border-border bg-surface-raised px-4 py-3.5 text-sm font-semibold text-accent"
           >
             🖥 {t('mobile.account.openAdmin')}
           </a>

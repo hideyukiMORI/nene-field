@@ -7,7 +7,7 @@ interface LoadingStateProps {
 /** The Loading state of a data screen (frontend-standards §5). */
 export function LoadingState({ label }: LoadingStateProps) {
   return (
-    <div className="flex items-center justify-center gap-3 py-12 text-fg-muted">
+    <div className="flex items-center justify-center gap-3 py-12 text-text-muted">
       <Spinner label={label} />
       <span className="text-sm">{label}</span>
     </div>

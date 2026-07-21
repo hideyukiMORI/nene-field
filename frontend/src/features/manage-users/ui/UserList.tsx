@@ -124,9 +124,9 @@ export function UserList() {
   return (
     <div className="flex h-full flex-col">
       {/* pinned toolbar (作業卓): flex-none white bar, table below scrolls */}
-      <div className="relative z-10 flex flex-none flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
-        <h2 className="text-lg font-bold text-fg">{t('user.list.title')}</h2>
-        <span className="text-sm text-fg-faint tabular-nums">
+      <div className="relative z-10 flex flex-none flex-wrap items-center gap-3 border-b border-border bg-surface-raised px-6.5 py-4 shadow-x-toolbar">
+        <h2 className="text-lg font-bold text-text-primary">{t('user.list.title')}</h2>
+        <span className="text-sm text-text-faint tabular-nums">
           {t('user.list.count', { active: activeCount, total: users.length })}
         </span>
         <Button
@@ -161,15 +161,15 @@ export function UserList() {
                     <Tr key={user.id} className={user.isActive ? '' : 'opacity-60'}>
                       <Td>
                         <div className="flex items-center gap-3">
-                          <span className="grid h-9 w-9 flex-none place-items-center rounded-pill bg-accent-soft text-sm font-bold text-accent-ink">
+                          <span className="grid h-9 w-9 flex-none place-items-center rounded-x-pill bg-accent-soft text-sm font-bold text-on-accent">
                             {user.name.slice(0, 1)}
                           </span>
                           <div className="min-w-0">
-                            <span className="flex items-center gap-2 font-semibold text-fg">
+                            <span className="flex items-center gap-2 font-semibold text-text-primary">
                               {user.name}
                               {isSelf && <Badge tone="neutral">{t('user.list.selfBadge')}</Badge>}
                             </span>
-                            <span className="block truncate text-xs text-fg-faint">
+                            <span className="block truncate text-xs text-text-faint">
                               {user.email}
                             </span>
                           </div>
@@ -296,7 +296,7 @@ export function UserList() {
               ))}
             </Select>
           </Field>
-          <p className="text-xs text-fg-faint">{t('user.invite.tempNote')}</p>
+          <p className="text-xs text-text-faint">{t('user.invite.tempNote')}</p>
         </div>
       </Modal>
     </div>

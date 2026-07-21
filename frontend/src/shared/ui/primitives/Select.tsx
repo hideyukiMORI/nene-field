@@ -11,7 +11,7 @@ export function Select({ className, children, ...rest }: SelectProps) {
     <div className="relative w-full">
       <select
         className={cn(
-          'block w-full appearance-none rounded-input border border-border-input bg-surface-raised px-3 py-2.5 pr-9 text-sm text-fg outline-none',
+          'block w-full appearance-none rounded-x-input border border-x-border-input bg-surface-raised px-3 py-2.5 pr-9 text-sm text-text-primary outline-none',
           'focus:border-accent focus:ring-2 focus:ring-accent-soft',
           'disabled:cursor-not-allowed disabled:opacity-50',
           className,
@@ -22,7 +22,7 @@ export function Select({ className, children, ...rest }: SelectProps) {
       </select>
       <span
         aria-hidden
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-fg-faint"
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-text-faint"
       >
         ▾
       </span>
