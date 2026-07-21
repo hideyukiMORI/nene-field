@@ -125,7 +125,9 @@ export function ReportDetailView({ reportId, renderActions }: ReportDetailViewPr
               >
                 <span className="text-sm text-text-primary">
                   {attachment.filename}
-                  <span className="ml-2 text-text-muted">{formatFileSize(attachment.fileSize)}</span>
+                  <span className="ml-2 text-text-muted">
+                    {formatFileSize(attachment.fileSize)}
+                  </span>
                 </span>
                 <Button
                   variant="secondary"

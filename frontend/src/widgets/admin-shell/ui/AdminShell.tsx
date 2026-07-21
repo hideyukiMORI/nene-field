@@ -242,7 +242,9 @@ export function AdminShell() {
         <header className="flex h-15 flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5">
           <div className="min-w-0">
             <h1 className="text-base font-bold leading-tight text-text-primary">{t(titleKey)}</h1>
-            {crumbKey !== undefined && <p className="text-caption text-text-faint">{t(crumbKey)}</p>}
+            {crumbKey !== undefined && (
+              <p className="text-caption text-text-faint">{t(crumbKey)}</p>
+            )}
           </div>
 
           <div className="flex-1" />

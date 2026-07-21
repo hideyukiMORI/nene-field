@@ -187,7 +187,9 @@ export function ExportReportsForm() {
                   className="flex items-center gap-2 rounded-x-input bg-surface-overlay px-3 py-2 text-xs"
                 >
                   <span className="flex-none text-x-fg-faint-2 tabular-nums">{r.workDate}</span>
-                  <span className="min-w-0 flex-1 truncate font-semibold text-text-primary">{r.title}</span>
+                  <span className="min-w-0 flex-1 truncate font-semibold text-text-primary">
+                    {r.title}
+                  </span>
                   <span className="flex-none text-x-fg-muted-2">{r.userName}</span>
                 </div>
               ))

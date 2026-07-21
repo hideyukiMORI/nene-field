@@ -340,7 +340,9 @@ export function ListReports() {
                       {formatCalendarDate(r.workDate)}
                     </Td>
                     <Td>
-                      <span className="block truncate font-semibold text-text-primary">{r.title}</span>
+                      <span className="block truncate font-semibold text-text-primary">
+                        {r.title}
+                      </span>
                       <span className="block truncate text-caption text-text-faint">
                         {r.aiSummary ?? t('report.list.aiSummaryNone')}
                       </span>

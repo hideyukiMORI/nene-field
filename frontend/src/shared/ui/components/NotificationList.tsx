@@ -80,7 +80,9 @@ export function NotificationList({
                     {s.glyph}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold text-text-primary">{n.title}</span>
+                    <span className="block truncate text-sm font-semibold text-text-primary">
+                      {n.title}
+                    </span>
                     <span className="block truncate text-xs text-text-muted">{n.sub}</span>
                     <span className="mt-0.5 block text-xs text-text-faint">{n.time}</span>
                   </span>

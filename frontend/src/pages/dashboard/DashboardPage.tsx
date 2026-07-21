@@ -94,7 +94,9 @@ export function DashboardPage() {
       {/* ── header ───────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-end gap-3.5">
         <div className="min-w-0">
-          <h2 className="text-screen-title font-bold text-text-primary">{t('common.nav.dashboard')}</h2>
+          <h2 className="text-screen-title font-bold text-text-primary">
+            {t('common.nav.dashboard')}
+          </h2>
           <p className="mt-0.5 text-ui text-x-fg-muted-2">
             {t('dashboard.view')} ・ <span className="tabular-nums">{todayLabel()}</span>
           </p>
@@ -140,7 +142,9 @@ export function DashboardPage() {
           <BarChart data={DAILY} />
         </div>
         <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5 lg:col-span-2">
-          <h3 className="mb-4.5 text-sm font-bold text-text-primary">{t('dashboard.chart.status')}</h3>
+          <h3 className="mb-4.5 text-sm font-bold text-text-primary">
+            {t('dashboard.chart.status')}
+          </h3>
           <Donut segments={statusSegments} />
         </div>
       </div>
@@ -149,7 +153,9 @@ export function DashboardPage() {
       <div className="flex flex-col gap-4.5 lg:flex-row">
         <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-border bg-surface-raised">
           <div className="flex items-center gap-2 border-b border-border px-4.5 py-3.5">
-            <h3 className="flex-1 text-sm font-bold text-text-primary">{t('dashboard.queue.title')}</h3>
+            <h3 className="flex-1 text-sm font-bold text-text-primary">
+              {t('dashboard.queue.title')}
+            </h3>
             <Link
               to="/reports"
               className="text-label font-semibold text-on-accent hover:text-accent"
@@ -160,7 +166,9 @@ export function DashboardPage() {
           {queue.length === 0 ? (
             <div className="px-5 py-11 text-center">
               <div className="mb-2 text-3xl text-x-btn-success">✓</div>
-              <p className="text-ui font-semibold text-x-fg-muted-2">{t('dashboard.queue.empty')}</p>
+              <p className="text-ui font-semibold text-x-fg-muted-2">
+                {t('dashboard.queue.empty')}
+              </p>
             </div>
           ) : (
             <ul>
@@ -210,14 +218,18 @@ export function DashboardPage() {
         <div className="flex flex-col gap-4.5 lg:w-80 lg:flex-none">
           {/* quick filters */}
           <div className="rounded-2xl border border-border bg-surface-raised px-4.5 py-4">
-            <h3 className="mb-3 text-ui font-bold text-text-primary">{t('dashboard.quick.title')}</h3>
+            <h3 className="mb-3 text-ui font-bold text-text-primary">
+              {t('dashboard.quick.title')}
+            </h3>
             <QuickRow icon="⏳" to="/reports" label={t('dashboard.quick.pending')}>
               <span className="text-label font-bold text-on-accent tabular-nums">
                 {queue.length}
               </span>
             </QuickRow>
             <QuickRow icon="▤" to="/reports" label={t('dashboard.quick.today')}>
-              <span className="text-label font-bold text-x-fg-muted-2 tabular-nums">{KPI_TODAY}</span>
+              <span className="text-label font-bold text-x-fg-muted-2 tabular-nums">
+                {KPI_TODAY}
+              </span>
             </QuickRow>
             <QuickRow icon="⬇" to="/export" label={t('dashboard.quick.toExport')}>
               <span className="text-base text-x-fg-faint-2">›</span>
@@ -262,7 +274,11 @@ function Kpi({
   subTone?: 'approved'
 }) {
   const valueColor =
-    tone === 'accent' ? 'text-on-accent' : tone === 'rejected' ? 'text-x-rejected' : 'text-text-primary'
+    tone === 'accent'
+      ? 'text-on-accent'
+      : tone === 'rejected'
+        ? 'text-x-rejected'
+        : 'text-text-primary'
   const subColor = subTone === 'approved' ? 'text-x-btn-success' : 'text-x-fg-faint-2'
   return (
     <div className="rounded-2xl border border-border bg-surface-raised px-5 py-4.5">

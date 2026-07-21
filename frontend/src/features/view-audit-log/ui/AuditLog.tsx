@@ -194,7 +194,9 @@ function DiffModal({ event, onClose }: { event: AuditEvent; onClose: () => void 
                   <div key={key} className="grid grid-cols-2">
                     <div
                       className={
-                        changed && b !== undefined ? 'bg-x-rejected-soft px-3 py-1.5' : 'px-3 py-1.5'
+                        changed && b !== undefined
+                          ? 'bg-x-rejected-soft px-3 py-1.5'
+                          : 'px-3 py-1.5'
                       }
                     >
                       <span className="text-text-faint">{key}: </span>

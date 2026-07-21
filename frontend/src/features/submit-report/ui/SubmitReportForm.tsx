@@ -111,7 +111,9 @@ export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => voi
         >
           ✕
         </button>
-        <h1 className="flex-1 text-base font-bold text-text-primary">{t('report.submit.mobileTitle')}</h1>
+        <h1 className="flex-1 text-base font-bold text-text-primary">
+          {t('report.submit.mobileTitle')}
+        </h1>
         <span className="flex items-center gap-1 text-xs text-x-approved">
           ✓ {t('report.submit.autosave')}
         </span>

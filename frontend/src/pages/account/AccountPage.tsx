@@ -45,7 +45,9 @@ export function AccountPage() {
 
         <Card padded={false}>
           <label className="flex items-center justify-between gap-3 p-4">
-            <span className="text-sm font-medium text-text-primary">{t('mobile.account.language')}</span>
+            <span className="text-sm font-medium text-text-primary">
+              {t('mobile.account.language')}
+            </span>
             <div className="w-36">
               <Select
                 value={locale}
