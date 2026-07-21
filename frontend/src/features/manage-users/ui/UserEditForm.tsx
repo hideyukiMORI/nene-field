@@ -84,7 +84,7 @@ export function UserEditForm({ user, onSubmit, isPending, errorKey }: UserEditFo
                 ))}
               </Select>
             </Field>
-            <label className="flex items-center gap-2 text-sm text-fg">
+            <label className="flex items-center gap-2 text-sm text-text-primary">
               <input type="checkbox" {...register('isActive')} />
               {t('user.form.isActive')}
             </label>

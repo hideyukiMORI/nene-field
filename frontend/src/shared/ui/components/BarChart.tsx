@@ -17,12 +17,12 @@ export function BarChart({ data }: { data: BarDatum[] }) {
     <div className="flex h-40 items-end gap-3.5">
       {data.map((d) => (
         <div key={d.label} className="flex flex-1 flex-col items-center justify-end gap-1.5">
-          <span className="text-xs font-semibold text-fg tnum">{d.value}</span>
+          <span className="text-xs font-semibold text-text-primary tnum">{d.value}</span>
           <div
-            className={cn('w-full rounded-t', d.today ? 'bg-accent-soft-border' : 'bg-accent')}
+            className={cn('w-full rounded-t', d.today ? 'bg-x-accent-soft-border' : 'bg-accent')}
             style={{ height: `${String(Math.round((d.value / max) * 128))}px` }}
           />
-          <span className="text-xs text-fg-faint">{d.label}</span>
+          <span className="text-xs text-text-faint">{d.label}</span>
         </div>
       ))}
     </div>

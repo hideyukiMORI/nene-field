@@ -77,8 +77,8 @@ export function ReviewModals({ reportId, context, mode, onClose, onReviewed }: R
       <div className="flex flex-col gap-4">
         {errorKey !== null && <InlineAlert variant="error">{t(errorKey)}</InlineAlert>}
         {context !== null && context !== undefined && context !== '' && (
-          <div className="rounded-input bg-ai-soft px-4 py-3 text-sm text-fg">
-            <span className="text-xs font-semibold text-ai">AI</span>
+          <div className="rounded-x-input bg-x-ai-soft px-4 py-3 text-sm text-text-primary">
+            <span className="text-xs font-semibold text-x-ai">AI</span>
             <p className="mt-1">{context}</p>
           </div>
         )}

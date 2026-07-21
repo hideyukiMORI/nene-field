@@ -177,12 +177,12 @@ export function ListReports() {
   return (
     <div className="flex h-full flex-col">
       {/* pinned toolbar (作業卓): flex-none white bar, body below scrolls */}
-      <div className="relative z-10 flex flex-none flex-col gap-3.5 border-b border-border bg-surface-raised px-6.5 py-4 shadow-toolbar">
+      <div className="relative z-10 flex flex-none flex-col gap-3.5 border-b border-border bg-surface-raised px-6.5 py-4 shadow-x-toolbar">
         {/* row: title + search + submitter + CSV */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <h2 className="mr-1 text-lg font-bold text-fg">{t('report.list.title')}</h2>
-          <div className="flex w-70 items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2">
-            <span aria-hidden className="text-ui text-fg-faint-2">
+          <h2 className="mr-1 text-lg font-bold text-text-primary">{t('report.list.title')}</h2>
+          <div className="flex w-70 items-center gap-2 rounded-x-pill border border-border bg-surface-overlay px-3.5 py-2">
+            <span aria-hidden className="text-ui text-x-fg-faint-2">
               ⌕
             </span>
             <input
@@ -193,7 +193,7 @@ export function ListReports() {
                 })
               }}
               placeholder={t('report.list.search')}
-              className="w-full border-0 bg-transparent text-ui text-fg outline-none placeholder:text-fg-faint-2"
+              className="w-full border-0 bg-transparent text-ui text-text-primary outline-none placeholder:text-x-fg-faint-2"
             />
           </div>
           <div className="w-44">
@@ -204,7 +204,7 @@ export function ListReports() {
                   setSubmitter(e.target.value)
                 })
               }}
-              className="rounded-pill"
+              className="rounded-x-pill"
             >
               <option value="">{t('report.list.submitterAll')}</option>
               {submitters.map((name) => (
@@ -238,7 +238,7 @@ export function ListReports() {
             </Chip>
           ))}
           <div className="flex-1" />
-          <span className="text-label text-fg-faint tabular-nums">
+          <span className="text-label text-text-faint tabular-nums">
             {t('report.list.count', { count: filtered.length })}
           </span>
         </div>
@@ -246,7 +246,7 @@ export function ListReports() {
 
       {/* full-width bulk action bar (accent), shown when rows are selected */}
       {selected.size > 0 && (
-        <div className="flex flex-none items-center gap-3 bg-accent px-6.5 py-2.75 text-fg-inverse">
+        <div className="flex flex-none items-center gap-3 bg-accent px-6.5 py-2.75 text-text-inverse">
           <span className="text-ui font-semibold">
             {t('report.list.bulk.selected', { count: selected.size })}
           </span>
@@ -254,7 +254,7 @@ export function ListReports() {
           <button
             type="button"
             onClick={bulkApprove}
-            className="rounded-pill bg-surface-raised px-4.5 py-2 text-ui font-bold text-accent-ink"
+            className="rounded-x-pill bg-surface-raised px-4.5 py-2 text-ui font-bold text-on-accent"
           >
             {t('report.list.bulk.approve')}
           </button>
@@ -263,14 +263,14 @@ export function ListReports() {
             onClick={() => {
               setRejectTarget('bulk')
             }}
-            className="rounded-pill border border-fg-inverse/55 px-4.5 py-2 text-ui font-bold text-fg-inverse active:bg-fg-inverse/10"
+            className="rounded-x-pill border border-text-inverse/55 px-4.5 py-2 text-ui font-bold text-text-inverse active:bg-text-inverse/10"
           >
             {t('report.list.bulk.reject')}
           </button>
           <button
             type="button"
             onClick={clearSelection}
-            className="px-1.5 py-2 text-ui font-semibold text-fg-inverse/80"
+            className="px-1.5 py-2 text-ui font-semibold text-text-inverse/80"
           >
             {t('report.list.bulk.clear')}
           </button>
@@ -328,20 +328,20 @@ export function ListReports() {
                     </Td>
                     <Td>
                       <div className="flex items-center gap-2.5">
-                        <span className="grid h-7.5 w-7.5 flex-none place-items-center rounded-pill bg-accent-soft text-caption font-bold text-accent-ink">
+                        <span className="grid h-7.5 w-7.5 flex-none place-items-center rounded-x-pill bg-accent-soft text-caption font-bold text-on-accent">
                           {r.userName.slice(0, 1)}
                         </span>
-                        <span className="whitespace-nowrap font-semibold text-fg">
+                        <span className="whitespace-nowrap font-semibold text-text-primary">
                           {r.userName}
                         </span>
                       </div>
                     </Td>
-                    <Td className="whitespace-nowrap text-fg-muted tabular-nums">
+                    <Td className="whitespace-nowrap text-text-muted tabular-nums">
                       {formatCalendarDate(r.workDate)}
                     </Td>
                     <Td>
-                      <span className="block truncate font-semibold text-fg">{r.title}</span>
-                      <span className="block truncate text-caption text-fg-faint">
+                      <span className="block truncate font-semibold text-text-primary">{r.title}</span>
+                      <span className="block truncate text-caption text-text-faint">
                         {r.aiSummary ?? t('report.list.aiSummaryNone')}
                       </span>
                     </Td>
@@ -375,7 +375,7 @@ export function ListReports() {
                           </Button>
                         </div>
                       ) : (
-                        <span className="block text-right text-label text-fg-faint-2">
+                        <span className="block text-right text-label text-x-fg-faint-2">
                           {t('report.list.processed')}
                         </span>
                       )}
@@ -391,7 +391,7 @@ export function ListReports() {
       {/* pagination footer */}
       {filtered.length > 0 && (
         <div className="flex flex-none items-center gap-3 border-t border-border bg-surface-raised px-6.5 py-3">
-          <span className="text-label text-fg-muted-2 tabular-nums">
+          <span className="text-label text-x-fg-muted-2 tabular-nums">
             {t('report.list.pageInfo', { from: rangeFrom, to: rangeTo, total: filtered.length })}
           </span>
           <div className="flex-1" />
@@ -402,11 +402,11 @@ export function ListReports() {
             onClick={() => {
               setPage((p) => Math.max(0, p - 1))
             }}
-            className="grid h-8 w-8 place-items-center rounded-pill border border-border-strong text-fg-muted disabled:opacity-40 hover:bg-surface-overlay"
+            className="grid h-8 w-8 place-items-center rounded-x-pill border border-border-strong text-text-muted disabled:opacity-40 hover:bg-surface-overlay"
           >
             ‹
           </button>
-          <span className="min-w-13 text-center text-ui font-semibold text-fg-muted tabular-nums">
+          <span className="min-w-13 text-center text-ui font-semibold text-text-muted tabular-nums">
             {safePage + 1} / {totalPages}
           </span>
           <button
@@ -416,7 +416,7 @@ export function ListReports() {
             onClick={() => {
               setPage((p) => Math.min(totalPages - 1, p + 1))
             }}
-            className="grid h-8 w-8 place-items-center rounded-pill border border-border-strong text-fg-muted disabled:opacity-40 hover:bg-surface-overlay"
+            className="grid h-8 w-8 place-items-center rounded-x-pill border border-border-strong text-text-muted disabled:opacity-40 hover:bg-surface-overlay"
           >
             ›
           </button>
@@ -438,7 +438,7 @@ export function ListReports() {
               onClick={() => {
                 moveDrawer(-1)
               }}
-              className="grid h-8 w-8 place-items-center rounded-pill text-fg-muted hover:bg-surface-overlay"
+              className="grid h-8 w-8 place-items-center rounded-x-pill text-text-muted hover:bg-surface-overlay"
             >
               ‹
             </button>
@@ -448,11 +448,11 @@ export function ListReports() {
               onClick={() => {
                 moveDrawer(1)
               }}
-              className="grid h-8 w-8 place-items-center rounded-pill text-fg-muted hover:bg-surface-overlay"
+              className="grid h-8 w-8 place-items-center rounded-x-pill text-text-muted hover:bg-surface-overlay"
             >
               ›
             </button>
-            <span className="ml-1 text-caption text-fg-faint tabular-nums">
+            <span className="ml-1 text-caption text-text-faint tabular-nums">
               {t('report.drawer.position', {
                 current: (drawerIndex ?? 0) + 1,
                 total: filtered.length,
@@ -483,7 +483,7 @@ export function ListReports() {
               </Button>
             </>
           ) : (
-            <span className="text-sm text-fg-faint">{t('report.drawer.processed')}</span>
+            <span className="text-sm text-text-faint">{t('report.drawer.processed')}</span>
           )
         }
       >
@@ -553,28 +553,28 @@ function DrawerBody({ report }: { report: ReportSummary }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-lg font-bold text-fg">{report.title}</h3>
+        <h3 className="text-lg font-bold text-text-primary">{report.title}</h3>
         <Badge tone={statusTone[report.status]}>{t(statusKey[report.status])}</Badge>
       </div>
       <dl className="flex flex-col gap-2 text-sm">
         <div className="flex gap-3">
-          <dt className="w-24 flex-none text-fg-muted">{t('report.col.user')}</dt>
-          <dd className="text-fg">{report.userName}</dd>
+          <dt className="w-24 flex-none text-text-muted">{t('report.col.user')}</dt>
+          <dd className="text-text-primary">{report.userName}</dd>
         </div>
         <div className="flex gap-3">
-          <dt className="w-24 flex-none text-fg-muted">{t('report.col.workDate')}</dt>
-          <dd className="text-fg tnum">{formatCalendarDate(report.workDate)}</dd>
+          <dt className="w-24 flex-none text-text-muted">{t('report.col.workDate')}</dt>
+          <dd className="text-text-primary tnum">{formatCalendarDate(report.workDate)}</dd>
         </div>
         {report.projectCode !== null && (
           <div className="flex gap-3">
-            <dt className="w-24 flex-none text-fg-muted">{t('report.field.projectCode')}</dt>
-            <dd className="text-fg">{report.projectCode}</dd>
+            <dt className="w-24 flex-none text-text-muted">{t('report.field.projectCode')}</dt>
+            <dd className="text-text-primary">{report.projectCode}</dd>
           </div>
         )}
       </dl>
       {report.aiSummary !== null && (
-        <div className="rounded-input bg-ai-soft px-4 py-3 text-sm text-fg">
-          <span className="text-xs font-semibold text-ai">{t('report.col.aiSummary')}</span>
+        <div className="rounded-x-input bg-x-ai-soft px-4 py-3 text-sm text-text-primary">
+          <span className="text-xs font-semibold text-x-ai">{t('report.col.aiSummary')}</span>
           <p className="mt-1">{report.aiSummary}</p>
         </div>
       )}

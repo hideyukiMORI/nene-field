@@ -11,10 +11,10 @@ interface TextProps {
 }
 
 const variantClass: Record<TextVariant, string> = {
-  title: 'text-xl font-bold text-fg',
-  subtitle: 'text-sm text-fg-muted',
-  body: 'text-sm text-fg',
-  muted: 'text-sm text-fg-muted',
+  title: 'text-xl font-bold text-text-primary',
+  subtitle: 'text-sm text-text-muted',
+  body: 'text-sm text-text-primary',
+  muted: 'text-sm text-text-muted',
 }
 
 export function Text({ variant = 'body', as = 'p', className, children }: TextProps) {

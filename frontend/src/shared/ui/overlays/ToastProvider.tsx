@@ -36,9 +36,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         >
           <div
             key={toast.id}
-            className="inline-flex items-center gap-2 rounded-pill bg-fg px-6 py-3 text-sm font-semibold text-fg-inverse shadow-modal animate-nfup"
+            className="inline-flex items-center gap-2 rounded-x-pill bg-text-primary px-6 py-3 text-sm font-semibold text-text-inverse shadow-x-modal animate-nfup"
           >
-            <span className="text-toast-check">✓</span>
+            <span className="text-x-toast-check">✓</span>
             {toast.message}
           </div>
         </div>

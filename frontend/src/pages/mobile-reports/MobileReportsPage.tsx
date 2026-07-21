@@ -44,8 +44,8 @@ export function MobileReportsPage() {
   return (
     <div className="flex flex-col">
       <header className="flex items-center justify-between border-b border-border bg-surface-raised px-4 py-3.5">
-        <h1 className="text-base font-bold text-fg">{t('mobile.tab.reports')}</h1>
-        <span className="text-xs text-fg-faint tabular-nums">
+        <h1 className="text-base font-bold text-text-primary">{t('mobile.tab.reports')}</h1>
+        <span className="text-xs text-text-faint tabular-nums">
           {t('mobile.reports.count', { count: reports.length })}
         </span>
       </header>
@@ -95,22 +95,22 @@ export function MobileReportsPage() {
               to={`/reports/${r.id}`}
               className={
                 r.status === 'rejected'
-                  ? 'rounded-card border border-border border-l-4 border-l-rejected bg-surface-raised p-3.5'
-                  : 'rounded-card border border-border bg-surface-raised p-3.5'
+                  ? 'rounded-x-card border border-border border-l-4 border-l-x-rejected bg-surface-raised p-3.5'
+                  : 'rounded-x-card border border-border bg-surface-raised p-3.5'
               }
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="truncate font-semibold text-fg">{r.title}</span>
+                <span className="truncate font-semibold text-text-primary">{r.title}</span>
                 <Badge tone={statusTone[r.status]}>{t(statusKey[r.status])}</Badge>
               </div>
-              <p className="mt-1 text-xs text-fg-muted">
+              <p className="mt-1 text-xs text-text-muted">
                 <span className="font-mono tabular-nums">{formatCalendarDate(r.workDate)}</span>
                 {r.tags.length > 0 && <span> · {r.tags.slice(0, 2).join(' · ')}</span>}
               </p>
               {r.aiSummary !== null && (
-                <div className="mt-2 rounded-input bg-ai-soft px-3 py-2">
-                  <span className="mr-1 text-xs font-bold text-ai">AI</span>
-                  <span className="text-xs text-fg">{r.aiSummary}</span>
+                <div className="mt-2 rounded-x-input bg-x-ai-soft px-3 py-2">
+                  <span className="mr-1 text-xs font-bold text-x-ai">AI</span>
+                  <span className="text-xs text-text-primary">{r.aiSummary}</span>
                 </div>
               )}
             </Link>

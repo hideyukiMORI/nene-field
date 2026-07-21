@@ -23,7 +23,7 @@ export function Th({ className, children, ...rest }: ThHTMLAttributes<HTMLTableC
   return (
     <th
       className={cn(
-        'border-b border-border px-3 py-2.5 text-left text-xs font-semibold tracking-wide text-fg-faint',
+        'border-b border-border px-3 py-2.5 text-left text-xs font-semibold tracking-wide text-text-faint',
         className,
       )}
       {...rest}
@@ -49,8 +49,8 @@ export function Tr({
     <tr
       className={cn(
         'border-b border-border',
-        selected && 'bg-row-hover',
-        interactive && 'cursor-pointer hover:bg-row-hover active:bg-row-active',
+        selected && 'bg-x-row-hover',
+        interactive && 'cursor-pointer hover:bg-x-row-hover active:bg-x-row-active',
         className,
       )}
       {...rest}

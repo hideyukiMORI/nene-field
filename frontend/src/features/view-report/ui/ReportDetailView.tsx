@@ -97,15 +97,15 @@ export function ReportDetailView({ reportId, renderActions }: ReportDetailViewPr
 
       <Stack gap="sm">
         <Text variant="subtitle">{t('report.field.body')}</Text>
-        <p className="border border-border bg-surface-raised p-4 text-sm whitespace-pre-wrap text-fg">
+        <p className="border border-border bg-surface-raised p-4 text-sm whitespace-pre-wrap text-text-primary">
           {report.body}
         </p>
       </Stack>
 
       {report.aiSummary !== null && (
-        <div className="rounded-card bg-ai-soft p-4">
-          <span className="text-xs font-semibold text-ai">{t('report.field.aiSummary')}</span>
-          <p className="mt-1 text-sm text-fg">{report.aiSummary}</p>
+        <div className="rounded-x-card bg-x-ai-soft p-4">
+          <span className="text-xs font-semibold text-x-ai">{t('report.field.aiSummary')}</span>
+          <p className="mt-1 text-sm text-text-primary">{report.aiSummary}</p>
         </div>
       )}
 
@@ -123,9 +123,9 @@ export function ReportDetailView({ reportId, renderActions }: ReportDetailViewPr
                 key={attachment.attachmentId}
                 className="flex items-center justify-between gap-3 px-4 py-2"
               >
-                <span className="text-sm text-fg">
+                <span className="text-sm text-text-primary">
                   {attachment.filename}
-                  <span className="ml-2 text-fg-muted">{formatFileSize(attachment.fileSize)}</span>
+                  <span className="ml-2 text-text-muted">{formatFileSize(attachment.fileSize)}</span>
                 </span>
                 <Button
                   variant="secondary"
@@ -150,8 +150,8 @@ export function ReportDetailView({ reportId, renderActions }: ReportDetailViewPr
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-fg-muted">{label}</dt>
-      <dd className="text-fg">{value}</dd>
+      <dt className="text-text-muted">{label}</dt>
+      <dd className="text-text-primary">{value}</dd>
     </div>
   )
 }

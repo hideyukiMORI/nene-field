@@ -107,12 +107,12 @@ export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => voi
           onClick={() => {
             void navigate(-1)
           }}
-          className="text-xl text-fg-muted"
+          className="text-xl text-text-muted"
         >
           ✕
         </button>
-        <h1 className="flex-1 text-base font-bold text-fg">{t('report.submit.mobileTitle')}</h1>
-        <span className="flex items-center gap-1 text-xs text-approved">
+        <h1 className="flex-1 text-base font-bold text-text-primary">{t('report.submit.mobileTitle')}</h1>
+        <span className="flex items-center gap-1 text-xs text-x-approved">
           ✓ {t('report.submit.autosave')}
         </span>
       </header>
@@ -178,12 +178,12 @@ export function SubmitReportForm({ onDone }: { onDone: (reportId: string) => voi
 
           {/* camera-style attachment area */}
           <div>
-            <span className="mb-1.5 block text-xs font-semibold text-fg">
+            <span className="mb-1.5 block text-xs font-semibold text-text-primary">
               {t('report.submit.photo')}
             </span>
             <button
               type="button"
-              className="flex w-full flex-col items-center gap-1 rounded-input border-2 border-dashed border-border-strong bg-surface-overlay py-6 text-fg-muted"
+              className="flex w-full flex-col items-center gap-1 rounded-x-input border-2 border-dashed border-border-strong bg-surface-overlay py-6 text-text-muted"
             >
               <span className="text-2xl">📷</span>
               <span className="text-xs">{t('report.submit.photoHint')}</span>

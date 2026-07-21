@@ -192,7 +192,7 @@ function FieldEditor({
           aria-label={t('template.field.label')}
           placeholder={t('template.field.label')}
           {...register(`fields.${index}.label`)}
-          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-raised px-2.75 py-2.25 text-sm font-semibold text-fg outline-none focus:border-accent"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-raised px-2.75 py-2.25 text-sm font-semibold text-text-primary outline-none focus:border-accent"
         />
         <div className="flex flex-none flex-col">
           <button
@@ -202,7 +202,7 @@ function FieldEditor({
             onClick={() => {
               onMove(-1)
             }}
-            className="grid h-5 w-6 place-items-center text-micro text-fg-faint hover:text-fg disabled:opacity-30"
+            className="grid h-5 w-6 place-items-center text-micro text-text-faint hover:text-text-primary disabled:opacity-30"
           >
             ▲
           </button>
@@ -213,7 +213,7 @@ function FieldEditor({
             onClick={() => {
               onMove(1)
             }}
-            className="grid h-5 w-6 place-items-center text-micro text-fg-faint hover:text-fg disabled:opacity-30"
+            className="grid h-5 w-6 place-items-center text-micro text-text-faint hover:text-text-primary disabled:opacity-30"
           >
             ▼
           </button>
@@ -228,13 +228,13 @@ function FieldEditor({
             setValue(`fields.${index}.type`, nextType(type), { shouldDirty: true })
           }}
           title={t('template.field.type')}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-overlay px-3 py-1.75 text-label text-fg-muted active:bg-surface-overlay"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-overlay px-3 py-1.75 text-label text-text-muted active:bg-surface-overlay"
         >
-          <span className="text-micro text-fg-faint-2">{t('template.field.type')}</span>
-          <span className="font-semibold text-fg">{t(TYPE_LABEL_KEY[type])}</span>
-          <span className="text-fg-faint-2">⇄</span>
+          <span className="text-micro text-x-fg-faint-2">{t('template.field.type')}</span>
+          <span className="font-semibold text-text-primary">{t(TYPE_LABEL_KEY[type])}</span>
+          <span className="text-x-fg-faint-2">⇄</span>
         </button>
-        <label className="flex items-center gap-2 text-label text-fg-muted">
+        <label className="flex items-center gap-2 text-label text-text-muted">
           <Toggle
             size="sm"
             checked={required}
@@ -250,7 +250,7 @@ function FieldEditor({
           type="button"
           disabled={isPending}
           onClick={onRemove}
-          className="rounded-lg px-2.25 py-1.25 text-label font-semibold text-rejected hover:bg-rejected-soft disabled:opacity-40"
+          className="rounded-lg px-2.25 py-1.25 text-label font-semibold text-x-rejected hover:bg-x-rejected-soft disabled:opacity-40"
         >
           {t('template.form.removeField')}
         </button>
@@ -264,12 +264,12 @@ function FieldEditor({
             placeholder={t('template.field.optionsHint')}
             {...register(`fields.${index}.options`)}
             className={cn(
-              'w-full rounded-lg border bg-surface-raised px-2.75 py-2.25 text-ui text-fg outline-none focus:border-accent',
-              rowErrors?.options !== undefined ? 'border-rejected' : 'border-border',
+              'w-full rounded-lg border bg-surface-raised px-2.75 py-2.25 text-ui text-text-primary outline-none focus:border-accent',
+              rowErrors?.options !== undefined ? 'border-x-rejected' : 'border-border',
             )}
           />
           {rowErrors?.options !== undefined && (
-            <p className="mt-1 text-caption text-rejected">{t('error.validation.required')}</p>
+            <p className="mt-1 text-caption text-x-rejected">{t('error.validation.required')}</p>
           )}
         </div>
       )}
@@ -283,9 +283,9 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
   const name = useWatch({ control, name: 'name' })
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-card">
+    <div className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-x-card">
       <div
-        className="px-4 py-3.5 text-base font-bold text-fg-inverse"
+        className="px-4 py-3.5 text-base font-bold text-text-inverse"
         style={{ background: 'linear-gradient(155deg, #1488ad, #0e4a5e)' }}
       >
         {name.trim() === '' ? t('template.form.preview') : name}
@@ -296,19 +296,19 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
           return (
             <div key={i}>
               {f.type === 'checkbox' ? (
-                <label className="flex items-center gap-2.5 text-ui text-fg-muted">
+                <label className="flex items-center gap-2.5 text-ui text-text-muted">
                   <span className="h-4.5 w-4.5 flex-none rounded border-2 border-border-strong" />
                   {label}
-                  {f.required && <span className="text-rejected">＊</span>}
+                  {f.required && <span className="text-x-rejected">＊</span>}
                 </label>
               ) : (
                 <>
-                  <span className="mb-1.5 block text-label font-semibold text-fg-muted">
+                  <span className="mb-1.5 block text-label font-semibold text-text-muted">
                     {label}
-                    {f.required && <span className="ml-0.5 text-rejected">＊</span>}
+                    {f.required && <span className="ml-0.5 text-x-rejected">＊</span>}
                   </span>
                   {f.type === 'select' ? (
-                    <div className="flex items-center rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-muted">
+                    <div className="flex items-center rounded-lg border border-x-border-input px-2.75 py-2.5 text-ui text-text-muted">
                       <span className="flex-1">
                         {splitOptions(f.options)[0] ?? t('template.form.previewPlaceholder')}
                       </span>
@@ -317,11 +317,11 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
                       </span>
                     </div>
                   ) : f.type === 'textarea' ? (
-                    <div className="min-h-15 rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-faint-2">
+                    <div className="min-h-15 rounded-lg border border-x-border-input px-2.75 py-2.5 text-ui text-x-fg-faint-2">
                       {t('template.form.previewPlaceholder')}
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-border-input px-2.75 py-2.5 text-ui text-fg-faint-2">
+                    <div className="rounded-lg border border-x-border-input px-2.75 py-2.5 text-ui text-x-fg-faint-2">
                       {t('template.form.previewPlaceholder')}
                     </div>
                   )}
@@ -330,7 +330,7 @@ function PreviewPanel({ control }: { control: Control<FormValues> }) {
             </div>
           )
         })}
-        <div className="mt-1.5 rounded-pill bg-accent py-3 text-center text-sm font-bold text-fg-inverse">
+        <div className="mt-1.5 rounded-x-pill bg-accent py-3 text-center text-sm font-bold text-text-inverse">
           {t('report.submit.submit')}
         </div>
       </div>
@@ -397,15 +397,15 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
       className="flex h-full flex-col"
     >
       {/* pinned toolbar (作業卓): template name + save (design handoff) */}
-      <div className="relative z-10 flex flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5 py-3.5 shadow-toolbar">
+      <div className="relative z-10 flex flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5 py-3.5 shadow-x-toolbar">
         <div className="min-w-0">
-          <label htmlFor="template-name" className="block text-caption text-fg-faint-2">
+          <label htmlFor="template-name" className="block text-caption text-x-fg-faint-2">
             {t('template.form.name')}
           </label>
           <input
             id="template-name"
             {...register('name')}
-            className="w-85 max-w-full border-0 border-b-2 border-transparent bg-transparent py-0.5 text-lg font-bold text-fg outline-none focus:border-accent"
+            className="w-85 max-w-full border-0 border-b-2 border-transparent bg-transparent py-0.5 text-lg font-bold text-text-primary outline-none focus:border-accent"
           />
         </div>
         <div className="flex-1" />
@@ -423,7 +423,7 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
             <InlineAlert variant="warn">{t('error.validation.required')}</InlineAlert>
           )}
 
-          <p className="mb-0.5 text-label font-bold tracking-wide text-fg-faint-2">
+          <p className="mb-0.5 text-label font-bold tracking-wide text-x-fg-faint-2">
             {t('template.form.fieldsLabel')} ・ {t('template.form.reorderHint')}
           </p>
 
@@ -466,7 +466,7 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
             onClick={() => {
               append({ name: '', label: '', type: 'text', required: false, options: '' })
             }}
-            className="rounded-xl border-2 border-dashed border-border-strong py-3.5 text-center text-ui font-semibold text-accent-ink hover:bg-surface-overlay disabled:opacity-50"
+            className="rounded-xl border-2 border-dashed border-border-strong py-3.5 text-center text-ui font-semibold text-on-accent hover:bg-surface-overlay disabled:opacity-50"
           >
             ＋ {t('template.form.addField')}
           </button>
@@ -474,7 +474,7 @@ export function TemplateForm({ initialTemplate, onSave, isPending, errorKey }: T
 
         {/* preview pane (提出者の見え方) */}
         <div className="overflow-y-auto bg-surface-sunken px-5.5 py-5.5 lg:w-96 lg:flex-none">
-          <p className="mb-3.25 text-label font-bold tracking-wide text-fg-faint-2">
+          <p className="mb-3.25 text-label font-bold tracking-wide text-x-fg-faint-2">
             {t('template.form.preview')}
           </p>
           <PreviewPanel control={control} />

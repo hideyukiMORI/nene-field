@@ -132,8 +132,8 @@ const SEED_NOTIFICATIONS: NotificationItem[] = [
 
 function navLinkClass({ isActive }: { isActive: boolean }): string {
   return cn(
-    'flex items-center gap-2.5 rounded-input px-3 py-2 text-sm text-fg-inverse/85 transition-colors',
-    isActive ? 'bg-white/15 font-semibold text-fg-inverse' : 'hover:bg-white/10',
+    'flex items-center gap-2.5 rounded-x-input px-3 py-2 text-sm text-text-inverse/85 transition-colors',
+    isActive ? 'bg-white/15 font-semibold text-text-inverse' : 'hover:bg-white/10',
   )
 }
 
@@ -167,20 +167,20 @@ export function AdminShell() {
   return (
     <div className="flex h-screen overflow-hidden bg-surface">
       {/* ── sidebar ─────────────────────────────────────────────── */}
-      <aside className="flex w-61 flex-none flex-col bg-gradient-to-b from-accent-deep to-accent-deep-2 px-3 py-4 text-fg-inverse">
+      <aside className="flex w-61 flex-none flex-col bg-gradient-to-b from-x-accent-deep to-x-accent-deep-2 px-3 py-4 text-text-inverse">
         <div className="flex items-center gap-2.5 px-2 pb-4">
-          <span className="grid h-9 w-9 place-items-center rounded-input bg-gradient-to-br from-accent to-accent-deep text-base font-extrabold">
+          <span className="grid h-9 w-9 place-items-center rounded-x-input bg-gradient-to-br from-accent to-x-accent-deep text-base font-extrabold">
             N
           </span>
           <div className="min-w-0">
             <div className="text-base font-extrabold tracking-wide">{t('common.app.name')}</div>
             {org.data !== undefined && (
-              <div className="truncate text-xs text-fg-inverse/55">{org.data.name}</div>
+              <div className="truncate text-xs text-text-inverse/55">{org.data.name}</div>
             )}
           </div>
         </div>
 
-        <p className="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-widest text-fg-inverse/55">
+        <p className="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-widest text-text-inverse/55">
           {t('shell.group.main')}
         </p>
         {/* end defaults to false in react-router; `?? false` keeps that behavior
@@ -191,7 +191,7 @@ export function AdminShell() {
             <span className="w-5 text-center opacity-90">{item.icon}</span>
             <span className="flex-1">{t(item.labelKey)}</span>
             {item.to === '/reports' && pendingCount > 0 && (
-              <span className="grid h-5 min-w-5 place-items-center rounded-pill bg-accent px-1.5 text-xs font-bold text-fg-inverse">
+              <span className="grid h-5 min-w-5 place-items-center rounded-x-pill bg-accent px-1.5 text-xs font-bold text-text-inverse">
                 {pendingCount}
               </span>
             )}
@@ -200,7 +200,7 @@ export function AdminShell() {
 
         {canManage && (
           <>
-            <p className="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-fg-inverse/55">
+            <p className="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-widest text-text-inverse/55">
               {t('shell.group.admin')}
             </p>
             {ADMIN_NAV.map((item) => (
@@ -215,7 +215,7 @@ export function AdminShell() {
         <div className="mt-auto border-t border-white/10 pt-3">
           <Link
             to="/"
-            className="flex w-full items-center gap-2.5 rounded-input px-3 py-2 text-sm text-fg-inverse/85 hover:bg-white/10"
+            className="flex w-full items-center gap-2.5 rounded-x-input px-3 py-2 text-sm text-text-inverse/85 hover:bg-white/10"
           >
             <span className="w-5 text-center">📱</span>
             {t('shell.openSubmitterApp')}
@@ -223,15 +223,15 @@ export function AdminShell() {
           <button
             type="button"
             onClick={signOut}
-            className="flex w-full items-center gap-2.5 rounded-input px-3 py-2 text-sm text-fg-inverse/85 hover:bg-white/10"
+            className="flex w-full items-center gap-2.5 rounded-x-input px-3 py-2 text-sm text-text-inverse/85 hover:bg-white/10"
           >
             <span className="w-5 text-center">⏻</span>
             {t('common.actions.signOut')}
           </button>
           {user !== null && (
-            <div className="px-3 pt-2 text-xs text-fg-inverse/70">
+            <div className="px-3 pt-2 text-xs text-text-inverse/70">
               {user.name}
-              <span className="block text-fg-inverse/45">{user.role}</span>
+              <span className="block text-text-inverse/45">{user.role}</span>
             </div>
           )}
         </div>
@@ -241,32 +241,32 @@ export function AdminShell() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-15 flex-none items-center gap-3.5 border-b border-border bg-surface-raised px-6.5">
           <div className="min-w-0">
-            <h1 className="text-base font-bold leading-tight text-fg">{t(titleKey)}</h1>
-            {crumbKey !== undefined && <p className="text-caption text-fg-faint">{t(crumbKey)}</p>}
+            <h1 className="text-base font-bold leading-tight text-text-primary">{t(titleKey)}</h1>
+            {crumbKey !== undefined && <p className="text-caption text-text-faint">{t(crumbKey)}</p>}
           </div>
 
           <div className="flex-1" />
 
-          <div className="hidden w-57.5 items-center gap-2 rounded-pill border border-border bg-surface-overlay px-3.5 py-2 text-ui text-fg-faint-2 md:flex">
+          <div className="hidden w-57.5 items-center gap-2 rounded-x-pill border border-border bg-surface-overlay px-3.5 py-2 text-ui text-x-fg-faint-2 md:flex">
             <span aria-hidden>⌕</span>
             <input
               type="search"
               placeholder={t('shell.search.placeholder')}
-              className="w-full bg-transparent text-ui text-fg outline-none placeholder:text-fg-faint-2"
+              className="w-full bg-transparent text-ui text-text-primary outline-none placeholder:text-x-fg-faint-2"
             />
           </div>
 
-          <div className="flex items-center rounded-pill bg-surface p-0.75 text-xs font-bold">
+          <div className="flex items-center rounded-x-pill bg-surface p-0.75 text-xs font-bold">
             <button
               type="button"
               onClick={() => {
                 setLocale('ja')
               }}
               className={cn(
-                'rounded-input px-2.75 py-1.25',
+                'rounded-x-input px-2.75 py-1.25',
                 locale === 'ja'
-                  ? 'bg-surface-raised text-accent-ink shadow-card'
-                  : 'text-fg-faint-2',
+                  ? 'bg-surface-raised text-on-accent shadow-x-card'
+                  : 'text-x-fg-faint-2',
               )}
             >
               日本語
@@ -277,10 +277,10 @@ export function AdminShell() {
                 setLocale('en')
               }}
               className={cn(
-                'rounded-input px-2.75 py-1.25',
+                'rounded-x-input px-2.75 py-1.25',
                 locale === 'en'
-                  ? 'bg-surface-raised text-accent-ink shadow-card'
-                  : 'text-fg-faint-2',
+                  ? 'bg-surface-raised text-on-accent shadow-x-card'
+                  : 'text-x-fg-faint-2',
               )}
             >
               EN
@@ -294,18 +294,18 @@ export function AdminShell() {
               onClick={() => {
                 setBellOpen((v) => !v)
               }}
-              className="relative grid h-9 w-9 place-items-center rounded-pill bg-surface-overlay text-base text-fg-muted hover:bg-surface-overlay"
+              className="relative grid h-9 w-9 place-items-center rounded-x-pill bg-surface-overlay text-base text-text-muted hover:bg-surface-overlay"
             >
               <span aria-hidden>◔</span>
               {unread > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-4.25 min-w-4.25 place-items-center rounded-pill border-2 border-surface-raised bg-rejected px-1 text-micro font-bold text-fg-inverse">
+                <span className="absolute -right-0.5 -top-0.5 grid h-4.25 min-w-4.25 place-items-center rounded-x-pill border-2 border-surface-raised bg-x-rejected px-1 text-micro font-bold text-text-inverse">
                   {unread}
                 </span>
               )}
             </button>
 
             {bellOpen && (
-              <div className="absolute right-0 top-12 w-86 overflow-hidden rounded-card border border-border bg-surface-raised shadow-modal animate-nfpop">
+              <div className="absolute right-0 top-12 w-86 overflow-hidden rounded-x-card border border-border bg-surface-raised shadow-x-modal animate-nfpop">
                 <NotificationList
                   items={notifications}
                   markAllLabel={t('shell.notifications.markAll')}
@@ -318,7 +318,7 @@ export function AdminShell() {
             )}
           </div>
 
-          <span className="grid h-9 w-9 place-items-center rounded-pill bg-accent-soft text-ui font-bold text-accent-ink">
+          <span className="grid h-9 w-9 place-items-center rounded-x-pill bg-accent-soft text-ui font-bold text-on-accent">
             {user?.name.slice(0, 1) ?? '?'}
           </span>
         </header>

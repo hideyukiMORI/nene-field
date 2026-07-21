@@ -32,11 +32,11 @@ export function Drawer({ open, onClose, closeLabel, header, footer, children }: 
       <button
         type="button"
         aria-label={closeLabel}
-        className="absolute inset-0 bg-fg/45"
+        className="absolute inset-0 bg-text-primary/45"
         onClick={onClose}
       />
       <aside
-        className="relative flex h-full w-full max-w-md flex-col bg-surface-raised shadow-drawer animate-nfslide"
+        className="relative flex h-full w-full max-w-md flex-col bg-surface-raised shadow-x-drawer animate-nfslide"
         role="dialog"
         aria-modal="true"
       >

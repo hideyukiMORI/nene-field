@@ -54,8 +54,8 @@ function SectionCard({
     <Card padded={false}>
       <div className="flex items-center gap-3 border-b border-border px-5 py-3.5">
         <div className="min-w-0">
-          <h3 className="text-sm font-bold text-fg">{title}</h3>
-          {subtitle !== undefined && <p className="mt-0.5 text-xs text-fg-muted">{subtitle}</p>}
+          <h3 className="text-sm font-bold text-text-primary">{title}</h3>
+          {subtitle !== undefined && <p className="mt-0.5 text-xs text-text-muted">{subtitle}</p>}
         </div>
         {action !== undefined && <div className="ml-auto flex-none">{action}</div>}
       </div>
@@ -111,11 +111,11 @@ export function OrganizationSettingsForm({
       {/* document header (書類): kicker · 23px title · top-right save */}
       <div className="mb-4.5 flex flex-wrap items-end gap-4.5 border-b border-border pb-4.5">
         <div className="min-w-0">
-          <p className="text-xs font-bold tracking-wide text-accent-ink">{t('settings.kicker')}</p>
-          <h2 className="mt-2 text-doc-title font-bold tracking-tight text-fg">
+          <p className="text-xs font-bold tracking-wide text-on-accent">{t('settings.kicker')}</p>
+          <h2 className="mt-2 text-doc-title font-bold tracking-tight text-text-primary">
             {t('settings.title')}
           </h2>
-          <p className="mt-1.5 text-sm text-fg-muted-2">{t('settings.subtitle')}</p>
+          <p className="mt-1.5 text-sm text-x-fg-muted-2">{t('settings.subtitle')}</p>
         </div>
         <div className="flex-1" />
         <Button type="submit" form="org-settings-form" disabled={isPending} className="flex-none">
@@ -165,11 +165,11 @@ export function OrganizationSettingsForm({
             </div>
             <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
               <div className="flex gap-2">
-                <dt className="text-fg-muted">{t('settings.info.slug')}</dt>
-                <dd className="font-mono text-fg">{organization.slug}</dd>
+                <dt className="text-text-muted">{t('settings.info.slug')}</dt>
+                <dd className="font-mono text-text-primary">{organization.slug}</dd>
               </div>
               <div className="flex gap-2">
-                <dt className="text-fg-muted">{t('settings.info.status')}</dt>
+                <dt className="text-text-muted">{t('settings.info.status')}</dt>
                 <dd>
                   <Badge tone={organization.isActive ? 'approved' : 'neutral'}>
                     {t(organization.isActive ? 'settings.info.active' : 'settings.info.inactive')}
@@ -177,7 +177,7 @@ export function OrganizationSettingsForm({
                 </dd>
               </div>
             </dl>
-            <p className="text-xs text-fg-faint">{t('settings.info.note')}</p>
+            <p className="text-xs text-text-faint">{t('settings.info.note')}</p>
           </div>
         </SectionCard>
 
@@ -293,7 +293,7 @@ export function OrganizationSettingsForm({
 
         <SectionCard title={t('settings.section.rules')}>
           <div className="flex flex-col gap-4">
-            <label className="flex items-center gap-2 text-sm text-fg">
+            <label className="flex items-center gap-2 text-sm text-text-primary">
               <Toggle
                 checked={onePerDay}
                 onChange={setOnePerDay}
@@ -326,9 +326,9 @@ export function OrganizationSettingsForm({
           </div>
         </SectionCard>
 
-        <Card className="border-rejected/40">
-          <h3 className="text-sm font-bold text-rejected">{t('settings.section.danger')}</h3>
-          <p className="mt-1 mb-3 text-xs text-fg-muted">{t('settings.danger.note')}</p>
+        <Card className="border-x-rejected/40">
+          <h3 className="text-sm font-bold text-x-rejected">{t('settings.section.danger')}</h3>
+          <p className="mt-1 mb-3 text-xs text-text-muted">{t('settings.danger.note')}</p>
           <Button
             variant="danger-ghost"
             onClick={() => {

@@ -12,9 +12,9 @@ export interface NotificationItem {
 }
 
 const typeStyle: Record<NotificationType, { wrap: string; glyph: string }> = {
-  submitted: { wrap: 'bg-submitted-soft text-submitted', glyph: '⬆' },
-  approved: { wrap: 'bg-approved-soft text-approved', glyph: '✓' },
-  rejected: { wrap: 'bg-rejected-soft text-rejected', glyph: '✕' },
+  submitted: { wrap: 'bg-x-submitted-soft text-x-submitted', glyph: '⬆' },
+  approved: { wrap: 'bg-x-approved-soft text-x-approved', glyph: '✓' },
+  rejected: { wrap: 'bg-x-rejected-soft text-x-rejected', glyph: '✕' },
   system: { wrap: 'bg-warn-soft text-warn', glyph: '⚙' },
 }
 
@@ -44,7 +44,7 @@ export function NotificationList({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-        <span className="text-sm font-bold text-fg">通知</span>
+        <span className="text-sm font-bold text-text-primary">通知</span>
         <button
           type="button"
           onClick={onMarkAllRead}
@@ -54,7 +54,7 @@ export function NotificationList({
         </button>
       </div>
       {items.length === 0 ? (
-        <p className="px-4 py-8 text-center text-sm text-fg-faint">{emptyLabel}</p>
+        <p className="px-4 py-8 text-center text-sm text-text-faint">{emptyLabel}</p>
       ) : (
         <ul>
           {items.map((n) => {
@@ -68,7 +68,7 @@ export function NotificationList({
                   }}
                   className={cn(
                     'flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left hover:bg-surface-overlay',
-                    n.unread && 'bg-row-hover',
+                    n.unread && 'bg-x-row-hover',
                   )}
                 >
                   <span
@@ -80,9 +80,9 @@ export function NotificationList({
                     {s.glyph}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold text-fg">{n.title}</span>
-                    <span className="block truncate text-xs text-fg-muted">{n.sub}</span>
-                    <span className="mt-0.5 block text-xs text-fg-faint">{n.time}</span>
+                    <span className="block truncate text-sm font-semibold text-text-primary">{n.title}</span>
+                    <span className="block truncate text-xs text-text-muted">{n.sub}</span>
+                    <span className="mt-0.5 block text-xs text-text-faint">{n.time}</span>
                   </span>
                   {n.unread && (
                     <span

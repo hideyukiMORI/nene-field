@@ -49,24 +49,24 @@ export function Modal({
       <button
         type="button"
         aria-label={closeLabel}
-        className="absolute inset-0 bg-fg/45"
+        className="absolute inset-0 bg-text-primary/45"
         onClick={onClose}
       />
       <div
         className={cn(
-          'relative overflow-hidden rounded-modal bg-surface-raised shadow-modal animate-nfpop',
+          'relative overflow-hidden rounded-x-modal bg-surface-raised shadow-x-modal animate-nfpop',
           sizeClass[size],
         )}
         role="dialog"
         aria-modal="true"
       >
         <div className="flex items-center gap-3 border-b border-border px-5 py-4">
-          <h3 className="text-base font-bold text-fg">{title}</h3>
+          <h3 className="text-base font-bold text-text-primary">{title}</h3>
           <button
             type="button"
             onClick={onClose}
             aria-label={closeLabel}
-            className="ml-auto text-lg leading-none text-fg-faint hover:text-fg"
+            className="ml-auto text-lg leading-none text-text-faint hover:text-text-primary"
           >
             ✕
           </button>

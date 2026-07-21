@@ -38,11 +38,11 @@ export function MobileNotificationsPage() {
           onClick={() => {
             void navigate(-1)
           }}
-          className="text-lg text-fg-muted"
+          className="text-lg text-text-muted"
         >
           ‹
         </button>
-        <h1 className="text-base font-bold text-fg">{t('shell.notifications.title')}</h1>
+        <h1 className="text-base font-bold text-text-primary">{t('shell.notifications.title')}</h1>
       </header>
       <NotificationList
         items={items}

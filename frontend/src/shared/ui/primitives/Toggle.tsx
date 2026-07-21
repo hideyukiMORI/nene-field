@@ -34,16 +34,16 @@ export function Toggle({
         onChange(!checked)
       }}
       className={cn(
-        'relative inline-flex flex-none items-center rounded-pill transition-colors duration-150',
+        'relative inline-flex flex-none items-center rounded-x-pill transition-colors duration-150',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        checked ? 'bg-approved' : 'bg-border-strong',
+        checked ? 'bg-x-approved' : 'bg-border-strong',
         track,
         className,
       )}
     >
       <span
         className={cn(
-          'absolute left-0.5 rounded-full bg-surface-raised shadow-card transition-transform duration-150',
+          'absolute left-0.5 rounded-full bg-surface-raised shadow-x-card transition-transform duration-150',
           knob,
           checked ? 'translate-x-5' : 'translate-x-0',
         )}
