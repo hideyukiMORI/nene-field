@@ -97,7 +97,27 @@ export default tseslint.config(
     },
   },
   {
-    files: ['vite.config.ts', 'vitest.config.ts', 'eslint.config.js'],
+    // Stories are a catalogue, not app code: the default export is the Storybook
+    // meta object, and the named exports are story definitions rather than
+    // components, so the Fast Refresh rule does not apply.
+    files: ['src/**/*.stories.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    // Playwright specs and the Storybook config live outside the app tsconfig
+    // project. Lint them without type information rather than widening the app
+    // project to cover tooling.
+    files: ['e2e/**/*.ts', '.storybook/**/*.ts'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2023,
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  {
+    files: ['vite.config.ts', 'vitest.config.ts', 'eslint.config.js', 'playwright.config.ts'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: 2023,
