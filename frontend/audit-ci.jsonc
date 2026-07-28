@@ -1,0 +1,73 @@
+{
+  // Dependency-vulnerability gate for CI (replaces the bare `npm audit --audit-level=high`,
+  // which has no way to record a reasoned exception).
+  //
+  // The gate stays sharp: anything high/critical that is NOT listed below fails the build.
+  // `allowlist` is per-advisory (GHSA id), never per-severity — we do not lower the level.
+  //
+  // Adding an entry requires, in this file: (1) the advisory id, (2) why it does not apply to
+  // THIS codebase, measured — not assumed, (3) an expiry date, (4) what removes the need for it.
+  // An expired entry is a task, not a renewal: re-check it, do not extend it by reflex.
+  //
+  // Take the fix first. Of the four high advisories open against this tree on 2026-07-29, two
+  // were closed by a version bump (postcss 8.5.24, react-router-dom 7.18.1) and the two below
+  // had no adoptable fix. Policy: docs/development/dependency-audit.md
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  "moderate": false,
+  "high": true,
+  "critical": true,
+  "allowlist": [
+    // GHSA-mh99-v99m-4gvg — brace-expansion "DoS via unbounded expansion length causing an
+    // out-of-memory process crash" (high). The advisory declares ONE range, `<= 5.0.7`, with
+    // `first_patched_version = 5.0.8` (checked against the GitHub advisory API, not inferred):
+    // there is no patched 1.x and no patched 2.x. Every brace-expansion below 5.0.8 is affected
+    // forever.
+    //
+    // Why we cannot simply take 5.0.8 everywhere (measured 2026-07-29 on this tree): the two
+    // remaining old instances are pulled by `minimatch@3.1.5` (via eslint-plugin-import /
+    // eslint-plugin-jsx-a11y, which pin `minimatch@^3.1.2`) and `minimatch@5.1.9` (via
+    // openapi-typescript → @redocly/openapi-core). minimatch 3.x/5.x consume brace-expansion
+    // through its **old CommonJS default-function export**, which 5.x no longer provides.
+    // Forcing a flat `"brace-expansion": "^5.0.8"` override installs cleanly and then crashes
+    // the lint step at runtime with `TypeError: expand is not a function`
+    // (minimatch/minimatch.js:271, via @eslint/config-array). Verified by doing it. So the
+    // overrides pin per major line: 1.1.16 / ^2.1.3 / ^5.0.8 — the newest of each — and the
+    // 1.x and 2.x instances stay inside the advisory with nowhere to go.
+    //
+    // Why the residual risk is acceptable here: brace-expansion is **dev-only in this repo**.
+    // `npm ls --omit=dev --all` contains zero brace-expansion and zero minimatch nodes, so it
+    // is absent from the shipped `public_html/admin` bundle. The only consumers are the lint
+    // toolchain and the OpenAPI codegen, and the glob patterns they expand come from our own
+    // config files — not from user input, a request, or a report payload. The DoS has no
+    // reachable attacker-controlled path.
+    //
+    // Expiry: 2026-08-31. Removed by moving both consumers off minimatch 3.x/5.x — an eslint
+    // 10 upgrade (its @eslint/config-array 0.23.x takes minimatch ^10, which takes
+    // brace-expansion ^5.0.5) together with an eslint-plugin-import / eslint-plugin-jsx-a11y /
+    // @redocly/openapi-core bump. That is a toolchain wave, deliberately not bundled into this
+    // security PR. Re-argue at expiry; do not extend by reflex.
+    "GHSA-mh99-v99m-4gvg",
+
+    // GHSA-qwww-vcr4-c8h2 — react-router "RSC Mode CSRF Bypass Allows Action Execution Before
+    // 400 Response" (high). Vulnerable range 7.12.0–8.2.0; there is NO fix in the 7.x line
+    // (react-router-dom stops at 7.18.1; the fix is react-router v8 >= 8.3.0, a different
+    // package and a breaking upgrade).
+    //
+    // Why it does not apply here (measured 2026-07-29 on this tree):
+    //   - `src/app/router.tsx` builds the whole route table with `createBrowserRouter` and
+    //     **element-only** route objects. A grep for route-level `action:` / `loader:` keys
+    //     across `src/` returns 0 hits, so there is no route action for a server to execute.
+    //   - All 17 react-router call sites import from `react-router-dom` (the client package).
+    //     `@react-router/dev`, `react-router/rsc`, `createStaticHandler` and
+    //     `StaticRouterProvider` appear 0 times in `src/` and in `package.json` — no RSC mode,
+    //     no server components, no framework-mode server runtime.
+    //   - `vite.config.ts` builds to `outDir: ../public_html/admin` — a **static SPA bundle**
+    //     served as files. There is no server that could run a route action before returning 400.
+    // The advisory's attack path has no counterpart in a client-only bundle.
+    //
+    // Expiry: 2026-08-31. Removed by the react-router v8 migration wave (bundled with the
+    // NENE2 RR8 re-evaluation). If that wave slips past the expiry, the entry must be
+    // re-argued in a PR — not silently extended.
+    "GHSA-qwww-vcr4-c8h2",
+  ],
+}
