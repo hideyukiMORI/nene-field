@@ -63,7 +63,9 @@ Complete feature catalogue for NeNe Field. Phase column indicates when each feat
 | Priority | Must-have |
 
 - List all reports in the organization with pagination.
-- **Filters:** submitter (user), work date range, tag, approval status, project code.
+- **Filters:** submitter (user), work date range, approval status, project code.
+  Filtering by tag is **not** available yet (tags are stored, shown, and exported, but the list
+  cannot be narrowed by them) — see #142.
 - **Sort:** work date desc (default), submitted_at desc.
 - **My reports view:** Submitter sees only their own reports.
 

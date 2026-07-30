@@ -1356,7 +1356,6 @@ export interface operations {
                 work_date_from?: string;
                 work_date_to?: string;
                 status?: components["schemas"]["ReportStatus"][];
-                tags?: string[];
                 project_code?: string;
                 sort?: "work_date_desc" | "work_date_asc" | "submitted_at_desc";
                 /** @description Page size (1–100). */
