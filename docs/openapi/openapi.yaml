@@ -1239,14 +1239,12 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/ReportStatus'
-        - name: tags
-          in: query
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: string
+        # A `tags` filter is intentionally absent: the server does not implement tag
+        # filtering yet (see `ReportFilter`), so publishing the parameter would promise
+        # filtering that silently does not happen. It returns when the filter is
+        # implemented — tracked in #142, planned alongside the Phase 3 `ai_tags` work so
+        # the JSON-column-vs-tag-table decision is made once. Tags are still stored,
+        # returned in report payloads, and included in the CSV export.
         - name: project_code
           in: query
           schema:

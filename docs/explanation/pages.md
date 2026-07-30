@@ -110,7 +110,9 @@ Pages are React + Vite; mobile-first design throughout.
 | Access | Authenticated (approver, admin) |
 
 - Paginated list of all organization reports.
-- **Filters panel:** submitter (user dropdown), work date range (from/to), tags (multi-select), status (multi-select), project code.
+- **Filters panel:** submitter (user dropdown), work date range (from/to), status (multi-select), project code.
+  No tag filter: tag filtering is not implemented server-side yet (see #142). Tags are still shown
+  on each row and included in the CSV export.
 - **Sort:** work_date desc (default), submitted_at desc.
 - Each row shows: submitter name, work_date, title, AI summary (if available), status badge, approve/reject quick action buttons.
 - Bulk approve: select multiple submitted reports → approve all.

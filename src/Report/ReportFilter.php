@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace NeneField\Report;
 
 /**
- * Filter + pagination for listing reports. `tags` filtering is not yet supported
- * (documented OpenAPI param, deferred — needs JSON/tag-table support).
+ * Filter + pagination for listing reports. `tags` filtering is not supported, and the
+ * OpenAPI contract no longer advertises a `tags` query parameter either — publishing it
+ * promised filtering that was silently ignored (#142). Implementing it needs a decision
+ * between searching the JSON column and normalising into a tag table, which is deferred
+ * to the Phase 3 `ai_tags` work so that decision is made once.
  */
 final readonly class ReportFilter
 {
