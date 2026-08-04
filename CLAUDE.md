@@ -55,13 +55,20 @@ Health check: `curl -fsS http://localhost:9200/health`
 ## Verification
 
 ```bash
-# Full quality gates (run before every PR)
-composer check
+# Full quality gates (run before every PR) — both are required checks in CI
+composer check                  # test + analyse + cs + conformance
+npm run check --prefix frontend # type-check + lint + format + openapi:lint + test + build
 
 # Individual steps
 composer test
 composer analyse
 composer cs
-composer openapi
-npm run check --prefix frontend
+composer conformance
+composer openapi                # OpenAPI contract lint (redocly; config in redocly.yaml)
 ```
+
+The OpenAPI contract is gated by `composer openapi` and by `npm run check` (which runs
+the same lint), so a contract change cannot merge unlinted — neither workflow uses a
+`paths` filter, so `frontend-check` runs on backend- and contract-only PRs too.
+`composer check` deliberately does **not** call it: the linter is a Node tool and the
+backend CI job has no Node runtime.

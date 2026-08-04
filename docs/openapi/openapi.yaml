@@ -190,20 +190,17 @@ components:
           type: string
           description: Unique tenant-resolution key (ADR 0013).
         custom_domain:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Unique vanity domain (Tier B; superadmin-managed).
         is_active:
           type: boolean
         ai_summary_enabled:
           type: boolean
         notification_email:
-          type: string
+          type: [string, "null"]
           format: email
-          nullable: true
         webhook_url:
-          type: string
-          nullable: true
+          type: [string, "null"]
         created_at:
           type: string
           format: date-time
@@ -235,8 +232,7 @@ components:
           maxLength: 100
           pattern: "^[a-z0-9-]+$"
         custom_domain:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_active:
           type: boolean
           default: true
@@ -253,26 +249,21 @@ components:
         ai_summary_enabled:
           type: boolean
         ai_api_url:
-          type: string
-          nullable: true
+          type: [string, "null"]
         ai_api_key:
-          type: string
+          type: [string, "null"]
           format: password
-          nullable: true
           description: Write-only; never returned in any response.
         notification_email:
-          type: string
+          type: [string, "null"]
           format: email
-          nullable: true
         webhook_url:
-          type: string
-          nullable: true
+          type: [string, "null"]
         slug:
           type: string
           description: Superadmin only.
         custom_domain:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Superadmin only.
         is_active:
           type: boolean
@@ -399,8 +390,7 @@ components:
         name:
           type: string
         description:
-          type: string
-          nullable: true
+          type: [string, "null"]
         fields:
           type: array
           items:
@@ -422,8 +412,7 @@ components:
           type: string
           maxLength: 100
         description:
-          type: string
-          nullable: true
+          type: [string, "null"]
         fields:
           type: array
           items:
@@ -438,8 +427,7 @@ components:
           type: string
           maxLength: 100
         description:
-          type: string
-          nullable: true
+          type: [string, "null"]
         fields:
           type: array
           items:
@@ -498,9 +486,8 @@ components:
         user_name:
           type: string
         template_id:
-          type: string
+          type: [string, "null"]
           format: uuid
-          nullable: true
         title:
           type: string
         body:
@@ -515,41 +502,31 @@ components:
           items:
             type: string
         project_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         invoice_work_order_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         records_entity_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         ai_summary:
-          type: string
-          nullable: true
+          type: [string, "null"]
         ai_tags:
-          type: array
+          type: [array, "null"]
           items:
             type: string
-          nullable: true
         submitted_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
         approved_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
         rejected_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
         approver_id:
-          type: string
+          type: [string, "null"]
           format: uuid
-          nullable: true
         approver_comment:
-          type: string
-          nullable: true
+          type: [string, "null"]
         attachments:
           type: array
           items:
@@ -586,15 +563,12 @@ components:
           items:
             type: string
         project_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         ai_summary:
-          type: string
-          nullable: true
+          type: [string, "null"]
         submitted_at:
-          type: string
+          type: [string, "null"]
           format: date-time
-          nullable: true
         created_at:
           type: string
           format: date-time
@@ -604,9 +578,8 @@ components:
       required: [title, body, work_date]
       properties:
         template_id:
-          type: string
+          type: [string, "null"]
           format: uuid
-          nullable: true
         title:
           type: string
           maxLength: 200
@@ -621,15 +594,12 @@ components:
           items:
             type: string
         project_code:
-          type: string
+          type: [string, "null"]
           maxLength: 100
-          nullable: true
         invoice_work_order_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         records_entity_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     ReportUpdateRequest:
       type: object
@@ -648,23 +618,19 @@ components:
           items:
             type: string
         project_code:
-          type: string
+          type: [string, "null"]
           maxLength: 100
-          nullable: true
         invoice_work_order_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         records_entity_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     ApproveRequest:
       type: object
       properties:
         comment:
-          type: string
+          type: [string, "null"]
           maxLength: 1000
-          nullable: true
 
     RejectRequest:
       type: object
@@ -710,24 +676,19 @@ components:
           type: string
           description: "`{entity}.{verb}` from `docs/terms.md §8`."
         actor_id:
-          type: string
+          type: [string, "null"]
           format: uuid
-          nullable: true
           description: Null for system actions.
         actor_name:
-          type: string
-          nullable: true
+          type: [string, "null"]
         before:
-          type: object
-          nullable: true
+          type: [object, "null"]
           description: Sanitized snapshot before the change (null for create); secrets never included.
         after:
-          type: object
-          nullable: true
+          type: [object, "null"]
           description: Sanitized snapshot after the change (null for delete); secrets never included.
         request_id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         occurred_at:
           type: string
           format: date-time
