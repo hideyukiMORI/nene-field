@@ -27,7 +27,15 @@ const entityInternalFiles = [
 ]
 
 // Hard dependency direction (frontend-standards §3): no upward arrows.
+//
+// `app/` gets the entity-internal zone but NOT the `shared/api` one: it legitimately
+// owns transport-adjacent wiring (`auth-gate.tsx` reads `hasAuthToken`, `providers.tsx`
+// maps `AppError`), unlike features/pages. Added with #149 — the shells used to live in
+// an unlisted `widgets/` layer, which put them outside every zone and let two
+// entity-internal imports through (`@/entities/auth/{enum,session}`). Layers absent from
+// this list are not "clean", they are unmeasured; keep every `src/` layer represented.
 const importZones = [
+  { target: './src/app', from: entityInternalFiles },
   { target: './src/features', from: entityInternalFiles },
   { target: './src/features', from: './src/shared/api' },
   { target: './src/pages', from: entityInternalFiles },
@@ -48,6 +56,11 @@ export default tseslint.config(
       'test-results',
       'src/shared/api/schema.gen.ts',
       'eslint.canonical-off.js',
+      // Local screenshot scratch scripts. `.gitignore:10` already declares these debris,
+      // but ESLint does not read .gitignore, so leftovers in a working tree fail
+      // `npm run check` with parser errors while CI (clean checkout) stays green — the
+      // gate disagrees with itself depending on who runs it. Keep the two lists in sync.
+      'shot*.mjs',
     ],
   },
 
