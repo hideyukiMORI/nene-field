@@ -36,24 +36,19 @@ blind the gate to *everything*, not just the advisory in question.
 | Advisory | Package | Why it does not apply here | Expires |
 | --- | --- | --- | --- |
 | [GHSA-qwww-vcr4-c8h2](https://github.com/advisories/GHSA-qwww-vcr4-c8h2) | `react-router` (7.12.0–8.2.0) | The admin console is a **static SPA built by Vite** into `public_html/admin/`. `src/app/router.tsx` uses `createBrowserRouter` with element-only routes — **no RSC mode, no server components, no route `action`/`loader`, no `@react-router/dev` runtime**. The advisory's attack path (a server executing a route action before returning 400) has no counterpart in a client-only bundle. Measured 2026-07-29: 0 route-level `action:` / `loader:` keys in `src/`; all 17 react-router call sites import `react-router-dom`; 0 hits for `@react-router/dev` / `react-router/rsc` / `createStaticHandler` / `StaticRouterProvider`. | **2026-08-31** |
-| [GHSA-mh99-v99m-4gvg](https://github.com/advisories/GHSA-mh99-v99m-4gvg) | `brace-expansion` (`<=5.0.7`) | **Dev-only.** `npm ls --omit=dev --all` contains zero `brace-expansion` and zero `minimatch` nodes — it is absent from the shipped `public_html/admin` bundle. The only consumers are the lint toolchain (`eslint-plugin-import`, `eslint-plugin-jsx-a11y` → `minimatch@3.1.5`) and OpenAPI codegen (`openapi-typescript` → `@redocly/openapi-core` → `minimatch@5.1.9`), and the glob patterns they expand come from our own config files — not from user input, a request, or a report payload. The DoS has no attacker-reachable path. See "why the fix is not adoptable" below. | **2026-08-31** |
 
 **GHSA-qwww-vcr4-c8h2** — there is no fix available in the 7.x line: `react-router-dom` ends at
 7.18.1, and the fix lands in `react-router` v8 (≥ 8.3.0) — a different package and a breaking
 upgrade. Removed by the **react-router v8 migration wave** (bundled with the NENE2 RR8
 re-evaluation).
 
-**GHSA-mh99-v99m-4gvg** — why the fix is not adoptable. The advisory declares a single range,
-`<= 5.0.7`, with `first_patched_version = 5.0.8` (confirmed against the GitHub advisory API):
-**there is no patched 1.x and no patched 2.x.** But `minimatch` 3.x/5.x consume brace-expansion
-through its old CommonJS default-function export, which 5.x no longer provides — a flat
-`"brace-expansion": "^5.0.8"` override installs cleanly and then crashes `npm run lint` with
-`TypeError: expand is not a function`. Measured, not assumed: we tried it. So the overrides pin
-the newest of each major line (`1.1.16` / `^2.1.3` / `^5.0.8`) and the 1.x/2.x instances stay
-inside the advisory with nowhere to go. Removed by a **toolchain wave** — eslint 10 (whose
-`@eslint/config-array` 0.23.x takes `minimatch ^10` → `brace-expansion ^5.0.5`) plus
-`eslint-plugin-import` / `eslint-plugin-jsx-a11y` / `@redocly/openapi-core` bumps — deliberately
-not bundled into a security PR.
+**GHSA-mh99-v99m-4gvg was removed on 2026-08-04, not renewed** (#148). Its whole argument rested
+on one measured claim — "there is no patched 1.x and no patched 2.x" — and upstream published
+`1.1.18` and `2.1.4` after it was written. The moment that happened the exception had no premise
+left, so the fix was taken instead. This is rule 4 working as intended, and it is the reason
+rule 2 asks for the *measurement* rather than the conclusion: a conclusion cannot tell you when
+it stops being true. `audit-ci` said so itself once the versions were in place —
+`Consider not allowlisting advisory: GHSA-mh99-v99m-4gvg`.
 
 > ⚠️ **Fleet note:** the reference implementation uses a flat `"brace-expansion": "^5.0.8"`.
 > That silently redirects any `minimatch@3.x` in the tree to an incompatible major. Ships on
@@ -70,11 +65,42 @@ Two were closed by taking the fix; two had no adoptable fix and were allowlisted
 | --- | --- | --- |
 | GHSA-r28c-9q8g-f849 | `postcss` (`<=8.5.17`) | bumped to 8.5.24 |
 | GHSA-chx6-hx7r-mcp5 | `react-router` (`>=7.0.0 <7.18.0`) | bumped to 7.18.1 — no v8 needed |
-| GHSA-mh99-v99m-4gvg | `brace-expansion` (`<=5.0.7`) | allowlisted — no patched 1.x/2.x exists, and 5.x is API-incompatible with `minimatch` 3.x/5.x |
+| GHSA-mh99-v99m-4gvg | `brace-expansion` (`<=5.0.7`) | allowlisted — then **superseded by the fix on 2026-08-04**, see below |
 | GHSA-qwww-vcr4-c8h2 | `react-router` (`>=7.12.0 <8.3.0`) | allowlisted — no adoptable fix |
 
 That is the intended shape of the rule "prefer the fix": bump first, **re-measure**, then list
 only what survives — by id, with a reason and an expiry.
+
+## 2026-08-04 — an exception expired early (#148)
+
+Two new high advisories opened against this tree (fleet #229): `GHSA-rgw5-rvv9-x895`
+(`brace-expansion`, widened to `<=1.1.17` / `<=2.1.3` / `<=5.0.8`) and `GHSA-7p8r-x3mc-p8w7`
+(`fast-uri`, `<=3.1.4`). Both were closed by taking the fix. **No allowlist entry was added, and
+one was removed.**
+
+| Advisory | Package | Resolution |
+| --- | --- | --- |
+| GHSA-rgw5-rvv9-x895 | `brace-expansion` | overrides bumped per major line: `^1.1.18` / `^2.1.4` / `^5.0.9` |
+| GHSA-7p8r-x3mc-p8w7 | `fast-uri` | 3.1.4 → **3.1.5** (`stylelint` → `table` → `ajv`; inside ajv's range, so a lockfile update sufficed — no override needed) |
+| GHSA-mh99-v99m-4gvg | `brace-expansion` | **allowlist entry deleted** — the same bumps carry every line past it |
+
+Two things this tree got right, and one it got wrong:
+
+- **Right — per-major pinning survived contact with the fix.** The 2026-07-29 finding still holds:
+  `minimatch` 3.x/5.x consume brace-expansion's old CommonJS default-function export, so a *flat*
+  `"brace-expansion": "^5"` still breaks `npm run lint` with `TypeError: expand is not a function`.
+  Taking the fix meant bumping **each major line to its own patch**, not collapsing them.
+  `npm run lint` was re-measured after the bump rather than assumed.
+- **Right — the exception carried its own kill switch.** It recorded the measurement that made it
+  true ("no patched 1.x, no patched 2.x — checked against the advisory API"), so when upstream
+  published `1.1.18` and `2.1.4` the entry could be *checked* instead of re-argued. `audit-ci`
+  reached the same conclusion unprompted: `Consider not allowlisting advisory: GHSA-mh99-v99m-4gvg`.
+  This is why rule 2 asks for the measurement and not the conclusion — a conclusion cannot tell
+  you when it has stopped being true.
+- **Wrong — `brace-expansion@1` was an exact pin (`1.1.16`), not a range.** `^2.1.3` and `^5.0.8`
+  would have moved on a plain lockfile update; the exact pin could not, and needed a
+  `package.json` edit to clear. **An exception that names a specific version has an expiry whether
+  or not one is written down.** Prefer ranges; an exact pin is a decision to be paged about later.
 
 ## Related
 
