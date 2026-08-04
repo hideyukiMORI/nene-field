@@ -14,7 +14,21 @@ never replaces validation.
 **Baseline:** NENE2 `docs/development/frontend-integration.md` (React/TS/Vite, npm,
 lockfile, build output, dev proxy) and the sibling **nene-invoice**
 `docs/development/frontend-standards.md`. Where this document differs, **it wins for
-NeNe Field**. Self-review: [`../review/frontend.md`](../review/frontend.md).
+NeNe Field** — *except* for rules the fleet has settled centrally (below).
+Self-review: [`../review/frontend.md`](../review/frontend.md).
+
+> **Fleet rules are canonical; this document is a local copy.** For anything carrying a
+> fleet rule id (`AU-*`, `A-*`, `TY-*`, `ST-*`, …) the **central fleet standard is the
+> norm and this file is a restatement of it** — currently the 2026-07-14 frontend
+> standards set (`_work/reports/2026-07-14-frontend-standards/`, §02 data-flow). Where
+> the two disagree, **the central document wins and this one is the bug**.
+>
+> This is not hypothetical: on 2026-08-05 (#153) this file still said the auth token was
+> in-memory and that persisting it "requires an ADR", nine days after the fleet had
+> settled on `sessionStorage` (AU-1, 2026-07-14) and the code had already moved. A local
+> copy does not follow the original's revisions, and it is the copy that sits next to the
+> code — so it is the copy that gets read. **When a fleet-id rule here looks surprising,
+> check the central document before following this one.**
 
 ---
 
@@ -26,7 +40,7 @@ NeNe Field**. Self-review: [`../review/frontend.md`](../review/frontend.md).
 | **Locale** | **`ja` + `en` are both first-class, maintained locales** (ADR 0012); `ja` is the Japan-edition default. No third locale without an ADR. **No hardcoded user-facing strings — everything goes through the message catalog** (`t('key')`); runtime switch with no reload. Full rules: [`i18n.md`](./i18n.md) (binding, ADR 0015). |
 | **Locale-aware display** | Instants are stored UTC (ADR 0011); **display timezone / date / number formats derive from the active locale** (JST is the Japan-edition default, not hard-coded). Never assume JST in component code. |
 | **JSON shape** | API JSON is **snake_case**; the client maps it to typed models in `entities/{r}/mapper.ts` **without renaming fields in transport**. |
-| **Auth token** | Bearer JWT from the login response. **In-memory session by default** (fail-closed; re-login on reload). `localStorage`/`sessionStorage` or cookie session requires an **ADR** (XSS risk). |
+| **Auth token** | Bearer JWT from the login response, held in **`sessionStorage`** (tab-scoped; cleared on tab close, on sign-out, and on `401`) via the fleet `createSessionTokenStore({ key: 'nene_field_token' })` in `shared/api/client.ts`. **`localStorage` MUST NOT hold a token.** Fleet rule **AU-1**, settled 2026-07-14 — not re-litigated per product. |
 | **RBAC in UI** | Hide/disable actions by API-exposed role/capability (`submitter`/`approver`/`admin`). **UI gating is UX only — the API enforces authorization.** |
 | **PII** | Never log report bodies, tokens, or full Problem Details in production. AI-generated content is labelled "AI summary" in the UI (ADR 0007). |
 | **Build output** | Production bundle builds to **`public_html/admin/`** for Tier A same-origin hosting (ADR 0003). |
@@ -61,7 +75,7 @@ State management matrix — **no Redux / Zustand / Jotai without an ADR**:
 | URL / shareable (filters, sort, page) | React Router `searchParams` | `pages/` + feature hooks |
 | Form draft | React Hook Form | feature ui + hooks |
 | Ephemeral UI (modal open, tab) | `useState` | feature ui |
-| Auth session | Context in `app/` only | in-memory token + user |
+| Auth session | Context in `app/` only | `sessionStorage` token (AU-1) + user |
 
 ---
 
@@ -186,7 +200,8 @@ Problem Details `type` logged dev-only) · **Success**.
 UI → feature hook → entity query/mutation → shared/api/client → API
 ```
 
-- Single `apiClient` with typed methods; attaches the in-memory bearer token;
+- Single `apiClient` with typed methods; attaches the bearer token from the
+  `sessionStorage`-backed store (AU-1);
   **fail-closed**. Parses JSON; throws **`AppError`** from Problem Details on 4xx/5xx.
   **No domain logic — transport only.**
 - TanStack hooks have explicit return types; `queryFn` runs the mapper before
@@ -226,7 +241,7 @@ The browser is a **hostile context**.
 | Topic | Rule |
 | --- | --- |
 | Secrets | Never in repo; only public `VITE_*` in frontend env |
-| Auth token | In-memory by default; persistence needs an ADR |
+| Auth token | `sessionStorage` via `createSessionTokenStore` (AU-1); **never `localStorage`** |
 | XSS | No `dangerouslySetInnerHTML` without DOMPurify + Issue |
 | Links | `rel="noopener noreferrer"` on `target="_blank"` |
 | Redirects | Validate post-login redirect against an allowlist |
