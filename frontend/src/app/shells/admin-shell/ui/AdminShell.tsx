@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import { useSyncExternalStore } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { canManageOrganization } from '@/entities/auth/enum'
-import { getCurrentUser, signOut, subscribeCurrentUser } from '@/entities/auth/session'
+import {
+  canManageOrganization,
+  getCurrentUser,
+  signOut,
+  subscribeCurrentUser,
+} from '@/entities/auth'
 import { useOrganizationQuery } from '@/entities/organization'
 import { useReportListQuery } from '@/entities/report'
 import { useTranslation } from '@/shared/i18n'

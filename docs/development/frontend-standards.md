@@ -75,7 +75,11 @@ Strict layered architecture: **`app → pages → features → entities → shar
 | **`entities/`** | One API resource: DTO mapping, query keys, TanStack hooks | JSX, cross-resource orchestration |
 | **`features/`** | User workflows composing entities + UI | Raw HTTP, DTO types, raw query-key strings |
 | **`pages/`** | Route wiring, lazy loading, layout slots | Business rules, API calls |
-| **`app/`** | Providers, router, error boundary, auth gate | Feature-specific screens |
+| **`app/`** | Providers, router, error boundary, auth gate, route shells (`app/shells/`) | Feature-specific screens |
+
+There is **no `widgets/` layer**. The five layers above are the whole set: a directory
+directly under `src/` that is not one of them is not a new layer, it is unmeasured code
+outside every `import/no-restricted-paths` zone (#149).
 
 ### Dependency direction (hard rule — no upward arrows)
 
@@ -98,7 +102,9 @@ app → pages → features → entities → shared/api → API
 ```text
 frontend/src/
   main.tsx
-  app/        providers.tsx · router.tsx · root-error-boundary.tsx · auth-gate.tsx
+  app/        providers.tsx · router.tsx · root-error-boundary.tsx · auth-gate.tsx · app-layout.tsx
+    shells/   admin-shell/ · mobile-shell/   (router shells: <Outlet/> + global nav + session)
+                {shell}/ index.ts · ui/{Shell}.tsx
   pages/      login/ · dashboard/ · reports/ · report-detail/ · report-submit/ · templates/ · users/ · audit-logs/ · export/ · settings/
   features/   submit-report/ · list-reports/ · approve-report/ · reject-report/ · manage-templates/ · manage-users/ · export-csv/ · view-audit-log/ …
                 {feature}/ index.ts · hooks/use-{feature}.ts · ui/{Feature}.tsx · ui/{Feature}.test.tsx
@@ -134,11 +140,14 @@ Entity folders use **kebab-case** matching the OpenAPI tag (`report`,
 | Feature orchestration hooks | `features/{f}/hooks/` |
 | Design token CSS | `shared/ui/theme/themes/*.css` only |
 | UI primitives / composed | `shared/ui/primitives/` / `shared/ui/components/` |
+| Route shells (`<Outlet/>` + global nav) | `app/shells/{shell}/ui/{Shell}.tsx` |
 
 **Forbidden (automatic reject):** DTOs/models/enums/mappers outside `entities/{r}/`;
 TanStack logic outside `query-keys/queries/mutations`; `fetch` outside
 `shared/api/client.ts`; `schema.gen.ts` imported from any `.tsx`; deep entity
-imports from features (must go through `index.ts`); root `src/types/` or `src/utils/` dumps.
+imports from **`app/`, features, or pages** (must go through `index.ts`); a new
+top-level directory under `src/` that is not one of the five layers; root
+`src/types/` or `src/utils/` dumps.
 
 ---
 
