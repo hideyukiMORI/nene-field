@@ -39,7 +39,7 @@ jobs:
       # Note: the vitest suite had a time-dependent flake history (relativized
       # on 2026-07-07) — if this step fails on an untouched suite, suspect a
       # flake and re-run before changing any test.
-      - name: Check (type-check, lint, format, test, build)
+      - name: Check (type-check, lint, format, openapi:lint, test, build)
         run: npm run check
 
       # audit-ci = npm audit + a per-advisory allowlist, so a not-yet-fixable advisory can be
