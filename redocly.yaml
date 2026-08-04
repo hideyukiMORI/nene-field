@@ -1,0 +1,33 @@
+# OpenAPI contract gate for `docs/openapi/openapi.yaml`.
+#
+# Run: `composer openapi` (repo root) or `npm run openapi:lint --prefix frontend`.
+# Wired into CI as its own step so a contract change cannot merge unlinted.
+#
+# The contract declares `openapi: 3.1.0`, and this gate is what holds it to that.
+# Before the gate existed the document carried 39 `nullable: true` properties —
+# **OpenAPI 3.0 syntax, removed in 3.1** — so the nullability was not expressed in
+# the way a strict 3.1 consumer reads (#147). Our own generator happened to be
+# lenient about it, which is exactly why nobody noticed: the tree was green.
+#
+# Exceptions below follow the same rule as `frontend/audit-ci.jsonc`: per rule id,
+# never by lowering severity wholesale, and each one states (1) what it is, (2) why
+# it does not apply here — measured, and (3) what would remove it.
+
+extends:
+  - recommended
+
+rules:
+  # `no-server-example.com` flags example.com in `servers[].url`. Ours are
+  # `http://localhost:9200` (Tier B Docker) and a documented Tier A placeholder, not
+  # example.com — the rule fires on the localhost entry because it treats any
+  # non-production host the same way. A local server entry is deliberate here: this
+  # is a self-hosted product and the local stack is a documented part of setup
+  # (CLAUDE.md "Local stack"). Removed if the contract ever ships only public URLs.
+  no-server-example.com: off
+
+  # `operation-4xx-response` requires every operation to document a 4xx.
+  # `GET /health` has `security: []` and takes no input, so it has no 4xx to
+  # document — inventing one would make the contract *less* accurate. This is the
+  # only operation with the exemption; every other path documents its errors via
+  # Problem Details. Removed if `/health` ever gains parameters or auth.
+  operation-4xx-response: off

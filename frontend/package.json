@@ -17,12 +17,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "codegen": "openapi-typescript ../docs/openapi/openapi.yaml -o src/shared/api/schema.gen.ts",
+    "openapi:lint": "redocly lint ../docs/openapi/openapi.yaml --config ../redocly.yaml",
     "audit": "audit-ci --config audit-ci.jsonc",
     "storybook": "storybook dev -p 6106",
     "build-storybook": "storybook build",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "check": "npm run type-check && npm run lint && npm run format && npm run test && npm run build"
+    "check": "npm run type-check && npm run lint && npm run format && npm run openapi:lint && npm run test && npm run build"
   },
   "dependencies": {
     "@hideyukimori/nene2-client": "^1.1.0",
@@ -39,6 +40,7 @@
     "@hideyukimori/nene2-standards": "^2.2.0",
     "@hideyukimori/nene2-tokens": "1.2.0",
     "@playwright/test": "^1.62.0",
+    "@redocly/cli": "2.5.0",
     "@storybook/addon-a11y": "^10.5.5",
     "@storybook/react-vite": "^10.5.5",
     "@tailwindcss/vite": "^4.1.17",
