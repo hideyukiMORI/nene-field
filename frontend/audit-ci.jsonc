@@ -10,44 +10,18 @@
   // An expired entry is a task, not a renewal: re-check it, do not extend it by reflex.
   //
   // Take the fix first. Of the four high advisories open against this tree on 2026-07-29, two
-  // were closed by a version bump (postcss 8.5.24, react-router-dom 7.18.1) and the two below
-  // had no adoptable fix. Policy: docs/development/dependency-audit.md
+  // were closed by a version bump (postcss 8.5.24, react-router-dom 7.18.1) and two had no
+  // adoptable fix. On 2026-08-04 one of those two, GHSA-mh99-v99m-4gvg (brace-expansion), got
+  // one: upstream published 1.1.18 and 2.1.4, which is exactly the "no patched 1.x / no patched
+  // 2.x" measurement the entry rested on. It was deleted, not renewed — together with the two
+  // new advisories of that wave (GHSA-rgw5-rvv9-x895, GHSA-7p8r-x3mc-p8w7), which were also
+  // closed by bumping. Net effect of #148: one entry removed, zero added.
+  // Policy: docs/development/dependency-audit.md
   "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
   "moderate": false,
   "high": true,
   "critical": true,
   "allowlist": [
-    // GHSA-mh99-v99m-4gvg — brace-expansion "DoS via unbounded expansion length causing an
-    // out-of-memory process crash" (high). The advisory declares ONE range, `<= 5.0.7`, with
-    // `first_patched_version = 5.0.8` (checked against the GitHub advisory API, not inferred):
-    // there is no patched 1.x and no patched 2.x. Every brace-expansion below 5.0.8 is affected
-    // forever.
-    //
-    // Why we cannot simply take 5.0.8 everywhere (measured 2026-07-29 on this tree): the two
-    // remaining old instances are pulled by `minimatch@3.1.5` (via eslint-plugin-import /
-    // eslint-plugin-jsx-a11y, which pin `minimatch@^3.1.2`) and `minimatch@5.1.9` (via
-    // openapi-typescript → @redocly/openapi-core). minimatch 3.x/5.x consume brace-expansion
-    // through its **old CommonJS default-function export**, which 5.x no longer provides.
-    // Forcing a flat `"brace-expansion": "^5.0.8"` override installs cleanly and then crashes
-    // the lint step at runtime with `TypeError: expand is not a function`
-    // (minimatch/minimatch.js:271, via @eslint/config-array). Verified by doing it. So the
-    // overrides pin per major line: 1.1.16 / ^2.1.3 / ^5.0.8 — the newest of each — and the
-    // 1.x and 2.x instances stay inside the advisory with nowhere to go.
-    //
-    // Why the residual risk is acceptable here: brace-expansion is **dev-only in this repo**.
-    // `npm ls --omit=dev --all` contains zero brace-expansion and zero minimatch nodes, so it
-    // is absent from the shipped `public_html/admin` bundle. The only consumers are the lint
-    // toolchain and the OpenAPI codegen, and the glob patterns they expand come from our own
-    // config files — not from user input, a request, or a report payload. The DoS has no
-    // reachable attacker-controlled path.
-    //
-    // Expiry: 2026-08-31. Removed by moving both consumers off minimatch 3.x/5.x — an eslint
-    // 10 upgrade (its @eslint/config-array 0.23.x takes minimatch ^10, which takes
-    // brace-expansion ^5.0.5) together with an eslint-plugin-import / eslint-plugin-jsx-a11y /
-    // @redocly/openapi-core bump. That is a toolchain wave, deliberately not bundled into this
-    // security PR. Re-argue at expiry; do not extend by reflex.
-    "GHSA-mh99-v99m-4gvg",
-
     // GHSA-qwww-vcr4-c8h2 — react-router "RSC Mode CSRF Bypass Allows Action Execution Before
     // 400 Response" (high). Vulnerable range 7.12.0–8.2.0; there is NO fix in the 7.x line
     // (react-router-dom stops at 7.18.1; the fix is react-router v8 >= 8.3.0, a different
