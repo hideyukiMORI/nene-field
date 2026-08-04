@@ -57,7 +57,7 @@ Health check: `curl -fsS http://localhost:9200/health`
 ```bash
 # Full quality gates (run before every PR) — both are required checks in CI
 composer check                  # test + analyse + cs + conformance
-npm run check --prefix frontend # type-check + lint + format + openapi:lint + test + build
+npm run check --prefix frontend # codegen:check + type-check + lint + format + openapi:lint + test + build
 
 # Individual steps
 composer test
@@ -65,6 +65,8 @@ composer analyse
 composer cs
 composer conformance
 composer openapi                # OpenAPI contract lint (redocly; config in redocly.yaml)
+npm run codegen --prefix frontend        # regenerate schema.gen.ts after a contract change
+npm run codegen:check --prefix frontend  # fail if schema.gen.ts is stale vs the contract
 ```
 
 The OpenAPI contract is gated by `composer openapi` and by `npm run check` (which runs
