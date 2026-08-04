@@ -17,13 +17,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "codegen": "openapi-typescript ../docs/openapi/openapi.yaml -o src/shared/api/schema.gen.ts",
+    "codegen:check": "node tools/check-codegen.mjs",
     "openapi:lint": "redocly lint ../docs/openapi/openapi.yaml --config ../redocly.yaml",
     "audit": "audit-ci --config audit-ci.jsonc",
     "storybook": "storybook dev -p 6106",
     "build-storybook": "storybook build",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
-    "check": "npm run type-check && npm run lint && npm run format && npm run openapi:lint && npm run test && npm run build"
+    "check": "npm run codegen:check && npm run type-check && npm run lint && npm run format && npm run openapi:lint && npm run test && npm run build"
   },
   "dependencies": {
     "@hideyukimori/nene2-client": "^1.1.0",
