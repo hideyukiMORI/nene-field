@@ -11,6 +11,34 @@ on:
     branches:
       - main
 
+  # 週次 schedule。依存監査（audit-ci / npm audit、下記 "Audit" ステップ）を
+  # 定期的に再走らせ、マージ後に新規公開された advisory を拾うためのもの。
+  #
+  # 🔴 既知の限界: public リポジトリの scheduled workflow は、60日間 push 等の
+  # activity が無いと GitHub 側で自動的に無効化される
+  # （https://docs.github.com/actions/using-workflows/events-that-trigger-workflows#schedule）。
+  # このリポジトリが 60日以上休眠すると、休眠に気づくために必要なこの装置自体が
+  # 止まる。リポジトリの外から run の日時を監視する仕組みが別途必要
+  # （詳細: _work/handoff-nene2-python-2026-08-12-schedule-rollout-note.md）。
+  schedule:
+    - cron: '15 0 * * 1' # 月曜 00:15 UTC = 09:15 JST（フリート内で分をずらして同時発火を回避）
+
+  # 手動トリガー。simulate_failure=true で check を意図的に失敗させ、
+  # notify-failure（下記）が正しく発火するかをその場で検証できる。
+  workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: '意図的に check を失敗させ、失敗通知の経路を検証する'
+        type: boolean
+        default: false
+
+# event_name を含めるのは、schedule / workflow_dispatch の実行が push の実行に
+# cancel-in-progress で巻き込まれて消えるのを防ぐため（同じ ref でも event が違えば
+# 別グループになる）。
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   check:
     # required checks のコンテキスト名。backend-ci.yml の backend-check と
@@ -22,6 +50,10 @@ jobs:
         working-directory: frontend
 
     steps:
+      - name: Simulate failure (validation only)
+        if: inputs.simulate_failure
+        run: exit 1
+
       - name: Checkout
         uses: actions/checkout@v5
 
@@ -92,3 +124,32 @@ jobs:
           name: playwright-report
           path: frontend/playwright-report
           retention-days: 7
+
+  # 週次 schedule の失敗は、push/PR の失敗と違って「起こした本人がその場で見る」ことが
+  # ない。誰にも気づかれないまま埋もれるのを防ぐため、schedule 実行の失敗（と
+  # 検証用の simulate_failure）に限定して Issue を起票する。
+  # 実装元: nene2-python PR #773-775 / 申し送り: _work/handoff-nene2-python-2026-08-12-schedule-rollout-note.md
+  notify-failure:
+    name: Open an issue when the scheduled run fails
+    if: failure() && (github.event_name == 'schedule' || inputs.simulate_failure)
+    needs: [check, e2e]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      ISSUE_TITLE: '🔴 nene-field: 週次 CI（schedule）が失敗しています'
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }} # 必須: checkout していないジョブでは gh がリポジトリを特定できない
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Create or update the failure issue
+        run: |
+          set -euo pipefail
+          existing="$(gh issue list --state open --limit 100 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" 'map(select(.title == $t)) | .[0].number // empty')"
+          body="週次の schedule 実行が失敗しました。 実行: ${RUN_URL}"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$ISSUE_TITLE" --body "$body"
+          fi
