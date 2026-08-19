@@ -26,7 +26,7 @@
 Thumbs.db
 
 # Composer
-composer.lock
+# composer.lock は追跡する（type=project のアプリはビルド再現性のため lock をコミットする・#163）
 
 # npm — ignore stray root lockfiles, but the frontend lockfile is committed
 package-lock.json
