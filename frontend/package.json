@@ -41,7 +41,7 @@
     "@hideyukimori/nene2-standards": "^2.2.0",
     "@hideyukimori/nene2-tokens": "1.2.0",
     "@playwright/test": "^1.62.0",
-    "@redocly/cli": "2.5.0",
+    "@redocly/cli": "2.53.0",
     "@storybook/addon-a11y": "^10.5.5",
     "@storybook/react-vite": "^10.5.5",
     "@tailwindcss/vite": "^4.1.17",
